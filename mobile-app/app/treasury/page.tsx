@@ -23,20 +23,20 @@ export default function TreasuryPage() {
   return (
     <div className="h-full flex flex-col">
       <div className="p-4 border-b">
-        <h1 className="text-lg font-semibold">Treasury & Governance</h1>
+        <h1 className="text-lg font-semibold">Community Fund & Governance</h1>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-6">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center">
-              <Landmark className="mr-2 h-4 w-4" /> Treasury Overview
+              <Landmark className="mr-2 h-4 w-4" /> Community Fund  Overview
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
               <div className="text-3xl font-bold">{mockTreasuryData.balance} ETH</div>
-              <p className="text-sm text-muted-foreground">Total Treasury Balance</p>
+              <p className="text-sm text-muted-foreground">Total Fund Balance</p>
             </div>
 
             <div className="space-y-2">

@@ -109,7 +109,7 @@ export default function ReportPage() {
         <Button variant="ghost" size="icon" onClick={prevStep}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
-        <h1 className="text-lg font-semibold">Report Trail Issue</h1>
+        <h1 className="text-lg font-semibold">Share & Improve Trails</h1>
         <div className="w-8"></div> {/* Spacer for centering */}
       </div>
 

@@ -9,7 +9,7 @@ export default function MobileNavigation() {
 
   const navigation = [
     { name: "Map", href: "/", icon: Map },
-    { name: "Treasury", href: "/treasury", icon: Landmark },
+    { name: "Community Fund", href: "/treasury", icon: Landmark },
     { name: "Profile", href: "/profile", icon: User },
   ]
 
