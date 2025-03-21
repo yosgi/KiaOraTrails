@@ -1,0 +1,89 @@
+{
+  "connect": "连接钱包",
+  "staking": "质押",
+  "dashboard": "仪表盘",
+  "airdrop": "空投",
+  "borrow": "借贷",
+  "gamefi": "Gamefi",
+  "openMenu": "打开主菜单",
+  "closeMenu": "关闭主菜单",
+  "walletNotConnected": "钱包未连接！",
+  "claimSuccess": "🎉 成功领取 FORGE 代币！",
+  "claimFailed": "领取失败：",
+  "whatIsInteropDevnet": "什么是 Interop Devnet 0？",
+  "interopDevnetDescription1": "Interop Devnet 0 是一个区块链测试网，专为开发人员提供一个高速度、低延迟的环境，以便安全地测试 dApp 和智能合约。",
+  "interopDevnetDescription2": "要开始使用，你需要一些测试代币。这些代币是免费的，可用于部署和测试你的项目。",
+  "getInteropDevnetTokens": "获取 Interop Devnet 0 代币",
+  "forgeAirdrop": "FORGE 代币空投",
+  "forgeDescription": "FORGE 是我们平台的实用代币，旨在赋能用户并促进生态系统内的互动。立即领取你的 FORGE 代币并开始体验！",
+  "connectWallet": "连接钱包",
+  "claiming": "领取中...",
+  "alreadyClaimed": "已领取",
+  "claimForgeTokens": "领取 FORGE 代币",
+  "HomePage": {
+    "welcome": "欢迎来到 DeFi Forge",
+    "description": "在一个平台上体验空投、质押、借贷、GameFi 玩法。",
+    "features": {
+      "getForge": {
+        "title": "获取 FORGE",
+        "description": "通过空投获取 FORGE 代币。",
+        "buttonText": "获取 FORGE"
+      },
+      "stake": {
+        "title": "质押",
+        "description": "质押你的 Interop Devnet 0 代币以赚取 FORGE 奖励。",
+        "buttonText": "开始质押"
+      },
+      "borrowLend": {
+        "title": "借贷",
+        "description": "使用 FORGE 代币进行借贷。",
+        "buttonText": "立即借款"
+      },
+      "gamefi": {
+        "title": "GameFi",
+        "description": "使用 FORGE 代币参与游戏。",
+        "buttonText": "开始游戏"
+      }
+    }
+  },
+  "StakingPage": {
+    "headerSubtitle": "适用于 Interop Devnet 0",
+    "headerTitle": "质押 Interop Devnet 0 赚取 FORGE",
+    "headerDescription": "Interop Devnet 0 持有者可以质押代币来赚取 FORGE 奖励，同时助力平台的安全和成长。在罕见的不稳定情况下，你的质押可能会被部分削减，以减少风险，为网络提供额外的保护。",
+    "learnRisks": "了解相关风险",
+    "totalStakedLabel": "总质押 Interop Devnet 0 代币",
+    "withdrawFeeLabel": "提现手续费",
+    "stakingRulesTitle": "质押规则",
+    "option1": "方案 1",
+    "option1Description": "质押 30 天，年化收益率 10%。奖励计算方式：(金额 * 10% * (质押天数 / 365)) FORGE 代币。",
+    "option2": "方案 2",
+    "option2Description": "质押 60 天，年化收益率 15%。奖励计算方式：(金额 * 15% * (质押天数 / 365)) FORGE 代币。",
+    "option3": "方案 3",
+    "option3Description": "质押 120 天，年化收益率 27%。奖励计算方式：(金额 * 27% * (质押天数 / 365)) FORGE 代币。",
+    "stakeInteropDevnet0Title": "质押 Interop Devnet 0",
+    "currentStakedLabel": "你当前的质押金额：",
+    "stakeBtn": "质押代币",
+    "yourDeposits": "你的存款",
+    "depositAmount": "金额：",
+    "depositAPY": "年化收益率：",
+    "depositDuration": "时长：",
+    "daysLabel": "天",
+    "depositStarted": "开始时间：",
+    "withdrawBtn": "提现",
+    "noDeposits": "未找到存款记录。",
+    "stakeModalTitle": "质押代币",
+    "stakeInputLabel": "输入你要质押的代币数量：",
+    "chooseDuration": "选择质押时长：",
+    "withdrawModalTitle": "提现代币",
+    "withdrawConfirmText": "确认提现你的质押代币。\n注意：将会扣除提现手续费。",
+    "withdrawFeeMsg": "提现手续费：{fee}%", 
+    "stakeValidationMsg": "请输入金额并选择时长",
+    "stakeSuccess": "质押成功！",
+    "stakeFailed": "质押失败，请重试。",
+    "withdrawSuccess": "存款 #{index} 提现成功！已扣除 {fee}% 提现手续费。",
+    "withdrawFailed": "提现失败，请重试。",
+    "emergencyWithdrawAmountNeeded": "请输入紧急提现金额",
+    "emergencyWithdrawSuccess": "紧急提现成功！",
+    "emergencyWithdrawFailed": "紧急提现失败，请重试。"
+  }
+}
