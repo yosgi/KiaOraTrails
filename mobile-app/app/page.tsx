@@ -43,7 +43,7 @@ export default function Home() {
         <SheetTrigger asChild>
           <Button
             size="icon"
-            className="absolute top-4 left-4 z-10 h-10 w-10 rounded-full shadow-lg bg-background/90 backdrop-blur-sm"
+            className="absolute top-4 left-4 z-10 h-10 w-10 rounded-full shadow-lg bg-background/90 backdrop-blur-sm text-black"
           >
             <List className="h-5 w-5" />
             <span className="sr-only">Open Issues</span>
