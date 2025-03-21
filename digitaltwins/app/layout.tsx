@@ -13,8 +13,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Defi forge",
-  description: "Defi forge is a platform that allows you to create your own DeFi project in minutes.",
+  title: "WalkChain",
+  description: "WalkChain is a decentralized application that allows users to create and manage digital twins of walking and biking tracks.",
 };
 
 export default async function RootLayout({
