@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Post } from './post.entity';
-import { Review } from './review.entity';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+// import { Post } from './post.entity';
+// import { Review } from './review.entity';
 
 export enum UserRole {
   ISSUER = 'issuer',
@@ -14,15 +14,9 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column({ nullable: true })
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   role: UserRole; // Example: "issuer", "assignee", "donator", "admin"
-
-  @OneToMany(() => Post, (post) => post.author)
-  posts: Post[];
-
-  @OneToMany(() => Review, (review) => review.reviewer)
-  reviews: Review[];
 }

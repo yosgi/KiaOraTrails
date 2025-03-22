@@ -24,13 +24,8 @@ export class PostsService {
     });
   }
 
-  async createPost(title: string, content: string, userId: number) {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-    });
-    if (!user) throw new NotFoundException('User not found');
-
-    const post = this.postRepository.create({ title, content, author: user });
+  async createPost(draft: Partial<Post>) {
+    const post = this.postRepository.create(draft);
     return this.postRepository.save(post);
   }
 
@@ -61,7 +56,7 @@ export class PostsService {
     if (!post || !assignee)
       throw new NotFoundException('Post or Assignee not found');
 
-    post.assignee = assignee;
+    post.assignee_id = assignee.id.toString();
     return this.postRepository.save(post);
   }
 
@@ -71,9 +66,9 @@ export class PostsService {
     });
     if (!post) throw new NotFoundException('Post not found');
 
-    post.isCompleted = true;
-    post.completedAt = new Date();
-    post.payment = 100; // Example payment amount
+    // post.isCompleted = true;
+    // post.completedAt = new Date();
+    // post.payment = 100; // Example payment amount
     return this.postRepository.save(post);
   }
 
@@ -88,7 +83,7 @@ export class PostsService {
     if (!post || !user) throw new NotFoundException('Post or User not found');
 
     const review = this.reviewRepository.create({
-      reviewer: user,
+      user_id: user.id.toString(),
       post,
       score,
     });
@@ -100,7 +95,7 @@ export class PostsService {
       const averageScore =
         reviews.reduce((sum, r) => sum + r.score, 0) / reviews.length;
       if (averageScore > 4) {
-        post.bonus = 50; // Reward bonus
+        // post.bonus = 50; // Reward bonus
       }
     }
 
