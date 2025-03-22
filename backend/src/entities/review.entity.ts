@@ -6,7 +6,7 @@ export class Review {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column({ nullable: true })
   user_id: string;
 
   @Column({ nullable: true })
