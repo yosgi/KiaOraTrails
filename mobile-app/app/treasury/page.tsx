@@ -98,9 +98,6 @@ export default function TreasuryPage() {
             <h2 className="text-base font-medium flex items-center">
               <Vote className="mr-2 h-4 w-4" /> Proposals
             </h2>
-            <Button variant="outline" size="sm">
-              Create New
-            </Button>
           </div>
 
           {loading ? (
