@@ -293,10 +293,10 @@ export default function IssuePage() {
                   <div className="flex justify-between">
                     <span className="text-sm font-medium">Fundraising Progress</span>
                     <span className="text-sm font-medium">
-                      {issue.fundraising?.raised || 0} / {issue.fundraising?.goal || 0} NZD
+                      {issue.cur_fund|| 0} / {issue.fund || 0} NZD
                     </span>
                   </div>
-                  <Progress value={((issue.fundraising?.raised || 0) / (issue.fundraising?.goal || 1)) * 100} />
+                  <Progress value={((issue.cur_fund || 0) / (issue.fund || 1)) * 100} />
                 </div>
 
                 <Card className="p-4 bg-muted/50">
@@ -313,13 +313,13 @@ export default function IssuePage() {
                   <h3 className="font-medium">Contribute to this project</h3>
                   <div className="grid grid-cols-4 gap-2">
                     <Button variant="outline" onClick={handleDonate}>
-                      0.01 NZD
+                      1 NZD
                     </Button>
                     <Button variant="outline" onClick={handleDonate}>
-                      0.05 NZD
+                      5 NZD
                     </Button>
                     <Button variant="outline" onClick={handleDonate}>
-                      0.1 NZD
+                      10 NZD
                     </Button>
                     <Button variant="outline" onClick={handleDonate}>
                       Custom

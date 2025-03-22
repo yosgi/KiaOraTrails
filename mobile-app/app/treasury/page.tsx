@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
 import { Landmark, Vote, CheckCircle2 } from "lucide-react"
 import { mockTreasuryData } from "@/lib/mock-data"
 import { AuthAPI } from "../utils/api"
@@ -39,7 +38,7 @@ export default function TreasuryPage() {
     } catch (error) {
       return []
     }
-  }) : []
+  }).filter(item=>item.type === "fundraising") : []
 
   const toggleSort = () => {
     setSortDirection(sortDirection === "asc" ? "desc" : "asc")
@@ -103,15 +102,15 @@ export default function TreasuryPage() {
           {loading ? (
             <p>Loading proposals...</p>
           ) : (
-            <Tabs defaultValue="voted">
+            <Tabs defaultValue="created">
               <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="voted">Active</TabsTrigger>
-                <TabsTrigger value="donated">Passed</TabsTrigger>
-                <TabsTrigger value="rejected">Rejected</TabsTrigger>
+                <TabsTrigger value="created">Active</TabsTrigger>
+                <TabsTrigger value="donated">Funded</TabsTrigger>
+                <TabsTrigger value="completed">Completed</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="voted" className="pt-4 space-y-4">
-                {sortedProposals.filter(({status}) => status =="voted").map((proposal) => (
+              <TabsContent value="created" className="pt-4 space-y-4">
+                {sortedProposals.filter(({status}) => status =="created").map((proposal) => (
                   <Card key={proposal.id+'voted'} className="overflow-hidden">
                     <div className="p-4">
                       <div className="flex justify-between items-start">
@@ -124,17 +123,19 @@ export default function TreasuryPage() {
                           </p>
                         </div>
                         {proposal.type === "fundraising" && (
-                          <Button size="sm" variant="outline">
-                            Donate
-                          </Button>
+                            <Link href={`/issues/${proposal.id}`}>
+                              <Button size="sm" variant="outline">
+                                Donate
+                              </Button>
+                            </Link>
                         )}
                       </div>
                       <div className="mt-3">
                         <div className="flex justify-between text-sm mb-1">
                           <span>Support</span>
-                          <span>{Number(proposal.up_votes)*100/5}%</span>
+                          <span>{Number(proposal.cur_fund)} NZD</span>
                         </div>
-                        <Progress value={Number(proposal.up_votes)*20} />
+                        <Progress value={Number(proposal.cur_fund / proposal.fund )*100} />
                       </div>
                     </div>
                   </Card>
@@ -158,18 +159,18 @@ export default function TreasuryPage() {
                       <div className="mt-3">
                         <div className="flex justify-between text-sm mb-1">
                           <span>Support</span>
-                          <span>{Number(proposal.up_votes)*100/5}%</span>
+                          <span>{Number(proposal.cur_fund)} NZD</span>
                         </div>
-                        <Progress value={Number(proposal.up_votes)*20} />
+                        <Progress value={Number(proposal.cur_fund / proposal.fund )*100} />
                       </div>
                     </div>
                   </Card>
                 ))}
               </TabsContent>
 
-              <TabsContent value="rejected" className="pt-4 space-y-4">
+              <TabsContent value="completed" className="pt-4 space-y-4">
                 
-              {sortedProposals.filter(({status}) => status =="rejected").map((proposal) => (
+              {sortedProposals.filter(({status}) => status =="completed").map((proposal) => (
                   <Card key={proposal.id+'rejected'} className="overflow-hidden">
                     <div className="p-4">
                       <div className="flex justify-between items-start">
@@ -185,9 +186,9 @@ export default function TreasuryPage() {
                       <div className="mt-3">
                         <div className="flex justify-between text-sm mb-1">
                           <span>Support</span>
-                          <span>{Number(proposal.up_votes)*100/5}%</span>
+                          <span>{Number(proposal.cur_fund)} NZD</span>
                         </div>
-                        <Progress value={Number(proposal.up_votes)*20} />
+                        <Progress value={Number(proposal.cur_fund / proposal.fund )*100} />
                       </div>
                     </div>
                   </Card>
