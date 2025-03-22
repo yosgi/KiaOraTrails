@@ -86,9 +86,9 @@ const CesiumViewer: React.ComponentType = () => {
       fullscreenButton: false,
       geocoder: true,
       homeButton: true,
-      infoBox: true,
-      sceneModePicker: true,
-      selectionIndicator: true,
+      infoBox: false,
+      sceneModePicker: false,
+      selectionIndicator: false,
       timeline: false,
       navigationHelpButton: false,
     });

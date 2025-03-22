@@ -87,7 +87,7 @@ const SingleLinzLayer: React.FC<SingleLinzLayerProps> = ({
         // Style the entities based on their type
         dataSource.entities.values.forEach(entity => {
           if (entity.polyline) {
-            entity.polyline.width = new ConstantProperty(2);
+            entity.polyline.width = new ConstantProperty(1);
             entity.polyline.material = new ColorMaterialProperty(layerInfo.color);
             entity.polyline.clampToGround = new ConstantProperty(true);
           }

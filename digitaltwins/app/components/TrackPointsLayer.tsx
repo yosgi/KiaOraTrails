@@ -20,7 +20,7 @@ interface TrackPoint {
   name?: string;
   latitude: number;
   longitude: number;
-  color?: string; // Optional color (e.g., 'red', 'blue', 'green')
+  color?: string; 
   type?: string; // Optional type (e.g., 'trailhead', 'poi', 'viewpoint')
   properties?: any; // Additional properties
 }

@@ -12,7 +12,8 @@ import {
   PinBuilder,
   CallbackProperty,
   ConstantProperty,
-  Billboard
+  Billboard,
+  Math as CesiumMath
 } from 'cesium';
 import { Logger } from '../services/logger';
 import * as Cesium from 'cesium';
@@ -44,6 +45,8 @@ interface TrackPointsLayerProps {
   clusterMarkers?: boolean; // Whether to cluster markers when zoomed out
   pulsateOnHover?: boolean; // Whether markers should pulsate on hover
   showLabels?: boolean; // Whether to show labels next to markers
+  flyToDuration?: number; // Duration of camera flight animation in seconds (default: 3)
+  terrainHeightOffset?: number; // Height offset above terrain in meters (default: 500)
 }
 
 const TrackPointsLayer: React.FC<TrackPointsLayerProps> = ({
@@ -54,7 +57,9 @@ const TrackPointsLayer: React.FC<TrackPointsLayerProps> = ({
   defaultPinColor = 'green',
   clusterMarkers = false,
   pulsateOnHover = false,
-  showLabels = false
+  showLabels = false,
+  flyToDuration = 3,
+  terrainHeightOffset = 1000
 }) => {
   // Reference to store entity objects for cleanup
   const entitiesRef = useRef<Map<string, Entity>>(new Map());
@@ -254,6 +259,94 @@ const TrackPointsLayer: React.FC<TrackPointsLayerProps> = ({
     
     entitiesRef.current.clear();
   };
+
+  // Function to fly to a point with 45-degree pitch
+  const flyToPoint = (point: TrackPoint) => {
+    if (!viewer) return;
+
+    try {
+      // Get point position
+      const position = Cartesian3.fromDegrees(
+        point.longitude,
+        point.latitude
+      );
+
+      // Get the ellipsoid for coordinate calculations
+      const ellipsoid = viewer.scene.globe.ellipsoid;
+      
+      // Define camera parameters for 45-degree view
+      const pitch = CesiumMath.toRadians(-45); // 45 degrees pitch (negative for looking down)
+      const heading = CesiumMath.toRadians(0); // Optional: adjust heading if needed
+      
+      // Create a camera flight options object
+      const options = {
+        destination: position,
+        orientation: {
+          heading: heading,
+          pitch: pitch,
+          roll: 0
+        },
+        duration: flyToDuration,
+        complete: () => {
+          // After flight is complete, adjust height to be above terrain
+          const cartographic = ellipsoid.cartesianToCartographic(position);
+          
+          // Get terrain height asynchronously, then adjust camera
+          // Using sampleHeightMostDetailed instead of deprecated sampleTerrainMostDetailed
+          viewer.scene.sampleHeightMostDetailed([cartographic])
+            .then((updatedPositions: Array<{ height: number; longitude: number; latitude: number }>) => {
+              // Height is now available in the returned positions
+              const terrainHeight = updatedPositions[0]?.height || 0;
+              
+              // Calculate final position with height offset
+              const finalPosition = Cartesian3.fromRadians(
+                cartographic.longitude,
+                cartographic.latitude,
+                terrainHeight + terrainHeightOffset
+              );
+              
+              // Set the camera to the final position with the same orientation
+              viewer.camera.setView({
+                destination: finalPosition,
+                orientation: {
+                  heading: heading,
+                  pitch: pitch,
+                  roll: 0
+                }
+              });
+              
+              Logger.info(`Camera positioned at height ${terrainHeight + terrainHeightOffset}m above terrain`);
+            })
+            .catch((error: Error) => {
+              Logger.error('Error sampling terrain:', error);
+              
+              // Fallback: just move camera up by the offset
+              const finalPosition = Cartesian3.fromRadians(
+                cartographic.longitude,
+                cartographic.latitude,
+                terrainHeightOffset
+              );
+              
+              viewer.camera.setView({
+                destination: finalPosition,
+                orientation: {
+                  heading: heading,
+                  pitch: pitch,
+                  roll: 0
+                }
+              });
+            });
+        }
+      };
+      
+      // Start the camera flight
+      viewer.camera.flyTo(options);
+      
+      Logger.info(`Flying to point ${point.id} at ${point.latitude}, ${point.longitude}`);
+    } catch (err) {
+      Logger.error(`Error flying to point ${point.id}:`, err);
+    }
+  };
   
   // Setup click handler for points
   const setupClickHandler = () => {
@@ -286,10 +379,17 @@ const TrackPointsLayer: React.FC<TrackPointsLayerProps> = ({
           // Highlight selected point
           highlightPoint(pointId);
           
-          // Call the click handler if provided
-          if (onPointClick && entity.properties) {
+          // Get the point data
+          if (entity.properties) {
             const pointData = entity.properties.originalPointData.getValue();
-            onPointClick(pointData);
+            
+            // Fly to the point with camera animation
+            flyToPoint(pointData);
+            
+            // Call the click handler if provided
+            if (onPointClick) {
+              onPointClick(pointData);
+            }
           }
         }
       }
