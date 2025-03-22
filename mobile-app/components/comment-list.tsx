@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { ThumbsUp, ThumbsDown } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
+import { format } from "date-fns"
 
 interface Comment {
   id: string
@@ -76,7 +77,7 @@ export function CommentList({ comments }: CommentListProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <span className="font-medium text-sm">{comment?.user_name}</span>
-                  <span className="text-xs text-muted-foreground ml-2">{comment.created_at}</span>
+                  <span className="text-xs text-muted-foreground ml-2">{format(new Date(comment.created_at), "MMM d, yyyy")}</span>
                 </div>
               </div>
               <p className="text-sm">{comment.comments}</p>
