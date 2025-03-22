@@ -39060,12 +39060,33 @@
         }
       },
       "links": {},
+<<<<<<< HEAD
       "address": "0x45aF5869522E84DF1156F3E9657BA3227c521C4B",
       "transactionHash": "0xb203725cc59f470198950656c48cc0447906087da7202d91857dcd76b3e1e990"
     }
   },
   "schemaVersion": "3.4.16",
   "updatedAt": "2025-03-22T21:30:42.708Z",
+=======
+      "address": "0xA929585d1f41c505c34260B1E4453139f62A4a65",
+      "transactionHash": "0xf1ff09574f4d9dafda101141171aca66468abb147db56a8b5594c9469d81789f"
+    },
+    "84532": {
+      "events": {},
+      "links": {},
+      "address": "0x2B921d6E7D4E13B310703857423b621c0E24977D",
+      "transactionHash": "0xb9dc296deda7d73f1f712f97d432dcf40bc934bd8738c873f3d69b030a924db6"
+    },
+    "420120000": {
+      "events": {},
+      "links": {},
+      "address": "0xEe12019dbbBC635a135410aF17ef5F2D94B51fCC",
+      "transactionHash": "0xd792db37fce12caa2fc9d393535612a39cd6021fc2453cd7156670388ce686e4"
+    }
+  },
+  "schemaVersion": "3.4.16",
+  "updatedAt": "2025-03-22T19:32:21.857Z",
+>>>>>>> 01adcdc3614bf415b204b1ec4f9a3de8fb52781f
   "networkType": "ethereum",
   "devdoc": {
     "details": "一个关于步道维护的去中心化众筹平台",
