@@ -13194,8 +13194,8 @@
         }
       },
       "links": {},
-      "address": "0x7beEAbe8c0af2c2deD911188cf12a014F692587C",
-      "transactionHash": "0x1a4e8f1aab31928013ba6e32d97b9b96b5bbee4f5a446b6fd0b76ca00532aa12"
+      "address": "0xe2FaC75129984803482d88bEB99100874Ec65805",
+      "transactionHash": "0xb51d50e39dbb7b53837cf1367040c22dcc7c786b768662be71f80ecbb552a051"
     },
     "84532": {
       "events": {},
@@ -13211,7 +13211,7 @@
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2025-03-22T18:53:58.989Z",
+  "updatedAt": "2025-03-22T19:32:21.850Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "创建与任务关联的多签钱包",

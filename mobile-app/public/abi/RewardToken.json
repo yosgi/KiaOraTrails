@@ -8786,8 +8786,8 @@
         }
       },
       "links": {},
-      "address": "0x6F3A3f4c782B9aece43B304638Bdd0193dBf5f85",
-      "transactionHash": "0xe8f93905c9711330662940ccdff90077436c801eb90fdb70cb4ec4375538d7d3"
+      "address": "0x54438596082834Eb5D6Da3dAD259EfB873BB61E5",
+      "transactionHash": "0xfb08c60b04d053ccd008de3dd1b592a8d0c325bd3f06a876e671e994a1c949a2"
     },
     "84532": {
       "events": {
@@ -8943,7 +8943,7 @@
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2025-03-22T18:53:58.980Z",
+  "updatedAt": "2025-03-22T19:32:21.841Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "激励代币，用于奖励捐赠者和承接者",

@@ -39060,8 +39060,8 @@
         }
       },
       "links": {},
-      "address": "0xa3F7E961e9c88B253FF19e6479a73103E3008761",
-      "transactionHash": "0xab0735494c3806bac9425b7329acb8ab5ddeca34f04a2c6a915abf6cee857158"
+      "address": "0xA929585d1f41c505c34260B1E4453139f62A4a65",
+      "transactionHash": "0xf1ff09574f4d9dafda101141171aca66468abb147db56a8b5594c9469d81789f"
     },
     "84532": {
       "events": {},
@@ -39077,7 +39077,7 @@
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2025-03-22T18:53:58.994Z",
+  "updatedAt": "2025-03-22T19:32:21.857Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "一个关于步道维护的去中心化众筹平台",
