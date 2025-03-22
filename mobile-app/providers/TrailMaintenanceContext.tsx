@@ -4,6 +4,7 @@ import { ethers, Contract } from "ethers";
 import TRAIL_MAINTENANCE_ABI from "../public/abi/TrailMaintenance.json"
 import contracts from "../public/contracts/development-contracts.json"
 import { usePrivy, PrivyProvider } from '@privy-io/react-auth';
+import { useWallets } from "@privy-io/react-auth";
 // Task status enum to match the contract
 enum TaskStatus {
   Created,
@@ -90,6 +91,7 @@ const getEthereumContract = async (
   let signer;
   
   if (privyProvider) {
+    console.log("Using Privy provider");
     provider = new ethers.BrowserProvider(privyProvider);
     signer = await provider.getSigner();
   } else if (window.ethereum) {
@@ -105,7 +107,7 @@ const getEthereumContract = async (
 // The TrailMaintenanceProvider component
 export const TrailMaintenanceProvider: React.FC<TrailMaintenanceProviderProps> = ({ children }) => {
   const { ready, login, authenticated, user, logout } = usePrivy();
-  
+  console.log("User:", user);
   const [walletAddress, setWalletAddress] = useState<string | undefined>(undefined);
   const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false);
   const [donationRewardRate, setDonationRewardRate] = useState<string>("1"); // Default 1%
@@ -114,8 +116,8 @@ export const TrailMaintenanceProvider: React.FC<TrailMaintenanceProviderProps> =
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [privyProvider, setPrivyProvider] = useState<any>(null);
-
-  // Connect wallet using Privy
+  const { wallets } = useWallets();
+  // Connect wall et using Privy
   const connectWallet = async (): Promise<void> => {
     try {
       if (!authenticated) {
@@ -136,11 +138,18 @@ export const TrailMaintenanceProvider: React.FC<TrailMaintenanceProviderProps> =
         setIsWalletConnected(!!address);
         
         // Get Ethereum provider from Privy
-        if (user.wallet) {
+        const embeddedWallet = wallets.find(
+          (wallet) => wallet.walletClientType === "privy"
+        );
+        
+        console.log("Embedded wallet:", embeddedWallet);
+        if (embeddedWallet) {
+          console.log("User wallet:", user.wallet);
           try {
             // Privy wallet embedsWalletProvider within user.wallet object
-            const provider = user.wallet.provider;
-            setPrivyProvider(provider);
+            const privyProvider = await embeddedWallet.getEthereumProvider();
+            debugger
+            setPrivyProvider(privyProvider);
           } catch (err) {
             console.error("Failed to get Ethereum provider:", err);
           }
@@ -153,7 +162,7 @@ export const TrailMaintenanceProvider: React.FC<TrailMaintenanceProviderProps> =
     };
     
     updateWalletState();
-  }, [authenticated, user]);
+  }, [authenticated, user,wallets]);
 
   // Utility function to fetch TrailMaintenance Contract instance
   const getTrailMaintenanceContract = async (): Promise<Contract> => {

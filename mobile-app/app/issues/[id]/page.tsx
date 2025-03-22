@@ -46,6 +46,7 @@ export default function IssuePage() {
   const [issue, setIssue] = useState(null)
   const [loading, setLoading] = useState(true)
   const { donate } = useTrailMaintenance()
+  
   useEffect(() => {
     const fetchIssue = async () => {
       setLoading(true)
