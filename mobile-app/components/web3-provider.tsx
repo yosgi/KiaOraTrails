@@ -67,7 +67,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
             appearance: {
               theme: 'light',
               accentColor: '#676FFF',
-              logo: 'https://your-logo-url'
+              logo: 'https://hackathon20250322.s3-ap-southeast-1.amazonaws.com/img/t4tx8oytz.png'
             },
             embeddedWallets: {
               createOnLogin: 'users-without-wallets'
