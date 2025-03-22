@@ -793,11 +793,11 @@ export default function IssuePage() {
               {issue.type === "scenic" ? "Scenic Spot" : issue.type === "condition" ? "Trail Condition" : "Fundraising"}
             </Badge>
 
-            {blockchainTaskExists && (
+            {/* {blockchainTaskExists && (
               <Badge variant={getTaskStatusBadgeVariant()}>
                 {getTaskStatusText()}
               </Badge>
-            )}
+            )} */}
           </div>
         </div>
 
