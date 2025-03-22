@@ -1,1 +1,0 @@
-function e(e,r){return e??r}e.EMPTY_OBJECT=Object.freeze({});var r=e;export{r as a};

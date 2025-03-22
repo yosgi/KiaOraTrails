@@ -1,4 +1,0 @@
-  
-  interface Window {
-    playerSprite?: any;
-  }

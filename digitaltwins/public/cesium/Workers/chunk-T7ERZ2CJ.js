@@ -1,1 +1,0 @@
-import{a as t}from"./chunk-VLPNAR64.js";var i=function(i){i=t(i,t.EMPTY_OBJECT),this.position=i.position,this.normal=i.normal,this.st=i.st,this.bitangent=i.bitangent,this.tangent=i.tangent,this.color=i.color};export{i as a};
