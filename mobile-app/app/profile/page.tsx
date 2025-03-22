@@ -7,9 +7,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { Award, Wallet, MapPin, Calendar, Activity, Settings, LogIn, Compass, LogOut } from "lucide-react"
+import { Award, Wallet, MapPin, Calendar, Activity, Settings, LogIn, Compass, LogOut, Coins } from "lucide-react"
 import { mockUserData, mockUserActivity } from "@/lib/mock-data"
-import { usePrivy } from '@privy-io/react-auth';
+import {useFundWallet, usePrivy} from '@privy-io/react-auth';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,50 +24,50 @@ export default function ProfilePage() {
   const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
   const [isLoading, setIsLoading] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  console.log("privyUser", privyUser);
+
   // 如果用户未登录，显示登录页面
   if (!authenticated) {
     return (
-      <div className="h-full flex flex-col">
-        <div className="p-4 border-b flex justify-between items-center">
-          <h1 className="text-lg font-semibold">Profile</h1>
-        </div>
-        
-        <div className="flex-1 flex items-center justify-center p-6">
-          <Card className="w-full max-w-md p-8 bg-gradient-to-br from-background to-muted/50">
-            <div className="flex justify-center mb-6">
-              <div className="bg-primary/10 p-6 rounded-full animate-pulse">
-                <LogIn className="h-12 w-12 text-primary" />
+        <div className="h-full flex flex-col">
+          <div className="p-4 border-b flex justify-between items-center">
+            <h1 className="text-lg font-semibold">Profile</h1>
+          </div>
+
+          <div className="flex-1 flex items-center justify-center p-6">
+            <Card className="w-full max-w-md p-8 bg-gradient-to-br from-background to-muted/50">
+              <div className="flex justify-center mb-6">
+                <div className="bg-primary/10 p-6 rounded-full animate-pulse">
+                  <LogIn className="h-12 w-12 text-primary"/>
+                </div>
               </div>
-            </div>
-            
-            <h2 className="text-2xl font-bold text-center mb-2">Welcome to Kiaora Trails</h2>
-            <p className="text-muted-foreground text-center mb-6">
-              Connect your account to access your profile and participate in community funding.
-            </p>
-            <Button 
-              onClick={() => {
-                setIsLoading(true);
-                login();
-              }} 
-              className="w-full py-6 text-base font-medium"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <span className="flex items-center">
+
+              <h2 className="text-2xl font-bold text-center mb-2">Welcome to Kiaora Trails</h2>
+              <p className="text-muted-foreground text-center mb-6">
+                Connect your account to access your profile and participate in community funding.
+              </p>
+              <Button
+                  onClick={() => {
+                    setIsLoading(true);
+                    login();
+                  }}
+                  className="w-full py-6 text-base font-medium"
+                  disabled={isLoading}
+              >
+                {isLoading ? (
+                    <span className="flex items-center">
                   <span className="loader mr-2"></span>
                   Logging in...
                 </span>
-              ) : (
-                <span className="flex items-center">
-                  <LogIn className="mr-2 h-5 w-5" /> 
+                ) : (
+                    <span className="flex items-center">
+                  <LogIn className="mr-2 h-5 w-5"/>
                   Login / Signup
                 </span>
-              )}
-            </Button>
-          </Card>
+                )}
+              </Button>
+            </Card>
+          </div>
         </div>
-      </div>
     );
   }
 
@@ -85,6 +85,10 @@ export default function ProfilePage() {
     address: privyUser?.wallet?.address,
   };
 
+  const {fundWallet} = useFundWallet();
+  const fund = async ()=>{
+   await fundWallet(privyUser?.wallet?.address!)
+  }
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
@@ -129,18 +133,18 @@ export default function ProfilePage() {
         <div className="p-4 pb-0">
           <div className="flex items-center space-x-4">
             <Avatar className="h-16 w-16">
-              <AvatarImage src={userData.avatar} />
+              <AvatarImage src={userData.avatar}/>
               <AvatarFallback>{userData.name.substring(0, 2)}</AvatarFallback>
             </Avatar>
             <div>
-              <h2 className="text-xl font-bold">{userData.name}</h2>
+              <h2 className="text-xl font-bold">{userData?.name}</h2>
               <div className="flex flex-col">
                 <h3 className="text-sm text-muted-foreground flex items-center">
-                  {userData.address ? 
-                    <span className="bg-secondary/50 px-2 py-0.5 rounded-md font-mono text-xs break-all">
+                  {userData.address ?
+                      <span className="bg-secondary/50 px-2 py-0.5 rounded-md font-mono text-xs break-all">
                       {userData.address}
-                    </span> : 
-                    <span className="text-destructive/70">No wallet connected</span>
+                    </span> :
+                      <span className="text-destructive/70">No wallet connected</span>
                   }
                 </h3>
               </div>
@@ -149,13 +153,23 @@ export default function ProfilePage() {
               </p> */}
               <div className="flex items-center space-x-2 mt-1">
                 <Badge variant="outline" className="px-2 py-1 text-xs">
-                  <Award className="h-3 w-3 mr-1" /> Trail Guardian
+                  <Award className="h-3 w-3 mr-1"/> Trail Guardian
                 </Badge>
                 <Badge variant="outline" className="px-2 py-1 text-xs">
-                  <Award className="h-3 w-3 mr-1" /> Top Contributor
+                  <Award className="h-3 w-3 mr-1"/> Top Contributor
                 </Badge>
               </div>
             </div>
+          </div>
+
+          <div className="mt-4">
+            <Button 
+              onClick={fund} 
+              className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white font-medium py-2 rounded-md transition-all duration-300 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+            >
+              <Coins className="h-5 w-5" />
+              <span>Deposit / Withdraw Wallet</span>
+            </Button>
           </div>
 
           <div className="mt-4 grid grid-cols-3 gap-2 text-center">
@@ -178,14 +192,14 @@ export default function ProfilePage() {
               <span className="text-sm font-medium">Reputation Level {userData.level}</span>
               <span className="text-sm font-medium">{userData.reputation}/1000 XP</span>
             </div>
-            <Progress value={userData.reputation / 10} />
+            <Progress value={userData.reputation / 10}/>
           </div>
         </div>
 
         <div className="p-4">
           <Tabs defaultValue="badges">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="badges">Badges</TabsTrigger>
+            <TabsTrigger value="badges">Badges</TabsTrigger>
               <TabsTrigger value="activity">Activity</TabsTrigger>
               <TabsTrigger value="tokens">Tokens</TabsTrigger>
             </TabsList>
