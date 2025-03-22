@@ -25,6 +25,7 @@ import {
 import { Logger } from '../services/logger';
 import { LINZ_CONFIG } from '../services/config';
 import * as Cesium from 'cesium';
+
 interface TrackFeature {
   id: string;
   properties: any;
@@ -115,6 +116,7 @@ interface TrackFeature {
   highlighted?: boolean;
 }
 
+
 const EnhancedLinzLayer: React.FC<EnhancedLinzLayerProps> = ({
   viewer,
   initialBbox
@@ -168,6 +170,9 @@ const EnhancedLinzLayer: React.FC<EnhancedLinzLayerProps> = ({
     // Add primitive collections to the scene
     viewer.scene.primitives.add(baseLayerPrimitivesRef.current);
     viewer.scene.primitives.add(nearbyTracksPrimitivesRef.current);
+
+
+
 
     // return () => {
     //   // Clean up primitive collections

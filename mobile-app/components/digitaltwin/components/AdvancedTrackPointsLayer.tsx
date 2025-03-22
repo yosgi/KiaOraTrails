@@ -9,10 +9,8 @@ import {
   HeightReference,
   ScreenSpaceEventHandler,
   ScreenSpaceEventType,
-  PinBuilder,
   CallbackProperty,
   ConstantProperty,
-  Billboard,
   Math as CesiumMath
 } from 'cesium';
 import { Logger } from '../services/logger';
@@ -28,6 +26,14 @@ interface TrackPoint {
   type?: string; // Optional type (e.g., 'trailhead', 'poi', 'viewpoint')
   icon?: string; // Optional icon to use inside the pin (e.g., 'parking', 'info', 'summit')
   properties?: any; // Additional properties
+  description?: string; // Issue description
+  status?: string; // Issue status
+  title?: string; // Issue title
+  photos?: string[]; // Issue photos
+  up_votes?: number;
+  down_votes?: number;
+  fund?: string;
+  cur_fund?: string;
   customStyle?: {
     scale?: number;
     pixelOffset?: [number, number];
@@ -47,7 +53,43 @@ interface TrackPointsLayerProps {
   showLabels?: boolean; // Whether to show labels next to markers
   flyToDuration?: number; // Duration of camera flight animation in seconds (default: 3)
   terrainHeightOffset?: number; // Height offset above terrain in meters (default: 500)
+  setSelectedIssue?: (issue: any) => void; // Function to set the selected issue for display
 }
+
+// SVG color mapping
+const SVG_COLORS: Record<string, string> = {
+  red: '#ff4444',
+  green: '#44cc44',
+  blue: '#4444ff',
+  yellow: '#ffcc44',
+  cyan: '#44ffff',
+  magenta: '#ff44ff',
+  white: '#ffffff',
+  black: '#000000',
+  orange: '#ff8844',
+  default: '#44cc44'
+};
+
+// Function to create a circular SVG icon similar to Google Maps
+const createCircularSvgIcon = (colorName: string, size: number): string => {
+  const colorValue = SVG_COLORS[colorName] || SVG_COLORS.default;
+  
+  // Create SVG for a circular Google Maps-style icon with drop shadow
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+      <defs>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.3" />
+        </filter>
+      </defs>
+      <circle cx="${size/2}" cy="${size/2}" r="${size/2 - 4}" fill="${colorValue}" 
+        stroke="white" stroke-width="2" filter="url(#shadow)" />
+    </svg>
+  `;
+  
+  // Convert SVG to data URL
+  return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))}`;
+};
 
 const TrackPointsLayer: React.FC<TrackPointsLayerProps> = ({
   viewer,
@@ -59,18 +101,18 @@ const TrackPointsLayer: React.FC<TrackPointsLayerProps> = ({
   pulsateOnHover = false,
   showLabels = false,
   flyToDuration = 3,
-  terrainHeightOffset = 1000
+  terrainHeightOffset = 1000,
+  setSelectedIssue
 }) => {
   // Reference to store entity objects for cleanup
   const entitiesRef = useRef<Map<string, Entity>>(new Map());
   const clickHandlerRef = useRef<ScreenSpaceEventHandler | null>(null);
   const hoverHandlerRef = useRef<ScreenSpaceEventHandler | null>(null);
   const dataSourceRef = useRef<Cesium.CustomDataSource | null>(null);
-  
   // State for selected and hovered points
   const [selectedPointId, setSelectedPointId] = useState<string | null>(null);
   const [hoveredPointId, setHoveredPointId] = useState<string | null>(null);
-
+  console.log(trackPoints)
   // Available colors for pins (matching the screenshot)
   const PIN_COLORS: Record<string, Color> = {
     red: Color.RED,
@@ -100,12 +142,9 @@ const TrackPointsLayer: React.FC<TrackPointsLayerProps> = ({
     default: undefined
   };
 
-  // Function to create pin entities from track points
+  // Function to create entities from track points
   useEffect(() => {
     if (!viewer || !trackPoints || trackPoints.length === 0) return;
-
-    // Create pin builder
-    const pinBuilder = new PinBuilder();
     
     // Create data source for clustering (if enabled)
     if (clusterMarkers) {
@@ -135,28 +174,16 @@ const TrackPointsLayer: React.FC<TrackPointsLayerProps> = ({
           ? point.color 
           : defaultPinColor;
         
-        const colorValue = PIN_COLORS[colorName] || PIN_COLORS.default;
-        
-        // Determine icon if provided
-        const icon = point.icon 
-          ? (Object.keys(PIN_ICONS).includes(point.icon) ? PIN_ICONS[point.icon] : point.icon) 
-          : undefined;
-        
-        // Create pin canvas - with or without icon
-        let pinCanvas;
-        if (icon) {
-          pinCanvas = pinBuilder.fromText(icon, colorValue, defaultPinSize);
-        } else {
-          pinCanvas = pinBuilder.fromColor(colorValue, defaultPinSize);
-        }
+        // Create circular SVG icon
+        const svgIcon = createCircularSvgIcon(colorName, defaultPinSize);
         
         // Create entity options
         const entityOptions: any = {
           id: `track-point-${point.id}`,
-          name: point.name || `Track Point ${point.id}`,
+          name: point.name || point.title || `Track Point ${point.id}`,
           position: Cartesian3.fromDegrees(point.longitude, point.latitude),
           billboard: {
-            image: point.customStyle?.customImageUrl || pinCanvas,
+            image: point.customStyle?.customImageUrl || svgIcon,
             verticalOrigin: VerticalOrigin.BOTTOM,
             horizontalOrigin: HorizontalOrigin.CENTER,
             heightReference: HeightReference.RELATIVE_TO_GROUND,
@@ -188,9 +215,9 @@ const TrackPointsLayer: React.FC<TrackPointsLayerProps> = ({
         }
         
         // Add label if showLabels is enabled
-        if (showLabels && point.name) {
+        if (showLabels && (point.name || point.title)) {
           entityOptions.label = {
-            text: point.name,
+            text: point.name || point.title,
             font: '12px sans-serif',
             style: Cesium.LabelStyle.FILL_AND_OUTLINE,
             outlineWidth: 2,
@@ -386,6 +413,14 @@ const TrackPointsLayer: React.FC<TrackPointsLayerProps> = ({
             
             // Fly to the point with camera animation
             flyToPoint(pointData);
+            
+            // Show issue description
+            if (setSelectedIssue && pointData) {
+              setSelectedIssue({
+                ...pointData,
+                navigateUrl: `/issue/${pointData.id}`
+              });
+            }
             
             // Call the click handler if provided
             if (onPointClick) {

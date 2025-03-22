@@ -39,7 +39,7 @@ const TrackPointsLayer: React.FC<TrackPointsLayerProps> = ({
   // Reference to store entity objects for cleanup
   const entitiesRef = useRef<Map<string, Entity>>(new Map());
   const clickHandlerRef = useRef<ScreenSpaceEventHandler | null>(null);
-  
+  const [issues, setIssues] = useState([])
   // State for selected point
   const [selectedPointId, setSelectedPointId] = useState<string | null>(null);
 
@@ -50,6 +50,8 @@ const TrackPointsLayer: React.FC<TrackPointsLayerProps> = ({
     blue: Color.BLUE,
     default: Color.DARKCYAN
   };
+
+ 
 
   // Function to create pin entities from track points
   useEffect(() => {

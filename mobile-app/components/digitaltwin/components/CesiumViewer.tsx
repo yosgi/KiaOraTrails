@@ -7,6 +7,8 @@ import PointLayer from "./TrackPointsLayer"
 import AdvancedPointLayer from "./AdvancedTrackPointsLayer"
 import { useCesium } from '../../../providers/CesiumContext';
 import * as Cesium from 'cesium';
+import { AuthAPI } from "../../../app/utils/api"
+import IssueDetailsModal from './IssueDetailsModal';
 Ion.defaultAccessToken = process.env.NEXT_PUBLIC_ION_API_KEY || '';
 
 const sampleTrackPoints = [
@@ -75,6 +77,8 @@ const sampleTrackPoints = [
 
 const CesiumViewer: React.ComponentType = () => {
   const [viewer, setViewer] = useState<Viewer | null>(null);
+  const [issues, setIssues] = useState([])
+  const [selectedIssue, setSelectedIssue] = useState<any | null>(null);
   useEffect(() => {
     // Only render on client-side
     if (typeof window === 'undefined') return;
@@ -109,7 +113,7 @@ const CesiumViewer: React.ComponentType = () => {
   
     // Set default view position
     cesiumViewer.camera.setView({
-      destination: Cartesian3.fromDegrees(172.5, -41.0, 1500000)
+      destination: Cesium.Cartesian3.fromDegrees(174.7692, -36.8885, 8500)
     });
   
     // Save viewer instance to state
@@ -124,6 +128,41 @@ const CesiumViewer: React.ComponentType = () => {
     };
   }, []);
 
+
+  useEffect(() => {
+    async function fetchIssues() {
+      try {
+        let response = await AuthAPI.get("/posts")
+        response = response.map((issue) => {
+          console.log(issue.location)
+          issue.latitude = JSON.parse(issue.location).lat
+          issue.longitude = JSON.parse(issue.location).lng
+          issue.color = 'red'
+          issue.type = 'trailhead'
+          return issue
+        }
+        )
+        console.log("response",response)
+        setIssues(response)
+      } catch (error) {
+        console.error("Failed to fetch issues:", error)
+      }
+    }
+
+    fetchIssues()
+  }, [])
+
+   // Handle issue click
+   const handleIssueClick = (issue: any) => {
+    console.log('Issue clicked:', issue);
+    // Additional handling if needed
+  };
+  
+  // Close the issue details modal
+  const handleCloseIssueDetails = () => {
+    setSelectedIssue(null);
+  };
+
   return (
     <>
       <div id="cesiumContainer" style={{ width: '100%', height: '100vh' }}></div>
@@ -136,10 +175,21 @@ const CesiumViewer: React.ComponentType = () => {
         viewer && (
           <AdvancedPointLayer
           viewer={viewer}
-          trackPoints={sampleTrackPoints}
+          trackPoints={issues}
+          showLabels={true}
+          setSelectedIssue={setSelectedIssue}
+          defaultPinSize={32}
+          pulsateOnHover={true}
      ></AdvancedPointLayer>
         )
       }
+      {/* Issue details modal */}
+      {selectedIssue && (
+        <IssueDetailsModal
+          issue={selectedIssue}
+          onClose={handleCloseIssueDetails}
+        />
+      )}
       
        
     </>
