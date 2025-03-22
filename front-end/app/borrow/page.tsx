@@ -14,14 +14,14 @@ export default function Page() {
   const [amount, setAmount] = useState("");
 
   const assetsToSupply = [
-    { name: "ETH", apy: "2.04%", collateral: true, balance: "0.0371004" },
+    { name: "NZD", apy: "2.04%", collateral: true, balance: "0.0371004" },
     { name: "WETH", apy: "2.04%", collateral: true, balance: "0" },
     { name: "USDT", apy: "8.65%", collateral: false, balance: "0" },
   ];
 
   const assetsToBorrow = [
     { name: "GHO", apy: "6.59% - 9.42%", available: "0" },
-    { name: "ETH", apy: "2.71%", available: "0" },
+    { name: "NZD", apy: "2.71%", available: "0" },
     { name: "USDT", apy: "10.48%", available: "0" },
   ];
 

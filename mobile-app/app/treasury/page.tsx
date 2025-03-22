@@ -54,14 +54,14 @@ export default function TreasuryPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <div className="text-3xl font-bold">{mockTreasuryData.balance} ETH</div>
+              <div className="text-3xl font-bold">{mockTreasuryData.balance} NZD</div>
               <p className="text-sm text-muted-foreground">Total Fund Balance</p>
             </div>
 
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Available</span>
-                <span>{mockTreasuryData.available} ETH</span>
+                <span>{mockTreasuryData.available} NZD</span>
               </div>
               <Progress value={(mockTreasuryData.available / mockTreasuryData.balance) * 100} />
             </div>
@@ -69,7 +69,7 @@ export default function TreasuryPage() {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Allocated</span>
-                <span>{mockTreasuryData.allocated} ETH</span>
+                <span>{mockTreasuryData.allocated} NZD</span>
               </div>
               <Progress value={(mockTreasuryData.allocated / mockTreasuryData.balance) * 100} />
             </div>
@@ -115,7 +115,7 @@ export default function TreasuryPage() {
                         <div>
                           <h3 className="font-medium">{proposal.title}</h3>
                           <p className="text-sm text-muted-foreground">
-                            {proposal.fund ?? 0} ETH • Posted at {format(new Date(proposal.created_at), "MMM d, yyyy")}
+                            {proposal.fund ?? 0} NZD • Posted at {format(new Date(proposal.created_at), "MMM d, yyyy")}
                           </p>
                         </div>
                         <Button size="sm" variant="outline">
@@ -142,7 +142,7 @@ export default function TreasuryPage() {
                         <div>
                           <h3 className="font-medium">{proposal.title}</h3>
                           <p className="text-sm text-muted-foreground">
-                            {proposal.fund ?? 0} ETH • Posted at {format(new Date(proposal.created_at), "MMM d, yyyy")}
+                            {proposal.fund ?? 0} NZD • Posted at {format(new Date(proposal.created_at), "MMM d, yyyy")}
                           </p>
                         </div>
                       </div>
@@ -167,7 +167,7 @@ export default function TreasuryPage() {
                         <div>
                           <h3 className="font-medium">{proposal.title}</h3>
                           <p className="text-sm text-muted-foreground">
-                            {proposal.fund ?? 0} ETH • Posted at {format(new Date(proposal.created_at), "MMM d, yyyy")}
+                            {proposal.fund ?? 0} NZD • Posted at {format(new Date(proposal.created_at), "MMM d, yyyy")}
                           </p>
                         </div>
                       </div>
