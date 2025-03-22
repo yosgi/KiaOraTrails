@@ -6,6 +6,7 @@ import CesiumLINZViewerEnhanced from './CesiumLINZViewerEnhanced';
 import PointLayer from "./TrackPointsLayer"
 import AdvancedPointLayer from "./AdvancedTrackPointsLayer"
 import { useCesium } from '../../../providers/CesiumContext';
+import * as Cesium from 'cesium';
 Ion.defaultAccessToken = process.env.NEXT_PUBLIC_ION_API_KEY || '';
 
 const sampleTrackPoints = [
@@ -80,9 +81,9 @@ const CesiumViewer: React.ComponentType = () => {
     
     // Initialize Cesium viewer
     const cesiumViewer = new Viewer('cesiumContainer', {
-      terrainProvider: undefined, // Can be set to any terrain provider
+      // terrainProvider: Cesium.createWorldTerrain(), // Can be set to any terrain provider
       animation: false,
-      baseLayerPicker: false,
+      baseLayerPicker: true,
       fullscreenButton: true,
       geocoder: true,
       homeButton: false,
@@ -90,8 +91,16 @@ const CesiumViewer: React.ComponentType = () => {
       sceneModePicker: false,
       selectionIndicator: false,
       timeline: false,
-      navigationHelpButton: true,
+      navigationHelpButton: false,
     });
+
+    Cesium.createWorldTerrainAsync()
+  .then(terrain => {
+    cesiumViewer.terrainProvider = terrain;
+  })
+  .catch(error => {
+    console.error('Failed to load terrain:', error);
+  });
 
     // Set default view position (China)
     cesiumViewer.camera.setView({

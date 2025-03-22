@@ -90,13 +90,13 @@ module.exports = async function (deployer, network, accounts) {
   let contractsFilePath;
   
   if (network === "testnet" || network === "opsepolia") {
-    contractsFilePath = path.join(__dirname, "../frontend/public/contracts/testnet-contracts.json");
+    contractsFilePath = path.join(__dirname, "../../mobile-app/public/contracts/testnet-contracts.json");
   } else if (network === "development" || network === "ganache") {
-    contractsFilePath = path.join(__dirname, "../frontend/public/contracts/development-contracts.json");
+    contractsFilePath = path.join(__dirname, "../../mobile-app/public/contracts/development-contracts.json");
   } else if (network === "mainnet") {
-    contractsFilePath = path.join(__dirname, "../frontend/public/contracts/mainnet-contracts.json");
+    contractsFilePath = path.join(__dirname, "../../mobile-app/public/contracts/mainnet-contracts.json");
   } else {
-    contractsFilePath = path.join(__dirname, "../frontend/public/contracts/contracts.json");
+    contractsFilePath = path.join(__dirname, "../../mobile-app/public/contracts/contracts.json");
   }
 
   // 确保目标目录存在；如果不存在，递归创建

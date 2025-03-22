@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 const sourcePath = path.join(__dirname, "../build/contracts");
-const destinationPath = path.join(__dirname, "../../front-end/public/abi");
+const destinationPath = path.join(__dirname, "../../mobile-app/public/abi");
 
 if (!fs.existsSync(destinationPath)) {
   fs.mkdirSync(destinationPath, { recursive: true });

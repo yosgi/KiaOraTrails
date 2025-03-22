@@ -1,0 +1,357 @@
+{
+  "contractName": "IFlashLoanReceiver",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "initiator",
+          "type": "address"
+        },
+        {
+          "internalType": "address[]",
+          "name": "tokens",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "amounts",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "fees",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "onFlashLoan",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.20+commit.a1b79de6\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"initiator\",\"type\":\"address\"},{\"internalType\":\"address[]\",\"name\":\"tokens\",\"type\":\"address[]\"},{\"internalType\":\"uint256[]\",\"name\":\"amounts\",\"type\":\"uint256[]\"},{\"internalType\":\"uint256[]\",\"name\":\"fees\",\"type\":\"uint256[]\"},{\"internalType\":\"bytes\",\"name\":\"data\",\"type\":\"bytes\"}],\"name\":\"onFlashLoan\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"onFlashLoan(address,address[],uint256[],uint256[],bytes)\":{\"details\":\"Receive a flash loan.\",\"params\":{\"amounts\":\"array of tokens amounts to be lent.\",\"data\":\"Arbitrary data structure, intended to contain user-defined parameters.\",\"fees\":\"The additional fee amount of paid to the protocol.\",\"initiator\":\"The initiator of the loan.\",\"tokens\":\"array of tokens addresses to be lent.\"},\"returns\":{\"_0\":\"bool either the operation was successful or not.\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/interfaces/IFlashLoanReceiver.sol\":\"IFlashLoanReceiver\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/interfaces/IFlashLoanReceiver.sol\":{\"keccak256\":\"0xc199c25fcf0332c0b6c719f28e9dd8758bbff97e7bc289390125109fe307860a\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://9a4ed31e41c06d9d42c3ac7228fc8e59b2ac62b99782836adbf46269c218247a\",\"dweb:/ipfs/QmUZbsRAQkth74yN3TVzwKxFZQ6p1dv2GDYGfJ4VmvqBWV\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.18;\n\ninterface IFlashLoanReceiver {\n    /**\n     * @dev Receive a flash loan.\n     * @param initiator The initiator of the loan.\n     * @param tokens array of tokens addresses to be lent.\n     * @param amounts array of tokens amounts to be lent.\n     * @param fees The additional fee amount of paid to the protocol.\n     * @param data Arbitrary data structure, intended to contain user-defined parameters.\n     * @return bool either the operation was successful or not.\n     */\n    function onFlashLoan(\n        address initiator,\n        address[] calldata tokens,\n        uint256[] calldata amounts,\n        uint256[] calldata fees,\n        bytes calldata data\n    ) external returns (bool);\n}\n",
+  "sourcePath": "/Users/yosgi/freelancer/Volunteers3/contracts/contracts/interfaces/IFlashLoanReceiver.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/interfaces/IFlashLoanReceiver.sol",
+    "exportedSymbols": {
+      "IFlashLoanReceiver": [
+        14809
+      ]
+    },
+    "id": 14810,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 14789,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".18"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:24:48"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IFlashLoanReceiver",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "id": 14809,
+        "linearizedBaseContracts": [
+          14809
+        ],
+        "name": "IFlashLoanReceiver",
+        "nameLocation": "69:18:48",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "documentation": {
+              "id": 14790,
+              "nodeType": "StructuredDocumentation",
+              "src": "94:437:48",
+              "text": " @dev Receive a flash loan.\n @param initiator The initiator of the loan.\n @param tokens array of tokens addresses to be lent.\n @param amounts array of tokens amounts to be lent.\n @param fees The additional fee amount of paid to the protocol.\n @param data Arbitrary data structure, intended to contain user-defined parameters.\n @return bool either the operation was successful or not."
+            },
+            "functionSelector": "64573d02",
+            "id": 14808,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "onFlashLoan",
+            "nameLocation": "545:11:48",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 14804,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 14792,
+                  "mutability": "mutable",
+                  "name": "initiator",
+                  "nameLocation": "574:9:48",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14808,
+                  "src": "566:17:48",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 14791,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "566:7:48",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 14795,
+                  "mutability": "mutable",
+                  "name": "tokens",
+                  "nameLocation": "612:6:48",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14808,
+                  "src": "593:25:48",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_address_$dyn_calldata_ptr",
+                    "typeString": "address[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 14793,
+                      "name": "address",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "593:7:48",
+                      "stateMutability": "nonpayable",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "id": 14794,
+                    "nodeType": "ArrayTypeName",
+                    "src": "593:9:48",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                      "typeString": "address[]"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 14798,
+                  "mutability": "mutable",
+                  "name": "amounts",
+                  "nameLocation": "647:7:48",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14808,
+                  "src": "628:26:48",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_uint256_$dyn_calldata_ptr",
+                    "typeString": "uint256[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 14796,
+                      "name": "uint256",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "628:7:48",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 14797,
+                    "nodeType": "ArrayTypeName",
+                    "src": "628:9:48",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                      "typeString": "uint256[]"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 14801,
+                  "mutability": "mutable",
+                  "name": "fees",
+                  "nameLocation": "683:4:48",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14808,
+                  "src": "664:23:48",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_uint256_$dyn_calldata_ptr",
+                    "typeString": "uint256[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 14799,
+                      "name": "uint256",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "664:7:48",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "id": 14800,
+                    "nodeType": "ArrayTypeName",
+                    "src": "664:9:48",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                      "typeString": "uint256[]"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 14803,
+                  "mutability": "mutable",
+                  "name": "data",
+                  "nameLocation": "712:4:48",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14808,
+                  "src": "697:19:48",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 14802,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "697:5:48",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "556:166:48"
+            },
+            "returnParameters": {
+              "id": 14807,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 14806,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14808,
+                  "src": "741:4:48",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 14805,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "741:4:48",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "740:6:48"
+            },
+            "scope": 14809,
+            "src": "536:211:48",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 14810,
+        "src": "59:690:48",
+        "usedErrors": [],
+        "usedEvents": []
+      }
+    ],
+    "src": "33:717:48"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.20+commit.a1b79de6.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.16",
+  "updatedAt": "2025-03-22T06:30:24.949Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {
+      "onFlashLoan(address,address[],uint256[],uint256[],bytes)": {
+        "details": "Receive a flash loan.",
+        "params": {
+          "amounts": "array of tokens amounts to be lent.",
+          "data": "Arbitrary data structure, intended to contain user-defined parameters.",
+          "fees": "The additional fee amount of paid to the protocol.",
+          "initiator": "The initiator of the loan.",
+          "tokens": "array of tokens addresses to be lent."
+        },
+        "returns": {
+          "_0": "bool either the operation was successful or not."
+        }
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
