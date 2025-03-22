@@ -3,6 +3,7 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
 import { ethers, Contract } from "ethers";
 import TRAIL_MAINTENANCE_ABI from "../public/abi/TrailMaintenance.json"
+import contracts from "../public/contracts/development-contracts.json"
 import { usePrivy } from '@privy-io/react-auth';
 
 // Task status enum to match the contract
@@ -93,7 +94,7 @@ const getEthereumContract = async (
 export const TrailMaintenanceProvider: React.FC<TrailMaintenanceProviderProps> = ({ children }) => {
 //   const { currentAccount } = useContext(WalletContext); // Wallet context for current connected account
 const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
-  const currentAccount = privyUser?.address
+  const currentAccount = privyUser?.wallet?.address;
   const [donationRewardRate, setDonationRewardRate] = useState<string>("1"); // Default 1%
   const [assigneeRewardAmount, setAssigneeRewardAmount] = useState<string>("100"); // Default 100 tokens
   const [timelock, setTimelock] = useState<string>("172800"); // Default 2 days in seconds
@@ -102,7 +103,7 @@ const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
 
   // Utility function to fetch TrailMaintenance Contract instance
   const getTrailMaintenanceContract = async (): Promise<Contract> => {
-    const contractAddress = process.env.NEXT_PUBLIC_TRAIL_MAINTENANCE_CONTRACT_ADDRESS!;
+    const contractAddress = contracts.TRAIL_MAINTENANCE_ADDRESS;
     return getEthereumContract(contractAddress, TRAIL_MAINTENANCE_ABI.abi);
   };
 

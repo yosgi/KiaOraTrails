@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Web3Provider } from "@/components/web3-provider"
 import { Toaster } from "@/components/ui/toaster"
 import MobileNavigation from "@/components/mobile-navigation"
+import { TrailMaintenanceProvider } from "../providers/TrailMaintenanceContext"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -33,11 +34,13 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <Web3Provider>
+          <TrailMaintenanceProvider>
             <div className="flex flex-col h-[100dvh] overflow-hidden">
               <main className="flex-1 overflow-y-auto pb-16">{children}</main>
               <MobileNavigation />
               <Toaster />
             </div>
+            </TrailMaintenanceProvider>
           </Web3Provider>
         </ThemeProvider>
       </body>

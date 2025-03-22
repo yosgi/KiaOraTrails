@@ -24,7 +24,7 @@ export default function ProfilePage() {
   const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
   const [isLoading, setIsLoading] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-
+  console.log("privyUser", privyUser);
   // 如果用户未登录，显示登录页面
   if (!authenticated) {
     return (
