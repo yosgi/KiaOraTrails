@@ -70,13 +70,13 @@ export const StakingProvider: React.FC<StakingProviderProps> = ({ children }) =>
     setLoading(true);
       const stakingContract = await getStakingContract();
 
-      // Convert ETH amount to wei
+      // Convert NZD amount to wei
       const valueInWei = ethers.parseUnits(amount, "ether");
 
-      // Call the deposit function with ETH
+      // Call the deposit function with NZD
       const tx = await stakingContract.deposit(option, { value: valueInWei });
       await tx.wait();
-      console.log("ETH staked successfully.");
+      console.log("NZD staked successfully.");
       return true;
     } catch (error) {
       console.error("Failed to stake tokens:", error);
