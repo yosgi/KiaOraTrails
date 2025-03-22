@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Body, Param, Patch } from '@nestjs/common';
 import { PostsService } from './posts.service';
+import { POST_TYPE } from '../entities/post.entity';
 
 @Controller('posts')
 export class PostsController {
@@ -12,11 +13,25 @@ export class PostsController {
 
   @Post('create')
   createPost(
-    @Body('title') title: string,
-    @Body('content') content: string,
-    @Body('userId') userId: number,
+    @Body('type') type: POST_TYPE,
+    @Body('title') title: string | null,
+    @Body('description') description: string | null,
+    @Body('location') location: string | null,
+    @Body('photos') photos: string[] | null,
+    @Body('user_id') user_id: string | null,
+    @Body('fund') fund: number | null,
   ) {
-    return this.postsService.createPost(title, content, userId);
+    const post = {
+      ...(title && { title }),
+      ...(description && { description }),
+      ...(location && { location }),
+      ...(photos && { photos }),
+      ...(user_id && { user_id }),
+      ...(fund && { fund }),
+      type,
+    };
+    console.log('post', post);
+    return this.postsService.createPost(post);
   }
 
   @Patch(':postId/vote')
