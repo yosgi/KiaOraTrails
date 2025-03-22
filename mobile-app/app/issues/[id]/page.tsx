@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useRef } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useRef, useEffect } from "react"
+import { useRouter, useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -24,11 +24,16 @@ import {
 import { useToast } from "@/components/ui/use-toast"
 import { MiniMap } from "@/components/mini-map"
 import { CommentList } from "@/components/comment-list"
-import { mockIssueData } from "@/lib/mock-data"
+import { usePrivy } from '@privy-io/react-auth';
 import { cn } from "@/lib/utils"
+import { AuthAPI } from "../../utils/api"
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
+import { DialogTitle } from "@radix-ui/react-dialog"
 
-export default function IssuePage({ params }: { params: { id: string } }) {
+export default function IssuePage() {
+  const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
   const router = useRouter()
+  const params = useParams()
   const { toast } = useToast()
   const [activeTab, setActiveTab] = useState("details")
   const [comment, setComment] = useState("")
@@ -36,9 +41,40 @@ export default function IssuePage({ params }: { params: { id: string } }) {
   const [isDonating, setIsDonating] = useState(false)
   const [isCommenting, setIsCommenting] = useState(false)
   const commentInputRef = useRef<HTMLTextAreaElement>(null)
+  const [issue, setIssue] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-  // In a real app, you would fetch this data from an API
-  const issue = mockIssueData.find((i) => i.id === params.id) || mockIssueData[0]
+  useEffect(() => {
+    const fetchIssue = async () => {
+      setLoading(true)
+      try {
+        if (!privyUser) return
+        const data = await AuthAPI.get(`/posts/${params.id}`)
+        console.log('privyUser', privyUser)
+        setIssue({
+          ...data,
+          author: privyUser
+        })
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch issue data.",
+        })
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchIssue()
+  }, [params.id, privyUser])
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-full">Loading...</div>
+  }
+
+  if (!issue) {
+    return <div className="flex justify-center items-center h-full">Issue not found.</div>
+  }
 
   const handleVote = async (isUpvote: boolean) => {
     setIsVoting(true)
@@ -59,8 +95,16 @@ export default function IssuePage({ params }: { params: { id: string } }) {
 
     setIsCommenting(true)
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    const result = await AuthAPI.post(`/posts/${issue?.id}/review`, {
+      payload: {
+        comments: comment,
+        score: 2,
+        user_id: privyUser?.id,
+        user_name: privyUser?.google?.name
+      },
+    })
+    console.log(result)
+
 
     toast({
       title: "Comment posted!",
@@ -108,6 +152,9 @@ export default function IssuePage({ params }: { params: { id: string } }) {
             </Button>
           </SheetTrigger>
           <SheetContent side="bottom" className="h-auto rounded-t-xl">
+            <VisuallyHidden>
+              <DialogTitle>Options</DialogTitle>
+            </VisuallyHidden>
             <div className="py-4 space-y-4">
               <h3 className="text-lg font-semibold">Options</h3>
               <div className="grid grid-cols-1 gap-2">
@@ -152,8 +199,8 @@ export default function IssuePage({ params }: { params: { id: string } }) {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
               <Avatar>
-                <AvatarImage src={issue.author.avatar} />
-                <AvatarFallback>{issue.author.name.substring(0, 2)}</AvatarFallback>
+                <AvatarImage src={issue?.author?.avatar ?? 'https://i.pravatar.cc/80'} />
+                <AvatarFallback>{issue?.author?.google?.name.substring(0, 2)}</AvatarFallback>
               </Avatar>
               <div>
                 <p className="font-medium">{issue.author.name}</p>
@@ -189,7 +236,7 @@ export default function IssuePage({ params }: { params: { id: string } }) {
           <Tabs defaultValue="details" value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="details">Details</TabsTrigger>
-              <TabsTrigger value="comments">Comments ({issue.comments.length})</TabsTrigger>
+              <TabsTrigger value="comments">Comments ({issue?.reviews?.length})</TabsTrigger>
               {issue.type === "fundraising" && <TabsTrigger value="fundraising">Fundraising</TabsTrigger>}
             </TabsList>
 
@@ -203,7 +250,7 @@ export default function IssuePage({ params }: { params: { id: string } }) {
 
             <TabsContent value="comments" className="space-y-4 pt-4">
               <div className="space-y-4">
-                <CommentList comments={issue.comments} />
+                <CommentList comments={issue.reviews} />
 
                 <div className="pt-4 border-t">
                   <Textarea

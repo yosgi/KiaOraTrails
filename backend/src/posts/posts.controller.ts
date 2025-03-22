@@ -11,6 +11,11 @@ export class PostsController {
     return this.postsService.getAllPosts();
   }
 
+  @Get(':postId')
+  getPost(@Param('postId') postId: number) {
+    return this.postsService.getPostById(postId);
+  }
+
   @Post('create')
   createPost(
     @Body('type') type: POST_TYPE,
@@ -29,17 +34,18 @@ export class PostsController {
       ...(user_id && { user_id }),
       ...(fund && { fund }),
       type,
+      created_at: new Date(),
     };
     console.log('post', post);
     return this.postsService.createPost(post);
   }
 
-  @Patch(':postId/vote')
+  @Post(':postId/vote')
   votePost(@Param('postId') postId: number) {
     return this.postsService.votePost(postId);
   }
 
-  @Patch(':postId/assign/:assigneeId')
+  @Post(':postId/assign/:assigneeId')
   assignPost(
     @Param('postId') postId: number,
     @Param('assigneeId') assigneeId: number,
@@ -47,17 +53,26 @@ export class PostsController {
     return this.postsService.assignPost(postId, assigneeId);
   }
 
-  @Patch(':postId/complete')
+  @Post(':postId/complete')
   completePost(@Param('postId') postId: number) {
     return this.postsService.completePost(postId);
   }
 
-  @Patch(':postId/review')
+  @Post(':postId/review')
   reviewPost(
     @Param('postId') postId: number,
-    @Body('userId') userId: number,
+    @Body('user_id') user_id: number,
+    @Body('comments') comments: string,
+    @Body('user_name') user_name: string,
     @Body('score') score: number,
   ) {
-    return this.postsService.reviewPost(postId, userId, score);
+    const review = {
+      user_id,
+      comments,
+      user_name,
+      score,
+    } as any;
+    console.log('review', review);
+    return this.postsService.reviewPost(postId, review);
   }
 }

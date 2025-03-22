@@ -57,7 +57,7 @@ export function CommentList({ comments }: CommentListProps) {
     })
   }
 
-  if (comments.length === 0) {
+  if (comments?.length === 0) {
     return <div className="text-center py-8 text-muted-foreground">No comments yet. Be the first to comment!</div>
   }
 
@@ -69,13 +69,13 @@ export function CommentList({ comments }: CommentListProps) {
         return (
           <div key={comment.id} className="flex space-x-3">
             <Avatar>
-              <AvatarImage src={comment.author.avatar} />
-              <AvatarFallback>{comment.author.name.substring(0, 2)}</AvatarFallback>
+              <AvatarImage src={'https://i.pravatar.cc/80'} />
+              <AvatarFallback>{comment?.user_name}</AvatarFallback>
             </Avatar>
             <div className="flex-1 space-y-1">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="font-medium text-sm">{comment.author.name}</span>
+                  <span className="font-medium text-sm">{comment?.user_name}</span>
                   <span className="text-xs text-muted-foreground ml-2">{comment.date}</span>
                 </div>
               </div>

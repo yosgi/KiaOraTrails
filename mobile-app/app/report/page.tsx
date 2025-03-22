@@ -14,9 +14,9 @@ import { ArrowLeft, Camera, MapPin, ImageIcon, Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { MiniMap } from "@/components/mini-map"
 import { cn } from "@/lib/utils"
+import { AuthAPI } from "../utils/api"
 import { usePrivy } from '@privy-io/react-auth'
 import S3 from 'react-aws-s3';
-
 
 export default function ReportPage() {
   const router = useRouter()
@@ -57,7 +57,19 @@ export default function ReportPage() {
     setIsSubmitting(true)
 
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    console.log("Submitting report", formData, location, photos)
+    const result = await AuthAPI.post('/posts/create', {
+      payload: {
+        title: formData.title,
+        description: formData.description,
+        location: location,
+        user_id: 'fake_user_id',
+        type: issueType,
+        photos: photos,
+        fund: formData.amount,
+      },
+    })
+    console.log(result)
 
     toast({
       title: "Report submitted successfully!",
