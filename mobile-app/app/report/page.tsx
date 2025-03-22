@@ -28,7 +28,7 @@ export default function ReportPage() {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    amount: "0.1",
+    amount: "10",
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -268,12 +268,12 @@ export default function ReportPage() {
         {step === 3 && issueType === "fundraising" && (
           <div className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="amount">Fundraising Goal (ETH)</Label>
+              <Label htmlFor="amount">Fundraising Goal (NZD)</Label>
               <Input
                 id="amount"
                 type="number"
-                step="0.01"
-                min="0.01"
+                step="10"
+                min="10"
                 value={formData.amount}
                 onChange={handleChange}
                 required
@@ -283,23 +283,6 @@ export default function ReportPage() {
               </p>
             </div>
 
-            <div className="space-y-2">
-              <Label>Project Timeline</Label>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="start-date" className="text-sm">
-                    Start Date
-                  </Label>
-                  <Input id="start-date" type="date" />
-                </div>
-                <div>
-                  <Label htmlFor="end-date" className="text-sm">
-                    End Date
-                  </Label>
-                  <Input id="end-date" type="date" />
-                </div>
-              </div>
-            </div>
 
             <div className="space-y-2">
               <Label>Project Details</Label>
@@ -315,7 +298,7 @@ export default function ReportPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm">Goal:</span>
-                    <span className="text-sm font-medium">{formData.amount} ETH</span>
+                    <span className="text-sm font-medium">{formData.amount} NZD</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm">Photos:</span>
