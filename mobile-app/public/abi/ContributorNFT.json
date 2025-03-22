@@ -16986,8 +16986,8 @@
         }
       },
       "links": {},
-      "address": "0x74e6FAadF2d5eccBCa81Ebd1FD4760553A822b15",
-      "transactionHash": "0x14cd02b6d0cf74bc327167e2be8b6a963bba55bbe64502ae9949eac7d2f18d80"
+      "address": "0x3700f48C5d973B64438d0e79e9EaE64B151096B5",
+      "transactionHash": "0xb040752a8311daac2990e5fab6ec5f3602d58be84223e4bd087304de9086c21d"
     },
     "84532": {
       "events": {},
@@ -17003,7 +17003,7 @@
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2025-03-22T18:37:26.654Z",
+  "updatedAt": "2025-03-22T18:53:58.984Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "NFT奖励，用于奖励捐赠者，同时可以参与后续的平台治理",

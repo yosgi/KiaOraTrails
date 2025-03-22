@@ -244,7 +244,10 @@ export default function IssuePage() {
   const currentFund = calculateCurrentFund();
 
   // 计算进度百分比
-  const fundingProgress = fundTarget > 0 ? (currentFund / fundTarget) * 100 : 0;
+  let fundingProgress = fundTarget > 0 ? (currentFund / fundTarget) * 100 : 0;
+  if (fundingProgress > 100) {
+    fundingProgress = 100;
+  }
   // 获取当前任务状态
   const taskStatus = blockchainTask ? blockchainTask.status.toString() : null;
   // 根据状态决定要显示的按钮
@@ -717,6 +720,11 @@ export default function IssuePage() {
       default: return "outline";
     }
   };
+
+  const getFundPercent  = () => {
+    const per = currentFund / fundTarget
+    return per > 1 ? 1 : per
+  }
 
   return (
     <div className="h-full flex flex-col">
