@@ -8,7 +8,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import {Plus, List, X, Compass} from "lucide-react"
 import Link from "next/link"
 import { useMobile } from "@/hooks/use-mobile"
-import DigitalTwins from "../app/digitaltwin/page"
+import DigitalTwins from "../components/digitaltwin/components/CesiumViewer"
 import {usePrivy} from '@privy-io/react-auth';
 
 export default function Home() {

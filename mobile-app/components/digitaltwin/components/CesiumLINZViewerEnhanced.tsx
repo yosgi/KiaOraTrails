@@ -119,6 +119,9 @@ const EnhancedLinzLayer: React.FC<EnhancedLinzLayerProps> = ({
   viewer,
   initialBbox
 }) => {
+  if (!viewer || !viewer.scene) {
+    return <div>Loading Cesium Viewer...</div>;
+  }
   // Refs for primitives collections
   const baseLayerPrimitivesRef = useRef<PrimitiveCollection | null>(null);
   const nearbyTracksPrimitivesRef = useRef<PrimitiveCollection | null>(null);
@@ -138,7 +141,7 @@ const EnhancedLinzLayer: React.FC<EnhancedLinzLayerProps> = ({
   const [selectedTrackId, setSelectedTrackId] = useState<string | null>(null);
   const [lastLoadedViewport, setLastLoadedViewport] = useState<{ center: Cartesian3, zoom: number } | null>(null);
   const viewChangeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
+  
   // Color constants
   const CLICK_CIRCLE_COLOR = Color.GRAY.withAlpha(0.5);
   const HIGHLIGHT_COLOR = Color.YELLOW;
@@ -156,7 +159,7 @@ const EnhancedLinzLayer: React.FC<EnhancedLinzLayerProps> = ({
 
   // Initialize primitive collections on component mount
   useEffect(() => {
-    if (!viewer) return;
+    if (!viewer || !viewer.scene) return;
 
     // Create primitive collections for base layer and nearby tracks
     baseLayerPrimitivesRef.current = new PrimitiveCollection();
@@ -166,18 +169,27 @@ const EnhancedLinzLayer: React.FC<EnhancedLinzLayerProps> = ({
     viewer.scene.primitives.add(baseLayerPrimitivesRef.current);
     viewer.scene.primitives.add(nearbyTracksPrimitivesRef.current);
 
-    return () => {
-      // Clean up primitive collections
-      if (baseLayerPrimitivesRef.current) {
-        viewer.scene.primitives.remove(baseLayerPrimitivesRef.current);
-        baseLayerPrimitivesRef.current = null;
-      }
-      if (nearbyTracksPrimitivesRef.current) {
-        viewer.scene.primitives.remove(nearbyTracksPrimitivesRef.current);
-        nearbyTracksPrimitivesRef.current = null;
-      }
-    };
-  }, [viewer]);
+    // return () => {
+    //   // Clean up primitive collections
+    //   if (baseLayerPrimitivesRef?.current && viewer) {
+    //     try {
+    //       viewer?.scene?.primitives?.remove?.(baseLayerPrimitivesRef.current);
+    //     } catch (e) {
+    //       console.warn('Failed to remove baseLayerPrimitives:', e);
+    //     }
+    //     baseLayerPrimitivesRef.current = null;
+    //   }
+      
+    //   if (nearbyTracksPrimitivesRef?.current && viewer) {
+    //     try {
+    //       viewer?.scene?.primitives?.remove?.(nearbyTracksPrimitivesRef.current);
+    //     } catch (e) {
+    //       console.warn('Failed to remove nearbyTracksPrimitives:', e);
+    //     }
+    //     nearbyTracksPrimitivesRef.current = null;
+    //   }
+    // };
+}, [viewer]);
 
   // Convert GeoJSON features to Primitive instances
   const createLineStringPrimitives = (
@@ -434,8 +446,11 @@ const EnhancedLinzLayer: React.FC<EnhancedLinzLayerProps> = ({
     if (!viewer) return;
     
     if (highlightedPrimitiveRef.current) {
-      viewer.scene.primitives.remove(highlightedPrimitiveRef.current);
+      if (viewer) {
+        viewer.scene.primitives.remove(highlightedPrimitiveRef.current);
       highlightedPrimitiveRef.current = null;
+      }
+      
     }
     
     // Reset highlighted state in data maps
@@ -455,6 +470,7 @@ const EnhancedLinzLayer: React.FC<EnhancedLinzLayerProps> = ({
     if (!viewer) return;
 
     const checkViewportChange = () => {
+      if (!viewer) return;
       // Get current camera position and height
       const cameraPosition = viewer.camera.position;
       const ellipsoid = viewer.scene.globe.ellipsoid;
@@ -497,6 +513,7 @@ const EnhancedLinzLayer: React.FC<EnhancedLinzLayerProps> = ({
 
     // Set up camera move end event
     const viewChangeHandler = () => {
+      if (!viewer) return;
       // Clear any existing timeout
       if (viewChangeTimeoutRef.current) {
         clearTimeout(viewChangeTimeoutRef.current);
@@ -512,15 +529,16 @@ const EnhancedLinzLayer: React.FC<EnhancedLinzLayerProps> = ({
     // Do an initial check when component mounts
     checkViewportChange();
 
-    return () => {
-      // Clean up event listener
-      viewer.camera.moveEnd.removeEventListener(viewChangeHandler);
+    // return () => {
+    //   if (!viewer) return;
+    //   // Clean up event listener
+    //   viewer?.camera?.moveEnd?.removeEventListener?.(viewChangeHandler);
 
-      // Clear any pending timeout
-      if (viewChangeTimeoutRef.current) {
-        clearTimeout(viewChangeTimeoutRef.current);
-      }
-    };
+    //   // Clear any pending timeout
+    //   if (viewChangeTimeoutRef.current) {
+    //     clearTimeout(viewChangeTimeoutRef.current);
+    //   }
+    // };
   }, [viewer, lastLoadedViewport, selectedTrackId]);
 
   // Load the base layer on component mount
@@ -592,7 +610,7 @@ const EnhancedLinzLayer: React.FC<EnhancedLinzLayerProps> = ({
     loadBaseLayer();
 
     return () => {
-      isComponentMounted = false;
+      isComponentMounted = false; 
     };
   }, [viewer, initialBbox]);
 
