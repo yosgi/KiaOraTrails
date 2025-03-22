@@ -19,4 +19,7 @@ export class User {
 
   @Column({ nullable: true })
   role: UserRole; // Example: "issuer", "assignee", "donator", "admin"
+
+  @Column({ nullable: true })
+  created_at: Date;
 }

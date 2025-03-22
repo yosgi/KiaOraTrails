@@ -41,16 +41,20 @@ export class PostsController {
   }
 
   @Post(':postId/vote')
-  votePost(@Param('postId') postId: number) {
-    return this.postsService.votePost(postId);
+  async votePost(
+    @Param('postId') postId: number,
+    @Body('isUpVote') isUpVote: boolean,
+  ) {
+    await this.postsService.votePost(postId, isUpVote);
+    return this.postsService.getPostById(postId);
   }
 
   @Post(':postId/assign/:assigneeId')
   assignPost(
     @Param('postId') postId: number,
-    @Param('assigneeId') assigneeId: number,
+    @Param('assigneeId') assigneeId: string,
   ) {
-    return this.postsService.assignPost(postId, assigneeId);
+    return this.postsService.assignPost(postId, assigneeId.toString());
   }
 
   @Post(':postId/complete')
@@ -59,7 +63,7 @@ export class PostsController {
   }
 
   @Post(':postId/review')
-  reviewPost(
+  async reviewPost(
     @Param('postId') postId: number,
     @Body('user_id') user_id: number,
     @Body('comments') comments: string,
@@ -73,6 +77,7 @@ export class PostsController {
       score,
     } as any;
     console.log('review', review);
-    return this.postsService.reviewPost(postId, review);
+    await this.postsService.reviewPost(postId, review);
+    return this.postsService.getPostById(postId);
   }
 }

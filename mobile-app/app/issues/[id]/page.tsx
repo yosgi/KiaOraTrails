@@ -55,13 +55,12 @@ export default function IssuePage() {
           ...data,
           author: privyUser
         })
+        setLoading(false)
       } catch (error) {
         toast({
           title: "Error",
           description: "Failed to fetch issue data.",
         })
-      } finally {
-        setLoading(false)
       }
     }
 
@@ -76,15 +75,23 @@ export default function IssuePage() {
     return <div className="flex justify-center items-center h-full">Issue not found.</div>
   }
 
-  const handleVote = async (isUpvote: boolean) => {
+  const handleVote = async (isUpVote: boolean) => {
     setIsVoting(true)
 
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    const result = await AuthAPI.post(`/posts/${issue?.id}/vote`, {
+      payload: {
+        isUpVote,
+      }
+    })
+    setIssue({
+      ...result,
+      author: privyUser
+    })
 
     toast({
       title: `Vote recorded!`,
-      description: `You've ${isUpvote ? "upvoted" : "downvoted"} this issue and earned 1 TRL token.`,
+      description: `You've ${isUpVote ? "upvoted" : "downvoted"} this issue and earned 1 TRL token.`,
     })
 
     setIsVoting(false)
@@ -103,7 +110,10 @@ export default function IssuePage() {
         user_name: privyUser?.google?.name
       },
     })
-    console.log(result)
+    setIssue({
+      ...result,
+      author: privyUser
+    })
 
 
     toast({
@@ -204,7 +214,7 @@ export default function IssuePage() {
               </Avatar>
               <div>
                 <p className="font-medium">{issue.author.name}</p>
-                <p className="text-xs text-muted-foreground">Posted {issue.date}</p>
+                <p className="text-xs text-muted-foreground">Posted {issue.created_at}</p>
               </div>
             </div>
             <div className="flex space-x-2">
@@ -215,7 +225,7 @@ export default function IssuePage() {
                 disabled={isVoting}
                 className={cn("h-9 px-3", isVoting && "opacity-50")}
               >
-                <ThumbsUp className="h-4 w-4 mr-1" /> {issue.upvotes}
+                <ThumbsUp className="h-4 w-4 mr-1" /> {issue.up_votes}
               </Button>
               <Button
                 variant="outline"
@@ -224,7 +234,7 @@ export default function IssuePage() {
                 disabled={isVoting}
                 className={cn("h-9 px-3", isVoting && "opacity-50")}
               >
-                <ThumbsDown className="h-4 w-4 mr-1" /> {issue.downvotes}
+                <ThumbsDown className="h-4 w-4 mr-1" /> {issue.down_votes}
               </Button>
             </div>
           </div>

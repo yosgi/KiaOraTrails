@@ -15,6 +15,9 @@ export class Review {
   @Column({ nullable: true })
   comments: string;
 
+  @Column({ nullable: true })
+  created_at: Date;
+
   @ManyToOne(() => Post, (post) => post.reviews)
   post: Post;
 
