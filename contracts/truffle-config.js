@@ -93,11 +93,11 @@ module.exports = {
       skipDryRun: true // Skip dry run before migrations
     },
     base:{
-      provider: () => new HDWalletProvider(mnemonic, `https://base-sepolia.gateway.tenderly.co`),
+      provider: () => new HDWalletProvider(mnemonic, `https://sepolia.base.org`),
       network_id: 84532, // Base
       gas: 15000000, // Gas limit
       gasPrice: 1000000000, // Gas price: 20 Gwei
-      confirmations: 2, // # of confirmations to wait between deployments
+      confirmations: 5, // # of confirmations to wait between deployments
       timeoutBlocks: 200, // # of blocks before a deployment times out
       skipDryRun: true // Skip dry run before migrations
     },

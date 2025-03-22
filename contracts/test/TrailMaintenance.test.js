@@ -91,10 +91,11 @@ contract("TrailMaintenance", function(accounts) {
   //--------------------------------
   describe("问题管理", function() {
     it("应该能创建问题", async function() {
+      const taskId = 1001;
       const taskDescription = "修复山区步道损坏路段";
       const targetAmount = ONE_ETH;
       
-      const tx = await trailMaintenance.createTask(taskDescription, targetAmount, { from: issuer });
+      const tx = await trailMaintenance.createTask(taskId, taskDescription, targetAmount, { from: issuer });
       
       // 验证事件
       truffleAssert.eventEmitted(tx, "TaskCreated", (ev) => {
@@ -102,7 +103,6 @@ contract("TrailMaintenance", function(accounts) {
       });
       
       // 验证问题数据
-      const taskId = 1;
       const taskDetails = await trailMaintenance.getTaskDetails(taskId);
       
       expect(taskDetails.id.toString()).to.equal(taskId.toString());
@@ -121,12 +121,50 @@ contract("TrailMaintenance", function(accounts) {
       // 验证问题总数
       const taskCount = await trailMaintenance.getTaskCount();
       expect(taskCount.toString()).to.equal("1");
+      
+      // 验证任务存在
+      const exists = await trailMaintenance.taskExists(taskId);
+      expect(exists).to.be.true;
+    });
+    
+    it("不能创建重复ID的任务", async function() {
+      const taskId = 2001;
+      const taskDescription = "修复步道";
+      const targetAmount = ONE_ETH;
+      
+      // 创建第一个任务
+      await trailMaintenance.createTask(taskId, taskDescription, targetAmount, { from: issuer });
+      
+      // 尝试创建使用相同ID的任务
+      await truffleAssert.reverts(
+        trailMaintenance.createTask(taskId, "另一个任务描述", targetAmount, { from: issuer }),
+        "Task ID already exists"
+      );
+    });
+    
+    it("应该能检查任务是否存在", async function() {
+      const taskId = 3001;
+      
+      // 创建任务前检查
+      let exists = await trailMaintenance.taskExists(taskId);
+      expect(exists).to.be.false;
+      
+      // 创建任务
+      await trailMaintenance.createTask(taskId, "测试任务存在性", ONE_ETH, { from: issuer });
+      
+      // 创建任务后检查
+      exists = await trailMaintenance.taskExists(taskId);
+      expect(exists).to.be.true;
+      
+      // 检查不存在的任务ID
+      exists = await trailMaintenance.taskExists(9999);
+      expect(exists).to.be.false;
     });
     
     it("应该能承接问题", async function() {
       // 创建问题
-      await trailMaintenance.createTask("修复步道", ONE_ETH, { from: issuer });
-      const taskId = 1;
+      const taskId = 4001;
+      await trailMaintenance.createTask(taskId, "修复步道", ONE_ETH, { from: issuer });
       
       // 承接问题
       const tx = await trailMaintenance.assignTask(taskId, { from: assignee });
@@ -149,8 +187,8 @@ contract("TrailMaintenance", function(accounts) {
     
     it("提问者不能承接自己的问题", async function() {
       // 创建问题
-      await trailMaintenance.createTask("修复步道", ONE_ETH, { from: issuer });
-      const taskId = 1;
+      const taskId = 5001;
+      await trailMaintenance.createTask(taskId, "修复步道", ONE_ETH, { from: issuer });
       
       // 提问者尝试承接自己的问题
       await truffleAssert.reverts(
@@ -160,7 +198,7 @@ contract("TrailMaintenance", function(accounts) {
     });
     
     it("不存在的问题不能被承接", async function() {
-      const nonExistingTaskId = 999;
+      const nonExistingTaskId = 9999;
       
       await truffleAssert.reverts(
         trailMaintenance.assignTask(nonExistingTaskId, { from: assignee }),
@@ -173,13 +211,14 @@ contract("TrailMaintenance", function(accounts) {
   // 捐赠功能测试
   //--------------------------------
   describe("捐赠功能", function() {
+    const taskId = 6001;
+    
     beforeEach(async function() {
       // 创建问题
-      await trailMaintenance.createTask("修复步道", ONE_ETH, { from: issuer });
+      await trailMaintenance.createTask(taskId, "修复步道", ONE_ETH, { from: issuer });
     });
     
     it("应该能向问题捐赠", async function() {
-      const taskId = 1;
       const donationAmount = HALF_ETH;
       
       // 捐赠
@@ -209,7 +248,6 @@ contract("TrailMaintenance", function(accounts) {
     });
     
     it("捐赠应获得激励代币", async function() {
-      const taskId = 1;
       const donationAmount = HALF_ETH;
       
       // 获取初始代币余额
@@ -237,7 +275,6 @@ contract("TrailMaintenance", function(accounts) {
     });
     
     it("不能超过目标金额捐赠", async function() {
-      const taskId = 1;
       const targetAmount = ONE_ETH;
       const excessAmount = web3.utils.toWei("1.5", "ether");
       
@@ -264,10 +301,11 @@ contract("TrailMaintenance", function(accounts) {
   // 任务完成流程测试
   //--------------------------------
   describe("任务完成流程", function() {
+    const taskId = 7001;
+    
     beforeEach(async function() {
       // 创建问题
-      await trailMaintenance.createTask("修复步道", ONE_ETH, { from: issuer });
-      const taskId = 1;
+      await trailMaintenance.createTask(taskId, "修复步道", ONE_ETH, { from: issuer });
       
       // 承接问题
       await trailMaintenance.assignTask(taskId, { from: assignee });
@@ -278,8 +316,6 @@ contract("TrailMaintenance", function(accounts) {
     });
     
     it("承接者能申请完成任务", async function() {
-      const taskId = 1;
-      
       // 申请完成
       const tx = await trailMaintenance.requestCompletion(taskId, { from: assignee });
       
@@ -298,8 +334,6 @@ contract("TrailMaintenance", function(accounts) {
     });
     
     it("应在时间锁过期后才能批准完成", async function() {
-      const taskId = 1;
-      
       // 申请完成
       await trailMaintenance.requestCompletion(taskId, { from: assignee });
       
@@ -325,8 +359,6 @@ contract("TrailMaintenance", function(accounts) {
     });
     
     it("多个批准应完成任务并奖励承接者", async function() {
-      const taskId = 1;
-      
       // 申请完成
       await trailMaintenance.requestCompletion(taskId, { from: assignee });
       
@@ -371,8 +403,6 @@ contract("TrailMaintenance", function(accounts) {
     });
     
     it("提问者应能取消任务", async function() {
-      const taskId = 1;
-      
       // 获取捐赠者初始余额
       const initialDonor1Balance = await web3.eth.getBalance(donor1);
       const initialDonor2Balance = await web3.eth.getBalance(donor2);
@@ -398,8 +428,6 @@ contract("TrailMaintenance", function(accounts) {
     });
     
     it("非提问者不能取消任务", async function() {
-      const taskId = 1;
-      
       await truffleAssert.reverts(
         trailMaintenance.cancelTask(taskId, { from: donor1 }),
         "Only issuer can cancel"
@@ -411,13 +439,14 @@ contract("TrailMaintenance", function(accounts) {
   // 多签钱包功能测试
   //--------------------------------
   describe("多签钱包功能", function() {
+    const taskId = 8001;
+    
     beforeEach(async function() {
       // 创建问题
-      await trailMaintenance.createTask("修复步道", ONE_ETH, { from: issuer });
+      await trailMaintenance.createTask(taskId, "修复步道", ONE_ETH, { from: issuer });
     });
     
     it("提问者应能设置多签钱包", async function() {
-      const taskId = 1;
       const multiSigAddress = neutralParty; // 使用中立方账户模拟多签地址
       
       // 设置多签钱包
@@ -435,7 +464,6 @@ contract("TrailMaintenance", function(accounts) {
     });
     
     it("非提问者不能设置多签钱包", async function() {
-      const taskId = 1;
       const multiSigAddress = neutralParty;
       
       await truffleAssert.reverts(
@@ -445,7 +473,6 @@ contract("TrailMaintenance", function(accounts) {
     });
     
     it("不能设置无效的多签地址", async function() {
-      const taskId = 1;
       const invalidAddress = "0x0000000000000000000000000000000000000000";
       
       await truffleAssert.reverts(

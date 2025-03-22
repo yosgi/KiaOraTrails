@@ -45,8 +45,9 @@ export default function IssuePage() {
   const commentInputRef = useRef<HTMLTextAreaElement>(null)
   const [issue, setIssue] = useState(null)
   const [loading, setLoading] = useState(true)
-  const { donate } = useTrailMaintenance()
-  
+  const [donateAmout, setDonateAmout] = useState(0)
+  const { donate, createTask, taskExists, getTaskDetails, assignTask, requestCompletion } = useTrailMaintenance()
+  console.log("isuue", issue)
   useEffect(() => {
     const fetchIssue = async () => {
       setLoading(true)
@@ -77,6 +78,8 @@ export default function IssuePage() {
   if (!issue) {
     return <div className="flex justify-center items-center h-full">Issue not found.</div>
   }
+
+
 
   const handleVote = async (isUpVote: boolean) => {
     setIsVoting(true)
@@ -128,11 +131,21 @@ export default function IssuePage() {
     setIsCommenting(false)
   }
 
+
+
+
   const handleDonate = async () => {
     setIsDonating(true)
-    donate(issue.id, "0.01")
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    const Exists = await taskExists(Number(issue.id))
+    console.log(Exists)
+    if (!Exists) {
+      await createTask(
+        Number(issue.id),
+        "",
+        (issue.fund || 1) * 100 * 3000 + ""
+      )
+    }
+    await donate(issue.id, (donateAmout / 3000).toFixed(5) + "")
 
     toast({
       title: "Donation successful!",
@@ -149,6 +162,13 @@ export default function IssuePage() {
         commentInputRef.current.focus()
       }
     }, 300)
+  }
+
+  const handleAssign = () => {
+    assignTask(issue.id)
+  }
+  const handleRequest = () => {
+    requestCompletion(issue.id)
   }
   const location = issue.location ? JSON.parse(issue.location) : {}
 
@@ -294,7 +314,7 @@ export default function IssuePage() {
                   <div className="flex justify-between">
                     <span className="text-sm font-medium">Fundraising Progress</span>
                     <span className="text-sm font-medium">
-                      {issue.cur_fund|| 0} / {issue.fund || 0} NZD
+                      {issue.cur_fund || 0} / {issue.fund || 0} NZD
                     </span>
                   </div>
                   <Progress value={((issue.cur_fund || 0) / (issue.fund || 1)) * 100} />
@@ -313,22 +333,43 @@ export default function IssuePage() {
                 <div className="space-y-2">
                   <h3 className="font-medium">Contribute to this project</h3>
                   <div className="grid grid-cols-4 gap-2">
-                    <Button variant="outline" onClick={handleDonate}>
+                    <Button variant="outline" onClick={() => setDonateAmout(1)}>
                       1 NZD
                     </Button>
-                    <Button variant="outline" onClick={handleDonate}>
+                    <Button variant="outline" onClick={() => setDonateAmout(5)}>
                       5 NZD
                     </Button>
-                    <Button variant="outline" onClick={handleDonate}>
+                    <Button variant="outline" onClick={() => setDonateAmout(6)}>
                       10 NZD
                     </Button>
-                    <Button variant="outline" onClick={handleDonate}>
+                    <Button variant="outline" onClick={() => setDonateAmout(7)}>
                       Custom
                     </Button>
                   </div>
-                  <Button className="w-full mt-2" onClick={handleDonate} disabled={isDonating}>
-                    {isDonating ? "Processing..." : "Donate Now"}
-                  </Button>
+                  {
+                    issue.status === "created" && (<Button className="w-full mt-2" onClick={handleDonate} disabled={isDonating}>
+                      {isDonating ? "Processing..." : "Donate Now"}
+                    </Button>)
+                  }
+
+                  {
+                    issue.status === "donated" && (<Button className="w-full mt-2" onClick={handleAssign} disabled={isDonating}>
+                      {isDonating ? "Processing..." : "AssignTask"}
+                    </Button>)
+                  }
+
+                  {
+                    issue.status === "ready" && (<Button className="w-full mt-2" onClick={handleRequest} disabled={isDonating}>
+                      {isDonating ? "Processing..." : "Request Complete"}
+                    </Button>)
+                  }
+
+                  {
+                    issue.status === "completed" && (<Button className="w-full mt-2" onClick={handleRequest} disabled={isDonating}>
+                      {isDonating ? "Processing..." : "Approve Complete"}
+                    </Button>)
+                  }
+
                 </div>
 
                 <div className="space-y-2">

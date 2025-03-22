@@ -89,7 +89,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -115,7 +116,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -128,7 +130,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -202,7 +205,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -221,7 +225,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.20+commit.a1b79de6\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"OwnableInvalidOwner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"OwnableUnauthorizedAccount\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"taskId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"multiSigAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"address[]\",\"name\":\"owners\",\"type\":\"address[]\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"threshold\",\"type\":\"uint256\"}],\"name\":\"MultiSigCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_taskId\",\"type\":\"uint256\"},{\"internalType\":\"address[]\",\"name\":\"_owners\",\"type\":\"address[]\"},{\"internalType\":\"uint256\",\"name\":\"_threshold\",\"type\":\"uint256\"}],\"name\":\"createMultiSig\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_taskId\",\"type\":\"uint256\"}],\"name\":\"getMultiSig\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_taskId\",\"type\":\"uint256\"}],\"name\":\"hasMultiSig\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_trailContract\",\"type\":\"address\"}],\"name\":\"setTrailMaintenanceContract\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"taskMultiSigs\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"trailMaintenanceContract\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"\\u521b\\u5efa\\u4e0e\\u4efb\\u52a1\\u5173\\u8054\\u7684\\u591a\\u7b7e\\u94b1\\u5305\",\"errors\":{\"OwnableInvalidOwner(address)\":[{\"details\":\"The owner is not a valid owner account. (eg. `address(0)`)\"}],\"OwnableUnauthorizedAccount(address)\":[{\"details\":\"The caller account is not authorized to perform an operation.\"}]},\"kind\":\"dev\",\"methods\":{\"constructor\":{\"details\":\"\\u6784\\u9020\\u51fd\\u6570\"},\"createMultiSig(uint256,address[],uint256)\":{\"details\":\"\\u521b\\u5efa\\u591a\\u7b7e\\u94b1\\u5305\",\"params\":{\"_owners\":\"\\u6240\\u6709\\u8005\\u5730\\u5740\\u6570\\u7ec4\",\"_taskId\":\"\\u4efb\\u52a1ID\",\"_threshold\":\"\\u9608\\u503c\\uff08\\u9700\\u8981\\u591a\\u5c11\\u7b7e\\u540d\\u624d\\u80fd\\u6267\\u884c\\u4ea4\\u6613\\uff09\"},\"returns\":{\"_0\":\"\\u65b0\\u521b\\u5efa\\u7684\\u591a\\u7b7e\\u94b1\\u5305\\u5730\\u5740\"}},\"getMultiSig(uint256)\":{\"details\":\"\\u83b7\\u53d6\\u4efb\\u52a1\\u7684\\u591a\\u7b7e\\u94b1\\u5305\\u5730\\u5740\",\"params\":{\"_taskId\":\"\\u4efb\\u52a1ID\"},\"returns\":{\"_0\":\"\\u591a\\u7b7e\\u94b1\\u5305\\u5730\\u5740\"}},\"hasMultiSig(uint256)\":{\"details\":\"\\u68c0\\u67e5\\u4efb\\u52a1\\u662f\\u5426\\u5df2\\u6709\\u591a\\u7b7e\\u94b1\\u5305\",\"params\":{\"_taskId\":\"\\u4efb\\u52a1ID\"},\"returns\":{\"_0\":\"\\u5e03\\u5c14\\u503c\"}},\"owner()\":{\"details\":\"Returns the address of the current owner.\"},\"renounceOwnership()\":{\"details\":\"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.\"},\"setTrailMaintenanceContract(address)\":{\"details\":\"\\u8bbe\\u7f6e\\u6b65\\u9053\\u7ef4\\u62a4\\u5408\\u7ea6\\u5730\\u5740\",\"params\":{\"_trailContract\":\"\\u6b65\\u9053\\u7ef4\\u62a4\\u5408\\u7ea6\\u5730\\u5740\"}},\"transferOwnership(address)\":{\"details\":\"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.\"}},\"title\":\"MultiSigWalletFactory\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/MultiSigWalletFactory.sol\":\"MultiSigWalletFactory\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/access/Ownable.sol\":{\"keccak256\":\"0xff6d0bb2e285473e5311d9d3caacb525ae3538a80758c10649a4d61029b017bb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8ed324d3920bb545059d66ab97d43e43ee85fd3bd52e03e401f020afb0b120f6\",\"dweb:/ipfs/QmfEckWLmZkDDcoWrkEvMWhms66xwTLff9DDhegYpvHo1a\"]},\"@openzeppelin/contracts/utils/Context.sol\":{\"keccak256\":\"0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6a708e8a5bdb1011c2c381c9a5cfd8a9a956d7d0a9dc1bd8bcdaf52f76ef2f12\",\"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF\"]},\"project:/contracts/MultiSigWalletFactory.sol\":{\"keccak256\":\"0xb145edc7bdbd2004238e2bbd024e7f922ff8d5b8520905d0c97bf760454b1cbb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://79f2a0d626c12534a9d890a5510961f10466d46d281936fee1d20d0b6a277cf9\",\"dweb:/ipfs/QmPdgnWtjTAMybHWBAwdSpAWcudoyerkvGW5zYD42U7FhB\"]}},\"version\":1}",
@@ -13134,9 +13139,80 @@
     "name": "solc",
     "version": "0.8.20+commit.a1b79de6.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "5777": {
+      "events": {
+        "0xfbc699c9b28386b33eef9ecf01db03645c1b342e36d6ccf67e1cb58d634caf90": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "taskId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "multiSigAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "address[]",
+              "name": "owners",
+              "type": "address[]"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "threshold",
+              "type": "uint256"
+            }
+          ],
+          "name": "MultiSigCreated",
+          "type": "event"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x3247175eaF8e55cFe41Fbd5e43B61Dbe802bDe53",
+      "transactionHash": "0xed3c0318c2aa07ef93a6d88b33a3ccb2735e89e5f6aa3382bf827269e01ebfdb"
+    },
+    "84532": {
+      "events": {},
+      "links": {},
+      "address": "0x8E0870604C6f0286aa658Fc753A3b0af10892eAC",
+      "transactionHash": "0x831364a10d7a489ff707ba1e2a05d6c557bfbcea12c4292c3b43a64e1e85874e"
+    },
+    "420120000": {
+      "events": {},
+      "links": {},
+      "address": "0xA34f9D4FdBaEAD044DE7f0B0B0a46BEB6c649E91",
+      "transactionHash": "0xe888d4dc075592e0093a30c28b038f5219a1e7febf026868620bcbad8d99c440"
+    }
+  },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2025-03-22T06:30:24.929Z",
+  "updatedAt": "2025-03-22T15:43:20.310Z",
+  "networkType": "ethereum",
   "devdoc": {
     "details": "创建与任务关联的多签钱包",
     "errors": {

@@ -6769,7 +6769,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.16",
-  "updatedAt": "2025-03-22T06:30:24.932Z",
+  "updatedAt": "2025-03-22T11:34:51.884Z",
   "devdoc": {
     "details": "used for handling the deposit and withdrawal of NFTs as collateral.",
     "kind": "dev",

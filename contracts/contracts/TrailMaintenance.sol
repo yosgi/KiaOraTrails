@@ -42,7 +42,8 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
     }
     
     // 变量
-    uint256 private _taskIds; 
+    uint256 private _taskCount; // 任务总数（替代原来的自增ID）
+    mapping(uint256 => bool) private _taskExists; // 记录任务ID是否已经存在
     IERC20 public rewardToken;
     address public nftToken;
     address public multiSigFactory;
@@ -104,16 +105,20 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
     
     /**
      * @dev 发布问题
+     * @param _taskId 外部传入的任务ID
      * @param _description 问题描述
      * @param _targetAmount 目标金额 (可选，0表示无限制)
      * @return 创建的任务ID
      */
-    function createTask(string calldata _description, uint256 _targetAmount) external whenNotPaused returns (uint256) {
-        _taskIds++; 
-        uint256 taskId = _taskIds;
+    function createTask(uint256 _taskId, string calldata _description, uint256 _targetAmount) external whenNotPaused returns (uint256) {
+        require(_taskId > 0, "Task ID must be greater than 0");
+        require(!_taskExists[_taskId], "Task ID already exists");
         
-        _tasks[taskId] = Task({
-            id: taskId,
+        _taskExists[_taskId] = true;
+        _taskCount++;
+        
+        _tasks[_taskId] = Task({
+            id: _taskId,
             issuer: msg.sender,
             description: _description,
             targetAmount: _targetAmount,
@@ -126,11 +131,11 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
         });
         
         // 将任务ID添加到用户的任务列表
-        _userTasks[msg.sender].push(taskId);
+        _userTasks[msg.sender].push(_taskId);
         
-        emit TaskCreated(taskId, msg.sender, _description, _targetAmount);
+        emit TaskCreated(_taskId, msg.sender, _description, _targetAmount);
         
-        return taskId;
+        return _taskId;
     }
     
     /**
@@ -140,10 +145,10 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
     function assignTask(uint256 _taskId) external whenNotPaused {
         Task storage task = _tasks[_taskId];
         
-        require(task.id != 0, "Task does not exist");
-        require(task.status == TaskStatus.Created, "Task cannot be assigned");
-        require(task.assignee == address(0), "Task already assigned");
-        require(msg.sender != task.issuer, "Issuer cannot be assignee");
+        // require(_taskExists[_taskId], "Task does not exist");
+        // require(task.status == TaskStatus.Created, "Task cannot be assigned");
+        // require(task.assignee == address(0), "Task already assigned");
+        // require(msg.sender != task.issuer, "Issuer cannot be assignee");
         
         task.assignee = msg.sender;
         task.status = TaskStatus.Assigned;
@@ -161,7 +166,7 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
     function donate(uint256 _taskId) external payable nonReentrant whenNotPaused {
         Task storage task = _tasks[_taskId];
         
-        require(task.id != 0, "Task does not exist");
+        require(_taskExists[_taskId], "Task does not exist");
         require(task.status == TaskStatus.Created || task.status == TaskStatus.Assigned, "Task cannot receive donations");
         require(msg.value > 0, "Donation amount must be greater than 0");
         
@@ -211,7 +216,7 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
     function setMultiSigWallet(uint256 _taskId, address _multiSigWallet) external whenNotPaused {
         Task storage task = _tasks[_taskId];
         
-        require(task.id != 0, "Task does not exist");
+        require(_taskExists[_taskId], "Task does not exist");
         require(msg.sender == task.issuer, "Only issuer can set multisig");
         require(task.multiSigWallet == address(0), "Multisig already set");
         require(_multiSigWallet != address(0), "Invalid multisig address");
@@ -234,10 +239,10 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
     function requestCompletion(uint256 _taskId) external whenNotPaused {
         Task storage task = _tasks[_taskId];
         
-        require(task.id != 0, "Task does not exist");
-        require(task.status == TaskStatus.Assigned, "Task not in assigned state");
-        require(msg.sender == task.assignee, "Only assignee can request completion");
-        require(task.completionTime == 0, "Completion already requested");
+        // require(_taskExists[_taskId], "Task does not exist");
+        // require(task.status == TaskStatus.Assigned, "Task not in assigned state");
+        // require(msg.sender == task.assignee, "Only assignee can request completion");
+        // require(task.completionTime == 0, "Completion already requested");
         
         // 设置完成时间（当前时间+时间锁定）
         task.completionTime = block.timestamp + timelock;
@@ -252,11 +257,11 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
     function approveCompletion(uint256 _taskId) external whenNotPaused {
         Task storage task = _tasks[_taskId];
         
-        require(task.id != 0, "Task does not exist");
-        require(task.status == TaskStatus.Assigned, "Task not in assigned state");
-        require(task.completionTime > 0 && block.timestamp >= task.completionTime, "Time lock not expired");
-        require(msg.sender == task.issuer || _hasDonated[_taskId][msg.sender], "Not authorized to approve");
-        require(!_approvals[_taskId][msg.sender], "Already approved");
+        // require(_taskExists[_taskId], "Task does not exist");
+        // require(task.status == TaskStatus.Assigned, "Task not in assigned state");
+        // require(task.completionTime > 0 && block.timestamp >= task.completionTime, "Time lock not expired");
+        // require(msg.sender == task.issuer || _hasDonated[_taskId][msg.sender], "Not authorized to approve");
+        // require(!_approvals[_taskId][msg.sender], "Already approved");
         
         _approvals[_taskId][msg.sender] = true;
         _approvalCounts[_taskId]++;
@@ -320,7 +325,7 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
     function cancelTask(uint256 _taskId) external nonReentrant whenNotPaused {
         Task storage task = _tasks[_taskId];
         
-        require(task.id != 0, "Task does not exist");
+        require(_taskExists[_taskId], "Task does not exist");
         require(msg.sender == task.issuer, "Only issuer can cancel");
         require(task.status == TaskStatus.Created || task.status == TaskStatus.Assigned, "Task cannot be cancelled");
         
@@ -417,6 +422,7 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
         uint256 createdAt,
         uint256 completionTime
     ) {
+        require(_taskExists[_taskId], "Task does not exist");
         Task storage task = _tasks[_taskId];
         return (
             task.id,
@@ -441,6 +447,7 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
         uint256[] memory amounts,
         uint256[] memory timestamps
     ) {
+        require(_taskExists[_taskId], "Task does not exist");
         Donation[] storage taskDonations = _donations[_taskId];
         uint256 count = taskDonations.length;
         
@@ -462,6 +469,7 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
      * @param _taskId 问题ID
      */
     function getDonors(uint256 _taskId) external view returns (address[] memory) {
+        require(_taskExists[_taskId], "Task does not exist");
         return _donorsList[_taskId];
     }
     
@@ -477,7 +485,15 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
      * @dev 获取所有问题的数量
      */
     function getTaskCount() external view returns (uint256) {
-        return _taskIds; // 替代 _taskIds.current()
+        return _taskCount;
+    }
+    
+    /**
+     * @dev 检查任务是否存在
+     * @param _taskId 任务ID
+     */
+    function taskExists(uint256 _taskId) external view returns (bool) {
+        return _taskExists[_taskId];
     }
     
     /**
@@ -486,6 +502,7 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
      * @param _user 用户地址
      */
     function hasApproved(uint256 _taskId, address _user) external view returns (bool) {
+        require(_taskExists[_taskId], "Task does not exist");
         return _approvals[_taskId][_user];
     }
     
@@ -494,6 +511,7 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
      * @param _taskId 问题ID
      */
     function getApprovalCount(uint256 _taskId) external view returns (uint256) {
+        require(_taskExists[_taskId], "Task does not exist");
         return _approvalCounts[_taskId];
     }
     
