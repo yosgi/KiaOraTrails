@@ -36,7 +36,7 @@ export default function Header() {
               <div className="px-7">
                 <Link href="/" className="flex items-center space-x-2">
                   <MapPin className="h-5 w-5" />
-                  <span className="font-bold">TrailDAO</span>
+                  <span className="font-bold">KiaOraTrails</span>
                 </Link>
               </div>
               <div className="flex flex-col space-y-3 mt-8">
@@ -60,7 +60,7 @@ export default function Header() {
           </Sheet>
           <Link href="/" className="flex items-center space-x-2">
             <MapPin className="h-5 w-5" />
-            <span className="hidden font-bold sm:inline-block">TrailDAO</span>
+            <span className="hidden font-bold sm:inline-block">KiaOraTrails</span>
           </Link>
         </div>
 

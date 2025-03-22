@@ -11,14 +11,14 @@ import { TrailMaintenanceProvider } from "../providers/TrailMaintenanceContext"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "TrailDAO - Community-Driven Trail Management",
+  title: "KiaOraTrails - Community-Driven Trail Management",
   description: "Report trail conditions, fundraise for improvements, and participate in DAO governance",
   viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
   themeColor: "#10b981",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "TrailDAO",
+    title: "KiaOraTrails",
   },
   manifest: "/manifest.json",
     generator: 'v0.dev'
