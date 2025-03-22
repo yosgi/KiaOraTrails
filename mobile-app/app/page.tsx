@@ -8,13 +8,11 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import {Plus, List, X, Compass} from "lucide-react"
 import Link from "next/link"
 import { useMobile } from "@/hooks/use-mobile"
-import {usePrivy} from '@privy-io/react-auth';
 
 export default function Home() {
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const { isMobile } = useMobile()
   const [isMapLoaded, setIsMapLoaded] = useState(false)
-  const {ready,login,user} = usePrivy();
 
   useEffect(() => {
     // Simulate map loading
@@ -29,11 +27,6 @@ export default function Home() {
         <div className="relative h-[100dvh] w-full bg-background">
           {/* Map View */}
           <MapView onLoad={() => setIsMapLoaded(true)}/>
-          <div className="absolute top-4 right-16" onClick={login}>
-            <div className="bg-background/80 backdrop-blur-sm p-2 rounded-full shadow-lg">
-              <Compass className="h-5 w-5 text-muted-foreground"/>
-            </div>
-          </div>
           {/* Loading Indicator */}
           {!isMapLoaded && (
               <div className="absolute inset-0 flex items-center justify-center bg-background z-20">

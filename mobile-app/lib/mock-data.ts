@@ -204,7 +204,7 @@ export const mockProposalData = [
 // User data
 export const mockUserData = {
   name: "Jamie Smith",
-  avatar: "/placeholder.svg?height=80&width=80&text=JS",
+  avatar: "https://i.pravatar.cc/80",
   location: "San Francisco, CA",
   memberSince: "Jan 2023",
   trailsReported: 12,
