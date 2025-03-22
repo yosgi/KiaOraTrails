@@ -21,9 +21,12 @@ import {
 
 export default function ProfilePage() {
   const [activities] = useState(mockUserActivity)
-  const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
+  const { ready, login, authenticated, user: privyUser, logout,linkWallet} = usePrivy();
   const [isLoading, setIsLoading] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const wallet = privyUser?.wallet;
+  console.log("user",privyUser);
 
   // 如果用户未登录，显示登录页面
   if (!authenticated) {
@@ -162,14 +165,52 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div className="mt-4">
-            <Button 
-              onClick={fund} 
-              className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white font-medium py-2 rounded-md transition-all duration-300 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+          <div className="mt-4 flex gap-2">
+            <Button
+                onClick={fund}
+                className="w-1/2 bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-500 hover:to-blue-300 text-white font-medium py-2 rounded-md transition-all duration-300 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
             >
-              <Coins className="h-5 w-5" />
-              <span>Deposit / Withdraw Wallet</span>
+              <Coins className="h-5 w-5"/>
+              <span>Deposit / Withdraw</span>
             </Button>
+            <Button
+                onClick={linkWallet}
+                className="w-1/2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white font-medium py-2 rounded-md transition-all duration-300 flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+            >
+              <Wallet className="h-5 w-5"/>
+              <span>Connect Wallet</span>
+            </Button>
+          </div>
+          <div className="mt-4">
+            <h3 className="text-sm font-medium mb-2">Linked Wallets</h3>
+            <div className="space-y-2">
+              {privyUser?.linkedAccounts?.filter(account => 
+                account.type === "wallet" && account.address && account.chainType
+              ).map((wallet, index) => (
+                <div key={index} className="flex items-center justify-between bg-muted/30 p-2 rounded-md">
+                  <div className="flex items-center space-x-2">
+                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Wallet className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-mono break-all">
+                        {wallet.address.substring(0, 6)}...{wallet.address.substring(wallet.address.length - 4)}
+                      </div>
+                      <div className="text-xs text-muted-foreground flex items-center">
+                        <span className="capitalize">{wallet.chainType}</span>
+                        <span className="mx-1">•</span>
+                        <span className="capitalize">{wallet.walletClientType}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {(!privyUser?.linkedAccounts || !privyUser.linkedAccounts.some(account => account.type === "wallet")) && (
+                <div className="text-sm text-muted-foreground text-center py-2">
+                  No wallets connected
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="mt-4 grid grid-cols-3 gap-2 text-center">
@@ -199,14 +240,14 @@ export default function ProfilePage() {
         <div className="p-4">
           <Tabs defaultValue="badges">
             <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="badges">Badges</TabsTrigger>
+              <TabsTrigger value="badges">Badges</TabsTrigger>
               <TabsTrigger value="activity">Activity</TabsTrigger>
               <TabsTrigger value="tokens">Tokens</TabsTrigger>
             </TabsList>
 
             <TabsContent value="badges" className="pt-4">
               <div className="grid grid-cols-3 gap-4">
-                {userData.badges.map((badge, index) => (
+              {userData.badges.map((badge, index) => (
                   <div key={index} className="flex flex-col items-center">
                     <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mb-1">
                       <img
