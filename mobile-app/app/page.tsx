@@ -5,15 +5,17 @@ import { MapView } from "@/components/map-view"
 import { IssueList } from "@/components/issue-list"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Plus, List, X } from "lucide-react"
+import {Plus, List, X, Compass} from "lucide-react"
 import Link from "next/link"
 import { useMobile } from "@/hooks/use-mobile"
 import DigitalTwins from "../../digitaltwins/app/page"
+import {usePrivy} from '@privy-io/react-auth';
 
 export default function Home() {
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const { isMobile } = useMobile()
   const [isMapLoaded, setIsMapLoaded] = useState(false)
+  const {ready,login,user} = usePrivy();
 
   useEffect(() => {
     // Simulate map loading
@@ -25,53 +27,57 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="relative h-[100dvh] w-full bg-background">
-      {/* Map View */}
-      {/* <MapView onLoad={() => setIsMapLoaded(true)} /> */}
-      <DigitalTwins/>
-
-      {/* Loading Indicator */}
-      {!isMapLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-background z-20">
-          <div className="flex flex-col items-center">
-            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-            <p className="mt-4 text-muted-foreground">Loading map...</p>
+        <div className="relative h-[100dvh] w-full bg-background">
+          {/* Map View */}
+          <MapView onLoad={() => setIsMapLoaded(true)}/>
+          <div className="absolute top-4 right-16" onClick={login}>
+            <div className="bg-background/80 backdrop-blur-sm p-2 rounded-full shadow-lg">
+              <Compass className="h-5 w-5 text-muted-foreground"/>
+            </div>
           </div>
-        </div>
-      )}
+          {/* Loading Indicator */}
+          {!isMapLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center bg-background z-20">
+                <div className="flex flex-col items-center">
+                  <div
+                      className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                  <p className="mt-4 text-muted-foreground">Loading map...</p>
+                </div>
+              </div>
+          )}
 
-      {/* Issues Sheet */}
-      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-        <SheetTrigger asChild>
-          <Button
-            size="icon"
-            className="absolute top-4 left-4 z-10 h-10 w-10 rounded-full shadow-lg bg-background/90 backdrop-blur-sm text-black"
-          >
-            <List className="h-5 w-5" />
-            <span className="sr-only">Open Issues</span>
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="w-[85vw] sm:max-w-md p-0 border-r">
-          <div className="flex items-center justify-between p-4 border-b">
-            <h2 className="text-lg font-semibold">Nearby Issues</h2>
-            <Button variant="ghost" size="icon" onClick={() => setIsSheetOpen(false)}>
-              <X className="h-5 w-5" />
+          {/* Issues Sheet */}
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+            <SheetTrigger asChild>
+              <Button
+                  size="icon"
+                  className="absolute top-4 left-4 z-10 h-10 w-10 rounded-full shadow-lg bg-background/90 backdrop-blur-sm text-black"
+              >
+                <List className="h-5 w-5"/>
+                <span className="sr-only">Open Issues</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[85vw] sm:max-w-md p-0 border-r">
+              <div className="flex items-center justify-between p-4 border-b">
+                <h2 className="text-lg font-semibold">Nearby Issues</h2>
+                <Button variant="ghost" size="icon" onClick={() => setIsSheetOpen(false)}>
+                  <X className="h-5 w-5"/>
+                </Button>
+              </div>
+              <div className="overflow-y-auto h-[calc(100vh-65px)]">
+                <IssueList onSelect={() => setIsSheetOpen(false)}/>
+              </div>
+            </SheetContent>
+          </Sheet>
+
+          {/* Add New Issue Button */}
+          <Link href="/report">
+            <Button size="icon" className="absolute bottom-20 right-4 z-10 h-14 w-14 rounded-full shadow-lg">
+              <Plus className="h-6 w-6"/>
+              <span className="sr-only">Add New Issue</span>
             </Button>
-          </div>
-          <div className="overflow-y-auto h-[calc(100vh-65px)]">
-            <IssueList onSelect={() => setIsSheetOpen(false)} />
-          </div>
-        </SheetContent>
-      </Sheet>
-
-      {/* Add New Issue Button */}
-      <Link href="/report">
-        <Button size="icon" className="absolute bottom-20 right-4 z-10 h-14 w-14 rounded-full shadow-lg">
-          <Plus className="h-6 w-6" />
-          <span className="sr-only">Add New Issue</span>
-        </Button>
-      </Link>
-    </div>
+          </Link>
+        </div>
   )
 }
 

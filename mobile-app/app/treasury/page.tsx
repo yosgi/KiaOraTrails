@@ -30,7 +30,7 @@ export default function TreasuryPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center">
-              <Landmark className="mr-2 h-4 w-4" /> Community Fund  Overview
+              <Landmark className="mr-2 h-4 w-4" /> Community Fund Overview
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
