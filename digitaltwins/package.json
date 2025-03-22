@@ -35,5 +35,8 @@
     "eslint-plugin-tailwindcss": "^3.17.5",
     "tailwindcss": "^3.4.1",
     "typescript": "5.8.2"
+  },
+  "exports": {
+    ".": "./app/page.js"
   }
 }

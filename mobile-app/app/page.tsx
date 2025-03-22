@@ -8,7 +8,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import {Plus, List, X, Compass} from "lucide-react"
 import Link from "next/link"
 import { useMobile } from "@/hooks/use-mobile"
-import DigitalTwins from "../../digitaltwins/app/page"
+import DigitalTwins from "../app/digitaltwin/page"
 import {usePrivy} from '@privy-io/react-auth';
 
 export default function Home() {
@@ -29,6 +29,7 @@ export default function Home() {
   return (
         <div className="relative h-[100dvh] w-full bg-background">
           {/* Map View */}
+          <DigitalTwins />
           <MapView onLoad={() => setIsMapLoaded(true)}/>
           <div className="absolute top-4 right-16" onClick={login}>
             <div className="bg-background/80 backdrop-blur-sm p-2 rounded-full shadow-lg">
