@@ -119,7 +119,7 @@ export default function ReportPage() {
       /*  Notice that if you don't provide a dirName, the file will be automatically uploaded to the root of your bucket */
 
       /* This is optional */
-      const newFileName = 'test-file';
+      const newFileName = `${Math.random().toString(36).substr(2, 9)}.png`;
 
       const data = await ReactS3Client
           .uploadFile(file, newFileName)
@@ -352,12 +352,12 @@ export default function ReportPage() {
         {step === 3 && issueType === "fundraising" && (
           <div className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="amount">Funding Amount (TRL)</Label>
+              <Label htmlFor="amount">Funding Amount (NZD)</Label>
               <Input
                 id="amount"
                 type="number"
                 min="1"
-                placeholder="Amount of TRL tokens needed"
+                placeholder="Amount of NZD needed"
                 value={formData.amount}
                 onChange={handleChange}
                 required
@@ -376,7 +376,7 @@ export default function ReportPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Amount:</span>
-                  <span className="font-medium">{formData.amount} TRL</span>
+                  <span className="font-medium">{formData.amount} NZD</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Photos:</span>
