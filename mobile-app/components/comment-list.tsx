@@ -76,10 +76,10 @@ export function CommentList({ comments }: CommentListProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <span className="font-medium text-sm">{comment?.user_name}</span>
-                  <span className="text-xs text-muted-foreground ml-2">{comment.date}</span>
+                  <span className="text-xs text-muted-foreground ml-2">{comment.created_at}</span>
                 </div>
               </div>
-              <p className="text-sm">{comment.content}</p>
+              <p className="text-sm">{comment.comments}</p>
               <div className="flex items-center space-x-2">
                 <Button
                   variant="ghost"
@@ -89,7 +89,7 @@ export function CommentList({ comments }: CommentListProps) {
                   data-active={votes.liked}
                 >
                   <ThumbsUp className={`h-3 w-3 mr-1 ${votes.liked ? "text-primary" : ""}`} />
-                  <span>{comment.likes + (votes.liked ? 1 : 0)}</span>
+                  {/* <span>{comment.likes + (votes.liked ? 1 : 0)}</span> */}
                 </Button>
                 <Button
                   variant="ghost"
@@ -99,7 +99,7 @@ export function CommentList({ comments }: CommentListProps) {
                   data-active={votes.disliked}
                 >
                   <ThumbsDown className={`h-3 w-3 mr-1 ${votes.disliked ? "text-primary" : ""}`} />
-                  <span>{comment.dislikes + (votes.disliked ? 1 : 0)}</span>
+                  {/* <span>{comment.dislikes + (votes.disliked ? 1 : 0)}</span> */}
                 </Button>
               </div>
             </div>
