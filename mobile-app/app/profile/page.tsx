@@ -217,7 +217,7 @@ export default function ProfilePage() {
             </div>
             <div className="p-2 bg-muted/50 rounded-md">
               <div className="text-lg font-bold">{userData.proposalsVoted}</div>
-              <div className="text-xs text-muted-foreground">Votes</div>
+              <div className="text-xs text-muted-foreground">Likes</div>
             </div>
             <div className="p-2 bg-muted/50 rounded-md">
               <div className="text-lg font-bold">{userData.tokenBalance}</div>

@@ -85,7 +85,7 @@ export default function TreasuryPage() {
                 <div className="text-xs text-muted-foreground">Contributors</div>
               </div>
               <div className="text-center p-2 bg-muted/50 rounded-md">
-                <div className="text-lg font-bold">{mockTreasuryData.activeProposals}</div>
+                <div className="text-lg font-bold">{sortedProposals?.filter(({status}) => status =="created").length}</div>
                 <div className="text-xs text-muted-foreground">Active Proposals</div>
               </div>
             </div>
