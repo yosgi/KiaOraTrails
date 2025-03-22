@@ -125,9 +125,11 @@ export default function TreasuryPage() {
                             {proposal.fund ?? 0} NZD • Posted at {format(new Date(proposal.created_at), "MMM d, yyyy")}
                           </p>
                         </div>
-                        <Button size="sm" variant="outline">
-                          Donate
-                        </Button>
+                        {proposal.type === "fundraising" && (
+                          <Button size="sm" variant="outline">
+                            Donate
+                          </Button>
+                        )}
                       </div>
                       <div className="mt-3">
                         <div className="flex justify-between text-sm mb-1">
