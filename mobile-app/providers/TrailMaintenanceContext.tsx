@@ -34,6 +34,20 @@ interface Donation {
   timestamp: number;
 }
 
+// 新增的Token奖励记录接口
+interface TokenReward {
+  amount: string;
+  reason: string;
+  timestamp: number;
+}
+
+// 新增的NFT奖励记录接口
+interface NFTReward {
+  taskId: number;
+  tokenId: number;
+  timestamp: number;
+}
+
 // Define the types for the TrailMaintenance Context
 interface TrailMaintenanceContextType {
   // Task management
@@ -58,6 +72,20 @@ interface TrailMaintenanceContextType {
   hasApproved: (taskId: number, userAddress: string) => Promise<boolean>;
   getApprovalCount: (taskId: number) => Promise<number>;
   taskExists: (taskId: number) => Promise<boolean>;
+  
+  // 资金和贡献者相关函数
+  getTotalFundBalance: () => Promise<string>;
+  getAllocatedFunds: () => Promise<string>;
+  getAvailableFunds: () => Promise<string>;
+  getTotalContributors: () => Promise<number>;
+  
+  // 新增的Token和NFT相关函数
+  getUserTokenBalance: () => Promise<string>;
+  getUserDonationRewards: () => Promise<string>;
+  getUserCompletionRewards: () => Promise<string>;
+  getUserTokenRewards: () => Promise<TokenReward[]>;
+  getUserNFTRewards: () => Promise<NFTReward[]>;
+  getUserNFTBalance: () => Promise<number>;
   
   // State variables
   donationRewardRate: string;
@@ -694,6 +722,252 @@ export const TrailMaintenanceProvider: React.FC<TrailMaintenanceProviderProps> =
     }
   };
 
+  /**
+   * 获取合约中的总资金余额
+   * @return 合约中的总ETH余额（以ETH为单位，而非wei）
+   */
+  const getTotalFundBalance = async (): Promise<string> => {
+    if (!isWalletConnected || !providerReady) {
+      setError("Wallet not connected or provider not ready");
+      return "0";
+    }
+    
+    setError(null);
+    try {
+      const contract = await getTrailMaintenanceContract();
+      
+      const balance = await contract.getTotalFundBalance();
+      return ethers.formatUnits(balance, 18); // 将wei转换为ETH
+    } catch (error) {
+      console.error("Failed to fetch total fund balance:", error);
+      setError("Failed to fetch total fund balance: " + (error instanceof Error ? error.message : String(error)));
+      return "0";
+    }
+  };
+
+  /**
+   * 获取已分配的资金总额
+   * @return 已分配的ETH总额（以ETH为单位，而非wei）
+   */
+  const getAllocatedFunds = async (): Promise<string> => {
+    if (!isWalletConnected || !providerReady) {
+      setError("Wallet not connected or provider not ready");
+      return "0";
+    }
+    
+    setError(null);
+    try {
+      const contract = await getTrailMaintenanceContract();
+      
+      const allocated = await contract.getAllocatedFunds();
+      return ethers.formatUnits(allocated, 18); // 将wei转换为ETH
+    } catch (error) {
+      console.error("Failed to fetch allocated funds:", error);
+      setError("Failed to fetch allocated funds: " + (error instanceof Error ? error.message : String(error)));
+      return "0";
+    }
+  };
+
+  /**
+   * 获取可用资金（未分配）
+   * @return 可用ETH（以ETH为单位，而非wei）
+   */
+  const getAvailableFunds = async (): Promise<string> => {
+    if (!isWalletConnected || !providerReady) {
+      setError("Wallet not connected or provider not ready");
+      return "0";
+    }
+    
+    setError(null);
+    try {
+      const contract = await getTrailMaintenanceContract();
+      
+      const available = await contract.getAvailableFunds();
+      return ethers.formatUnits(available, 18); // 将wei转换为ETH
+    } catch (error) {
+      console.error("Failed to fetch available funds:", error);
+      setError("Failed to fetch available funds: " + (error instanceof Error ? error.message : String(error)));
+      return "0";
+    }
+  };
+
+  /**
+   * 获取唯一贡献者（任务发起者）总数
+   * @return 唯一贡献者数量
+   */
+  const getTotalContributors = async (): Promise<number> => {
+    if (!isWalletConnected || !providerReady) {
+      setError("Wallet not connected or provider not ready");
+      return 0;
+    }
+    
+    setError(null);
+    try {
+      const contract = await getTrailMaintenanceContract();
+      
+      const count = await contract.getTotalContributors();
+      return Number(count);
+    } catch (error) {
+      console.error("Failed to fetch total contributors:", error);
+      setError("Failed to fetch total contributors: " + (error instanceof Error ? error.message : String(error)));
+      return 0;
+    }
+  };
+
+  /**
+   * 获取当前用户的Token余额
+   * @return 用户的Token余额（以Token为单位，而非最小单位）
+   */
+  const getUserTokenBalance = async (): Promise<string> => {
+    if (!isWalletConnected || !providerReady || !walletAddress) {
+      setError("Wallet not connected or provider not ready");
+      return "0";
+    }
+    
+    setError(null);
+    try {
+      const contract = await getTrailMaintenanceContract();
+      
+      const balance = await contract.getUserTokenBalance(walletAddress);
+      return ethers.formatUnits(balance, 18); // 假设token有18位小数
+    } catch (error) {
+      console.error("Failed to fetch user token balance:", error);
+      setError("Failed to fetch user token balance: " + (error instanceof Error ? error.message : String(error)));
+      return "0";
+    }
+  };
+
+  /**
+   * 获取用户因捐赠获得的Token奖励总额
+   * @return 捐赠奖励总额（以Token为单位，而非最小单位）
+   */
+  const getUserDonationRewards = async (): Promise<string> => {
+    if (!isWalletConnected || !providerReady || !walletAddress) {
+      setError("Wallet not connected or provider not ready");
+      return "0";
+    }
+    
+    setError(null);
+    try {
+      const contract = await getTrailMaintenanceContract();
+      
+      const rewards = await contract.getUserDonationRewards(walletAddress);
+      return ethers.formatUnits(rewards, 18); // 假设token有18位小数
+    } catch (error) {
+      console.error("Failed to fetch user donation rewards:", error);
+      setError("Failed to fetch user donation rewards: " + (error instanceof Error ? error.message : String(error)));
+      return "0";
+    }
+  };
+
+  /**
+   * 获取用户因完成任务获得的Token奖励总额
+   * @return 完成任务奖励总额（以Token为单位，而非最小单位）
+   */
+  const getUserCompletionRewards = async (): Promise<string> => {
+    if (!isWalletConnected || !providerReady || !walletAddress) {
+      setError("Wallet not connected or provider not ready");
+      return "0";
+    }
+    
+    setError(null);
+    try {
+      const contract = await getTrailMaintenanceContract();
+      
+      const rewards = await contract.getUserCompletionRewards(walletAddress);
+      return ethers.formatUnits(rewards, 18); // 假设token有18位小数
+    } catch (error) {
+      console.error("Failed to fetch user completion rewards:", error);
+      setError("Failed to fetch user completion rewards: " + (error instanceof Error ? error.message : String(error)));
+      return "0";
+    }
+  };
+
+  /**
+   * 获取用户所有Token奖励记录
+   * @return Token奖励记录列表
+   */
+  const getUserTokenRewards = async (): Promise<TokenReward[]> => {
+    if (!isWalletConnected || !providerReady || !walletAddress) {
+      setError("Wallet not connected or provider not ready");
+      return [];
+    }
+    
+    setError(null);
+    try {
+      const contract = await getTrailMaintenanceContract();
+      
+      const [amounts, reasons, timestamps] = await contract.getUserTokenRewards(walletAddress);
+      
+      // 组合数组为TokenReward对象数组
+      const rewards: TokenReward[] = amounts.map((amount: ethers.BigNumberish, index: number) => ({
+        amount: ethers.formatUnits(amount, 18), // 假设token有18位小数
+        reason: reasons[index],
+        timestamp: Number(timestamps[index])
+      }));
+      
+      return rewards;
+    } catch (error) {
+      console.error("Failed to fetch user token rewards:", error);
+      setError("Failed to fetch user token rewards: " + (error instanceof Error ? error.message : String(error)));
+      return [];
+    }
+  };
+
+  /**
+   * 获取用户所有NFT奖励记录
+   * @return NFT奖励记录列表
+   */
+  const getUserNFTRewards = async (): Promise<NFTReward[]> => {
+    if (!isWalletConnected || !providerReady || !walletAddress) {
+      setError("Wallet not connected or provider not ready");
+      return [];
+    }
+    
+    setError(null);
+    try {
+      const contract = await getTrailMaintenanceContract();
+      
+      const [taskIds, tokenIds, timestamps] = await contract.getUserNFTRewards(walletAddress);
+      
+      // 组合数组为NFTReward对象数组
+      const rewards: NFTReward[] = taskIds.map((taskId: ethers.BigNumberish, index: number) => ({
+        taskId: Number(taskId),
+        tokenId: Number(tokenIds[index]),
+        timestamp: Number(timestamps[index])
+      }));
+      
+      return rewards;
+    } catch (error) {
+      console.error("Failed to fetch user NFT rewards:", error);
+      setError("Failed to fetch user NFT rewards: " + (error instanceof Error ? error.message : String(error)));
+      return [];
+    }
+  };
+
+  /**
+   * 获取用户在NFT合约中的余额
+   * @return 用户的NFT数量
+   */
+  const getUserNFTBalance = async (): Promise<number> => {
+    if (!isWalletConnected || !providerReady || !walletAddress) {
+      setError("Wallet not connected or provider not ready");
+      return 0;
+    }
+    
+    setError(null);
+    try {
+      const contract = await getTrailMaintenanceContract();
+      
+      const balance = await contract.getUserNFTBalance(walletAddress);
+      return Number(balance);
+    } catch (error) {
+      console.error("Failed to fetch user NFT balance:", error);
+      setError("Failed to fetch user NFT balance: " + (error instanceof Error ? error.message : String(error)));
+      return 0;
+    }
+  };
+
   // Fetch configuration when all necessary conditions are met
   useEffect(() => {
     if (isWalletConnected && ready && providerReady) {
@@ -727,6 +1001,20 @@ export const TrailMaintenanceProvider: React.FC<TrailMaintenanceProviderProps> =
         hasApproved,
         getApprovalCount,
         taskExists,
+        
+        // 资金和贡献者相关函数
+        getTotalFundBalance,
+        getAllocatedFunds,
+        getAvailableFunds,
+        getTotalContributors,
+        
+        // Token和NFT相关函数
+        getUserTokenBalance,
+        getUserDonationRewards,
+        getUserCompletionRewards,
+        getUserTokenRewards,
+        getUserNFTRewards,
+        getUserNFTBalance,
         
         // State variables
         donationRewardRate,

@@ -9,12 +9,17 @@ import { Progress } from "@/components/ui/progress"
 import { Landmark, Vote, CheckCircle2 } from "lucide-react"
 import { mockTreasuryData } from "@/lib/mock-data"
 import { AuthAPI } from "../utils/api"
-import { format } from "date-fns"
-
+import { format, set } from "date-fns"
+import { useTrailMaintenance } from "../../providers/TrailMaintenanceContext"
 export default function TreasuryPage() {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc")
   const [proposals, setProposals] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const { getTotalFundBalance, getAllocatedFunds, getAvailableFunds, getTotalContributors } = useTrailMaintenance()
+  const [totalFundBalance, setTotalFundBalance] = useState(0)
+  const [allocatedFunds, setAllocatedFunds] = useState(0)
+  const [availableFunds, setAvailableFunds] = useState(0)
+  const [totalContributors, setTotalContributors] = useState(0)
 
   useEffect(() => {
     const fetchProposals = async () => {
@@ -27,6 +32,18 @@ export default function TreasuryPage() {
         setLoading(false)
       }
     }
+    const fetchTrailMaintenance = async () => {
+      const TotalFundBalance = await getTotalFundBalance()
+      setTotalFundBalance(Number(TotalFundBalance) * 3000  )
+      const AllocatedFunds = await getAllocatedFunds()
+      setAllocatedFunds(Number(AllocatedFunds) * 3000 )
+      const  AvailableFunds =await getAvailableFunds()
+      setAvailableFunds(Number(AvailableFunds) * 3000 )
+      const TotalContributors = await getTotalContributors()
+      setTotalContributors(Number(TotalContributors))
+    }
+    fetchTrailMaintenance()
+
 
     fetchProposals()
   }, [])
@@ -59,29 +76,29 @@ export default function TreasuryPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <div className="text-3xl font-bold">{mockTreasuryData.balance} NZD</div>
+              <div className="text-3xl font-bold">{totalFundBalance.toFixed(2)} NZD</div>
               <p className="text-sm text-muted-foreground">Total Fund Balance</p>
             </div>
 
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Available</span>
-                <span>{mockTreasuryData.available} NZD</span>
+                <span>{availableFunds.toFixed(2)} NZD</span>
               </div>
-              <Progress value={(mockTreasuryData.available / mockTreasuryData.balance) * 100} />
+              <Progress value={(availableFunds / totalFundBalance) * 100} />
             </div>
 
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Allocated</span>
-                <span>{mockTreasuryData.allocated} NZD</span>
+                <span>{allocatedFunds} NZD</span>
               </div>
-              <Progress value={(mockTreasuryData.allocated / mockTreasuryData.balance) * 100} />
+              <Progress value={(allocatedFunds / totalFundBalance) * 100} />
             </div>
 
             <div className="pt-2 border-t grid grid-cols-2 gap-2">
               <div className="text-center p-2 bg-muted/50 rounded-md">
-                <div className="text-lg font-bold">{mockTreasuryData.contributors}</div>
+                <div className="text-lg font-bold">{totalContributors}</div>
                 <div className="text-xs text-muted-foreground">Contributors</div>
               </div>
               <div className="text-center p-2 bg-muted/50 rounded-md">

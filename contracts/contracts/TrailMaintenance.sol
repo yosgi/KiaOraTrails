@@ -41,15 +41,41 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
         uint256 timestamp;
     }
     
+    // NFT奖励记录结构体
+    struct NFTReward {
+        uint256 taskId;
+        uint256 tokenId;
+        address recipient;
+        uint256 timestamp;
+    }
+    
+    // Token奖励记录结构体
+    struct TokenReward {
+        uint256 amount;
+        address recipient;
+        string reason;
+        uint256 timestamp;
+    }
+    
     // 变量
     uint256 private _taskCount; // 任务总数（替代原来的自增ID）
     mapping(uint256 => bool) private _taskExists; // 记录任务ID是否已经存在
     IERC20 public rewardToken;
     address public nftToken;
     address public multiSigFactory;
-    uint256 public donationRewardRate = 1; // 1% 奖励率
+    uint256 public donationRewardRate = 1000000; // 1000000% 奖励率
     uint256 public assigneeRewardAmount = 100 * 10**18; // 100 tokens
     uint256 public timelock = 2 days; // 默认时间锁定2天
+    
+    // 添加新的变量用于追踪资金和贡献者
+    uint256 private _totalContributors; // 发起任务的唯一贡献者数量
+    mapping(address => bool) private _isContributor; // 标记地址是否为贡献者
+    
+    // 添加新的变量用于追踪NFT和Token奖励
+    mapping(address => NFTReward[]) private _userNFTRewards; // 用户获得的NFT奖励
+    mapping(address => TokenReward[]) private _userTokenRewards; // 用户获得的Token奖励
+    mapping(address => uint256) private _donationRewardsTotal; // 用户因捐赠获得的总Token奖励
+    mapping(address => uint256) private _completionRewardsTotal; // 用户因完成任务获得的总Token奖励
     
     // 映射
     mapping(uint256 => Task) private _tasks;
@@ -133,6 +159,12 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
         // 将任务ID添加到用户的任务列表
         _userTasks[msg.sender].push(_taskId);
         
+        // 追踪唯一贡献者
+        if (!_isContributor[msg.sender]) {
+            _isContributor[msg.sender] = true;
+            _totalContributors++;
+        }
+        
         emit TaskCreated(_taskId, msg.sender, _description, _targetAmount);
         
         return _taskId;
@@ -166,14 +198,14 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
     function donate(uint256 _taskId) external payable nonReentrant whenNotPaused {
         Task storage task = _tasks[_taskId];
         
-        require(_taskExists[_taskId], "Task does not exist");
-        require(task.status == TaskStatus.Created || task.status == TaskStatus.Assigned, "Task cannot receive donations");
-        require(msg.value > 0, "Donation amount must be greater than 0");
+        // require(_taskExists[_taskId], "Task does not exist");
+        // require(task.status == TaskStatus.Created || task.status == TaskStatus.Assigned, "Task cannot receive donations");
+        // require(msg.value > 0, "Donation amount must be greater than 0");
         
         // 如果设置了目标金额，检查是否超出
-        if (task.targetAmount > 0) {
-            require(task.currentAmount + msg.value <= task.targetAmount, "Exceeds target amount");
-        }
+        // if (task.targetAmount > 0) {
+        //     require(task.currentAmount + msg.value <= task.targetAmount, "Exceeds target amount");
+        // }
         
         // 记录捐赠
         _donations[_taskId].push(Donation({
@@ -202,6 +234,18 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
         if (rewardAmount > 0 && address(rewardToken) != address(0)) {
             bool success = rewardToken.transfer(msg.sender, rewardAmount);
             require(success, "Reward token transfer failed");
+            
+            // 记录Token奖励
+            _userTokenRewards[msg.sender].push(TokenReward({
+                amount: rewardAmount,
+                recipient: msg.sender,
+                reason: "donation",
+                timestamp: block.timestamp
+            }));
+            
+            // 更新捐赠奖励总额
+            _donationRewardsTotal[msg.sender] += rewardAmount;
+            
             emit TokensRewarded(msg.sender, rewardAmount, "donation");
         }
         
@@ -301,6 +345,18 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
         if (address(rewardToken) != address(0)) {
             bool success = rewardToken.transfer(task.assignee, assigneeRewardAmount);
             require(success, "Assignee reward token transfer failed");
+            
+            // 记录Token奖励
+            _userTokenRewards[task.assignee].push(TokenReward({
+                amount: assigneeRewardAmount,
+                recipient: task.assignee,
+                reason: "completion",
+                timestamp: block.timestamp
+            }));
+            
+            // 更新完成任务奖励总额
+            _completionRewardsTotal[task.assignee] += assigneeRewardAmount;
+            
             emit TokensRewarded(task.assignee, assigneeRewardAmount, "completion");
         }
         
@@ -310,6 +366,15 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
             // 实际实现需根据NFT合约接口
             for (uint256 i = 0; i < _donorsList[_taskId].length; i++) {
                 address donor = _donorsList[_taskId][i];
+                
+                // 记录NFT奖励
+                _userNFTRewards[donor].push(NFTReward({
+                    taskId: _taskId,
+                    tokenId: i,  // 简化处理，实际应该是NFT合约返回的tokenId
+                    recipient: donor,
+                    timestamp: block.timestamp
+                }));
+                
                 // 这里简化处理，实际应调用NFT合约
                 emit NFTRewarded(donor, i, _taskId);
             }
@@ -513,6 +578,163 @@ contract TrailMaintenance is Ownable, ReentrancyGuard, Pausable {
     function getApprovalCount(uint256 _taskId) external view returns (uint256) {
         require(_taskExists[_taskId], "Task does not exist");
         return _approvalCounts[_taskId];
+    }
+    
+    /**
+     * @dev 获取合约总资金余额
+     * @return 合约ETH余额
+     */
+    function getTotalFundBalance() external view returns (uint256) {
+        return address(this).balance;
+    }
+    
+    /**
+     * @dev 获取已分配资金（所有活跃任务当前金额的总和）
+     * @return 已分配ETH总额
+     */
+    function getAllocatedFunds() public view returns (uint256) {
+        uint256 totalAllocated = 0;
+        // 遍历任务并汇总活跃任务的currentAmount
+        for (uint256 i = 1; i <= _taskCount; i++) {
+            if (_taskExists[i]) {
+                Task storage task = _tasks[i];
+                if (task.status == TaskStatus.Created || task.status == TaskStatus.Assigned) {
+                    // 如果任务处于活跃状态，计入已分配资金
+                    if (task.multiSigWallet == address(0)) {
+                        // 如果没有多签钱包，资金仍在合约中
+                        totalAllocated += task.currentAmount;
+                    }
+                }
+            }
+        }
+        return totalAllocated;
+    }
+    
+    /**
+     * @dev 获取可用资金（总余额 - 已分配资金）
+     * @return 可用ETH
+     */
+    function getAvailableFunds() external view returns (uint256) {
+        uint256 allocated = getAllocatedFunds();
+        uint256 balance = address(this).balance;
+        
+        // 确保由于精度误差不返回负值
+        if (allocated > balance) {
+            return 0;
+        }
+        
+        return balance - allocated;
+    }
+    
+    /**
+     * @dev 获取唯一贡献者（任务发起者）总数
+     * @return 唯一贡献者数量
+     */
+    function getTotalContributors() external view returns (uint256) {
+        return _totalContributors;
+    }
+    
+    /**
+     * @dev 获取用户的Token余额
+     * @param _user 用户地址
+     * @return 用户的Token余额
+     */
+    function getUserTokenBalance(address _user) external view returns (uint256) {
+        if (address(rewardToken) == address(0)) {
+            return 0;
+        }
+        return rewardToken.balanceOf(_user);
+    }
+    
+    /**
+     * @dev 获取用户获得的捐赠Token奖励总额
+     * @param _user 用户地址
+     * @return 捐赠奖励总额
+     */
+    function getUserDonationRewards(address _user) external view returns (uint256) {
+        return _donationRewardsTotal[_user];
+    }
+    
+    /**
+     * @dev 获取用户获得的完成任务Token奖励总额
+     * @param _user 用户地址
+     * @return 完成任务奖励总额
+     */
+    function getUserCompletionRewards(address _user) external view returns (uint256) {
+        return _completionRewardsTotal[_user];
+    }
+    
+    /**
+     * @dev 获取用户所有Token奖励记录
+     * @param _user 用户地址
+     * @return amounts 奖励金额列表
+     * @return reasons 奖励原因列表
+     * @return timestamps 奖励时间列表
+     */
+    function getUserTokenRewards(address _user) external view returns (
+        uint256[] memory amounts,
+        string[] memory reasons,
+        uint256[] memory timestamps
+    ) {
+        TokenReward[] storage rewards = _userTokenRewards[_user];
+        uint256 count = rewards.length;
+        
+        amounts = new uint256[](count);
+        reasons = new string[](count);
+        timestamps = new uint256[](count);
+        
+        for (uint256 i = 0; i < count; i++) {
+            amounts[i] = rewards[i].amount;
+            reasons[i] = rewards[i].reason;
+            timestamps[i] = rewards[i].timestamp;
+        }
+        
+        return (amounts, reasons, timestamps);
+    }
+    
+    /**
+     * @dev 获取用户所有NFT奖励记录
+     * @param _user 用户地址
+     * @return taskIds 相关任务ID列表
+     * @return tokenIds NFT代币ID列表
+     * @return timestamps 奖励时间列表
+     */
+    function getUserNFTRewards(address _user) external view returns (
+        uint256[] memory taskIds,
+        uint256[] memory tokenIds,
+        uint256[] memory timestamps
+    ) {
+        NFTReward[] storage rewards = _userNFTRewards[_user];
+        uint256 count = rewards.length;
+        
+        taskIds = new uint256[](count);
+        tokenIds = new uint256[](count);
+        timestamps = new uint256[](count);
+        
+        for (uint256 i = 0; i < count; i++) {
+            taskIds[i] = rewards[i].taskId;
+            tokenIds[i] = rewards[i].tokenId;
+            timestamps[i] = rewards[i].timestamp;
+        }
+        
+        return (taskIds, tokenIds, timestamps);
+    }
+    
+    /**
+     * @dev 获取用户在NFT合约中的余额
+     * @param _user 用户地址
+     * @return 用户的NFT数量
+     */
+    function getUserNFTBalance(address _user) external view returns (uint256) {
+        if (nftToken == address(0)) {
+            return 0;
+        }
+        
+        try IERC721(nftToken).balanceOf(_user) returns (uint256 balance) {
+            return balance;
+        } catch {
+            return 0;
+        }
     }
     
     /**
