@@ -1,6 +1,7 @@
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 require('dotenv').config(); 
 const mnemonic = process.env.MNEMONIC;
+console.log("mnemonic",mnemonic);
 const infuraKey = process.env.INFURA_PROJECT_ID; 
 const ANKER_API_KEY = process.env.ANKER_API_KEY;
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
@@ -88,6 +89,15 @@ module.exports = {
       gas: 15000000, // Gas limit
       gasPrice: 1000000000, // Gas price: 20 Gwei
       // confirmations: 2, // # of confirmations to wait between deployments
+      timeoutBlocks: 200, // # of blocks before a deployment times out
+      skipDryRun: true // Skip dry run before migrations
+    },
+    base:{
+      provider: () => new HDWalletProvider(mnemonic, `https://base-sepolia.gateway.tenderly.co`),
+      network_id: 84532, // Base
+      gas: 15000000, // Gas limit
+      gasPrice: 1000000000, // Gas price: 20 Gwei
+      confirmations: 2, // # of confirmations to wait between deployments
       timeoutBlocks: 200, // # of blocks before a deployment times out
       skipDryRun: true // Skip dry run before migrations
     },

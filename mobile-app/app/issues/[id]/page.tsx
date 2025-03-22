@@ -30,6 +30,7 @@ import { AuthAPI } from "../../utils/api"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { DialogTitle } from "@radix-ui/react-dialog"
 import { format } from "date-fns"
+import { useTrailMaintenance } from "../../../providers/TrailMaintenanceContext"
 
 export default function IssuePage() {
   const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
@@ -44,7 +45,7 @@ export default function IssuePage() {
   const commentInputRef = useRef<HTMLTextAreaElement>(null)
   const [issue, setIssue] = useState(null)
   const [loading, setLoading] = useState(true)
-
+  const { donate } = useTrailMaintenance()
   useEffect(() => {
     const fetchIssue = async () => {
       setLoading(true)
@@ -128,7 +129,7 @@ export default function IssuePage() {
 
   const handleDonate = async () => {
     setIsDonating(true)
-
+    donate(issue.id, "0.01")
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500))
 

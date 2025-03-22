@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect, createContext, useContext } from "react";
 import { ethers, Contract } from "ethers";
 import TRAIL_MAINTENANCE_ABI from "../public/abi/TrailMaintenance.json"
