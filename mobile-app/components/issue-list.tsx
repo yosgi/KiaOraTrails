@@ -1,12 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ThumbsUp, Search, MapPin, AlertTriangle, Image, Landmark } from "lucide-react"
-import { mockIssueData } from "@/lib/mock-data"
+import { AuthAPI } from "../app/utils/api"
 
 interface IssueListProps {
   onSelect?: () => void
@@ -14,8 +14,26 @@ interface IssueListProps {
 
 export function IssueList({ onSelect }: IssueListProps) {
   const [searchQuery, setSearchQuery] = useState("")
+  const [issues, setIssues] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  const filteredIssues = mockIssueData.filter(
+  useEffect(() => {
+    async function fetchIssues() {
+      setLoading(true)
+      try {
+        const response = await AuthAPI.get("/posts")
+        setIssues(response)
+      } catch (error) {
+        console.error("Failed to fetch issues:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchIssues()
+  }, [])
+
+  const filteredIssues = issues.filter(
     (issue) =>
       issue.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       issue.description.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -39,70 +57,76 @@ export function IssueList({ onSelect }: IssueListProps) {
         </div>
       </div>
 
-      <Tabs defaultValue="all" className="flex-1">
-        <TabsList className="grid grid-cols-4 h-auto p-1 m-2">
-          <TabsTrigger value="all" className="text-xs py-1 h-auto">
-            All
-          </TabsTrigger>
-          <TabsTrigger value="scenic" className="text-xs py-1 h-auto">
-            Scenic
-          </TabsTrigger>
-          <TabsTrigger value="condition" className="text-xs py-1 h-auto">
-            Conditions
-          </TabsTrigger>
-          <TabsTrigger value="fundraising" className="text-xs py-1 h-auto">
-            Fundraising
-          </TabsTrigger>
-        </TabsList>
+      {loading ? (
+        <div className="flex-1 flex items-center justify-center text-muted-foreground">
+          Loading issues...
+        </div>
+      ) : (
+        <Tabs defaultValue="all" className="flex-1">
+          <TabsList className="grid grid-cols-4 h-auto p-1 m-2">
+            <TabsTrigger value="all" className="text-xs py-1 h-auto">
+              All
+            </TabsTrigger>
+            <TabsTrigger value="scenic" className="text-xs py-1 h-auto">
+              Scenic
+            </TabsTrigger>
+            <TabsTrigger value="condition" className="text-xs py-1 h-auto">
+              Conditions
+            </TabsTrigger>
+            <TabsTrigger value="fundraising" className="text-xs py-1 h-auto">
+              Fundraising
+            </TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="all" className="m-0 overflow-auto">
-          {filteredIssues.length === 0 ? (
-            <div className="p-4 text-center text-muted-foreground">No issues found</div>
-          ) : (
-            <div className="divide-y">
-              {filteredIssues.map((issue) => (
-                <IssueItem key={issue.id} issue={issue} onSelect={onSelect} />
-              ))}
-            </div>
-          )}
-        </TabsContent>
+          <TabsContent value="all" className="m-0 overflow-auto">
+            {filteredIssues.length === 0 ? (
+              <div className="p-4 text-center text-muted-foreground">No issues found</div>
+            ) : (
+              <div className="divide-y">
+                {filteredIssues.map((issue) => (
+                  <IssueItem key={issue.id} issue={issue} onSelect={onSelect} />
+                ))}
+              </div>
+            )}
+          </TabsContent>
 
-        <TabsContent value="scenic" className="m-0 overflow-auto">
-          {scenicIssues.length === 0 ? (
-            <div className="p-4 text-center text-muted-foreground">No scenic spots found</div>
-          ) : (
-            <div className="divide-y">
-              {scenicIssues.map((issue) => (
-                <IssueItem key={issue.id} issue={issue} onSelect={onSelect} />
-              ))}
-            </div>
-          )}
-        </TabsContent>
+          <TabsContent value="scenic" className="m-0 overflow-auto">
+            {scenicIssues.length === 0 ? (
+              <div className="p-4 text-center text-muted-foreground">No scenic spots found</div>
+            ) : (
+              <div className="divide-y">
+                {scenicIssues.map((issue) => (
+                  <IssueItem key={issue.id} issue={issue} onSelect={onSelect} />
+                ))}
+              </div>
+            )}
+          </TabsContent>
 
-        <TabsContent value="condition" className="m-0 overflow-auto">
-          {conditionIssues.length === 0 ? (
-            <div className="p-4 text-center text-muted-foreground">No trail conditions found</div>
-          ) : (
-            <div className="divide-y">
-              {conditionIssues.map((issue) => (
-                <IssueItem key={issue.id} issue={issue} onSelect={onSelect} />
-              ))}
-            </div>
-          )}
-        </TabsContent>
+          <TabsContent value="condition" className="m-0 overflow-auto">
+            {conditionIssues.length === 0 ? (
+              <div className="p-4 text-center text-muted-foreground">No trail conditions found</div>
+            ) : (
+              <div className="divide-y">
+                {conditionIssues.map((issue) => (
+                  <IssueItem key={issue.id} issue={issue} onSelect={onSelect} />
+                ))}
+              </div>
+            )}
+          </TabsContent>
 
-        <TabsContent value="fundraising" className="m-0 overflow-auto">
-          {fundraisingIssues.length === 0 ? (
-            <div className="p-4 text-center text-muted-foreground">No fundraising requests found</div>
-          ) : (
-            <div className="divide-y">
-              {fundraisingIssues.map((issue) => (
-                <IssueItem key={issue.id} issue={issue} onSelect={onSelect} />
-              ))}
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+          <TabsContent value="fundraising" className="m-0 overflow-auto">
+            {fundraisingIssues.length === 0 ? (
+              <div className="p-4 text-center text-muted-foreground">No fundraising requests found</div>
+            ) : (
+              <div className="divide-y">
+                {fundraisingIssues.map((issue) => (
+                  <IssueItem key={issue.id} issue={issue} onSelect={onSelect} />
+                ))}
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+      )}
     </div>
   )
 }

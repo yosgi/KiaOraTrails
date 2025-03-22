@@ -19,8 +19,13 @@ export class PostsService {
   ) {}
 
   async getAllPosts() {
-    return this.postRepository.find({
-      relations: ['author', 'donator', 'assignee', 'reviews'],
+    return this.postRepository.find();
+  }
+
+  async getPostById(id: number) {
+    return this.postRepository.findOne({
+      where: { id },
+      relations: ['reviews'],
     });
   }
 
@@ -72,33 +77,17 @@ export class PostsService {
     return this.postRepository.save(post);
   }
 
-  async reviewPost(postId: number, userId: number, score: number) {
+  async reviewPost(postId: number, draft: Partial<Review>) {
     const post = await this.postRepository.findOne({
       where: { id: postId },
     });
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-    });
 
-    if (!post || !user) throw new NotFoundException('Post or User not found');
+    if (!post) throw new NotFoundException('Post not found');
 
     const review = this.reviewRepository.create({
-      user_id: user.id.toString(),
       post,
-      score,
+      ...draft,
     });
-    await this.reviewRepository.save(review);
-
-    // Check if the post has enough reviews
-    const reviews = await this.reviewRepository.find({ where: { post } });
-    if (reviews.length >= 5) {
-      const averageScore =
-        reviews.reduce((sum, r) => sum + r.score, 0) / reviews.length;
-      if (averageScore > 4) {
-        // post.bonus = 50; // Reward bonus
-      }
-    }
-
-    return this.postRepository.save(post);
+    return this.reviewRepository.save(review);
   }
 }

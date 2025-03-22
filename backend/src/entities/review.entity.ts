@@ -10,6 +10,9 @@ export class Review {
   user_id: string;
 
   @Column({ nullable: true })
+  user_name: string;
+
+  @Column({ nullable: true })
   comments: string;
 
   @ManyToOne(() => Post, (post) => post.reviews)

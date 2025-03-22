@@ -31,7 +31,7 @@ export class Post {
   @Column({ nullable: true })
   location: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'json', nullable: true })
   photos: string[];
 
   @Column({ nullable: true })
