@@ -82,10 +82,10 @@ const CesiumViewer: React.ComponentType = () => {
     const cesiumViewer = new Viewer('cesiumContainer', {
       terrainProvider: undefined, // Can be set to any terrain provider
       animation: false,
-      baseLayerPicker: true,
+      baseLayerPicker: false,
       fullscreenButton: false,
-      geocoder: true,
-      homeButton: true,
+      geocoder: false,
+      homeButton: false,
       infoBox: false,
       sceneModePicker: false,
       selectionIndicator: false,
@@ -113,11 +113,6 @@ const CesiumViewer: React.ComponentType = () => {
     <>
       <div id="cesiumContainer" style={{ width: '100%', height: '100vh' }}></div>
       <CesiumLINZViewerEnhanced viewer={viewer} />
-      {/* <PointLayer
-            viewer={viewer}
-            trackPoints={sampleTrackPoints}
-            // initialBbox={[174.5, -41.5, 176.5, -38.5]} // NZ central region
-          /> */}
         <AdvancedPointLayer
              viewer={viewer}
              trackPoints={sampleTrackPoints}
