@@ -62,10 +62,10 @@ export default function ReportPage() {
       payload: {
         title: formData.title,
         description: formData.description,
-        location: location,
+        location: location ? JSON.stringify(location): '',
         user_id: 'fake_user_id',
         type: issueType,
-        photos: photos,
+        photos: JSON.stringify(photos),
         fund: formData.amount,
       },
     })
@@ -108,47 +108,42 @@ export default function ReportPage() {
     try {
 
       const config = {
-          bucketName: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
-          dirName: 'img', /* optional */
-          region: process.env.NEXT_PUBLIC_AWS_REGION,
-          accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID,
-          secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY,
+        bucketName: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
+        dirName: 'img', /* optional */
+        region: process.env.NEXT_PUBLIC_AWS_REGION,
+        accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY,
       }
 
       const ReactS3Client = new S3(config);
-/*  Notice that if you don't provide a dirName, the file will be automatically uploaded to the root of your bucket */
+      /*  Notice that if you don't provide a dirName, the file will be automatically uploaded to the root of your bucket */
 
-/* This is optional */
+      /* This is optional */
       const newFileName = 'test-file';
 
-      ReactS3Client
+      const data = await ReactS3Client
           .uploadFile(file, newFileName)
-          .then((data:any) =>{
-            const url = data?.Location
-            console.log(url)
-          } )
-          .catch(err => console.error(err))
-          } catch (error) {
-            console.error('Error uploading file:', error);
-            throw error;
-          }
-        };
+      console.log("data",data);
+      return data?.location
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      throw error;
+    }
+  }
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setUploadingPhotos(true);
       try {
-        const uploadPromises = Array.from(e.target.files).map(async (file) => {
-          const s3Url = await uploadToS3(file);
-          return s3Url;
-        });
-        
-        const uploadedUrls = await Promise.all(uploadPromises);
-        setPhotos((prev) => [...prev, ...uploadedUrls]);
+        const file = e?.target?.files[0]
+        const s3Url = await uploadToS3(file);
+
+        console.log("uploadedUrls",s3Url);
+        setPhotos((prev) => [...prev,s3Url]);
         
         toast({
           title: "Photos uploaded",
-          description: `Successfully uploaded ${uploadedUrls.length} photos`,
+          description: `Successfully uploaded this photo`,
         });
       } catch (error) {
         console.error("Error uploading photos:", error);

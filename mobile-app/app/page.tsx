@@ -57,7 +57,7 @@ export default function Home() {
             </SheetTrigger>
             <SheetContent side="left" className="w-[85vw] sm:max-w-md p-0 border-r">
               <div className="flex items-center justify-between p-4 border-b">
-                <h2 className="text-lg font-semibold">Nearby Issues(50KM)</h2>
+                <h2 className="text-lg font-semibold">Nearby Issues (50KM)</h2>
                 <Button variant="ghost" size="icon" onClick={() => setIsSheetOpen(false)}>
                   <X className="h-5 w-5"/>
                 </Button>

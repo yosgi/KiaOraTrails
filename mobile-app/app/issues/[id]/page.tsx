@@ -67,7 +67,7 @@ export default function IssuePage() {
     fetchIssue()
   }, [params.id, privyUser])
 
-  if (loading) {
+  if (loading || !issue) {
     return <div className="flex justify-center items-center h-full">Loading...</div>
   }
 
@@ -147,7 +147,9 @@ export default function IssuePage() {
       }
     }, 300)
   }
+  const location = issue.location ? JSON.parse(issue.location) : {}
 
+  const photos = issue.photos
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-center justify-between p-4 border-b">
@@ -192,11 +194,17 @@ export default function IssuePage() {
 
       <div className="flex-1 overflow-y-auto">
         <div className="aspect-video bg-muted relative">
-          <img
-            src={issue.image || "/placeholder.svg?height=400&width=600"}
-            alt={issue.title}
-            className="w-full h-full object-cover"
-          />
+          {
+            photos.length > 0 ? (
+              photos.map((photo: string) => (
+                <img
+                  src={photo}
+                  alt={issue.title}
+                  className="w-full h-full object-cover"
+                />
+              ))
+            ) : null
+          }
           <Badge
             variant={issue.type === "scenic" ? "secondary" : issue.type === "condition" ? "destructive" : "default"}
             className="absolute top-4 left-4"
@@ -240,7 +248,7 @@ export default function IssuePage() {
           </div>
 
           <div className="flex items-center text-sm text-muted-foreground mb-4">
-            <MapPin className="h-4 w-4 mr-1" /> {issue.location}
+            <MapPin className="h-4 w-4 mr-1" /> {`latitude: ${location?.lat}, longitude: ${location?.lng}`}
           </div>
 
           <Tabs defaultValue="details" value={activeTab} onValueChange={setActiveTab}>
@@ -254,7 +262,7 @@ export default function IssuePage() {
               <p className="text-sm">{issue.description}</p>
 
               <div className="h-48 w-full rounded-md overflow-hidden border">
-                <MiniMap location={issue.coordinates} />
+                <MiniMap location={location} />
               </div>
             </TabsContent>
 
