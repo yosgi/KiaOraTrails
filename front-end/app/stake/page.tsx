@@ -9,7 +9,7 @@ import useMessage from "../hooks/useMessage";
 
 // Define the DepositItem interface for display
 interface DepositItem {
-  amount: string;    // Formatted ETH value
+  amount: string;    // Formatted NZD value
   apy: number;       // APY percentage
   duration: number;  // Duration in seconds
   reward: string;    // Formatted reward in FORGE
@@ -150,7 +150,7 @@ const StakingPage = () => {
             {t("totalStakedLabel", { defaultMessage: "Total Sepolia Staked" })}
           </p>
           <p className="font-semibold text-xl text-gray-800 sm:text-2xl">
-            {totalStaked} ETH
+            {totalStaked} NZD
           </p>
         </div>
         <div>
@@ -201,7 +201,7 @@ const StakingPage = () => {
               {t("currentStakedLabel", {
                 defaultMessage: "Your current staked amount: ",
               })}
-              {userStakedAmount} ETH
+              {userStakedAmount} NZD
             </p>
           </div>
         </div>
@@ -211,7 +211,7 @@ const StakingPage = () => {
             onClick={openStakeModal}
             className="mt-4 w-full bg-primary text-white py-2 rounded-md text-sm sm:text-base font-medium"
           >
-            {t("stakeBtn", { defaultMessage: "Stake ETH" })}
+            {t("stakeBtn", { defaultMessage: "Stake NZD" })}
           </button>
         </div>
 
@@ -230,7 +230,7 @@ const StakingPage = () => {
                   <div className="flex justify-between w-full">
                     <span>
                       <strong>{t("depositAmount", { defaultMessage: "Amount:" })}</strong>{" "}
-                      {item.amount} ETH
+                      {item.amount} NZD
                     </span>
                     <span>
                       <strong>{t("depositAPY", { defaultMessage: "APY:" })}</strong>{" "}
@@ -268,12 +268,12 @@ const StakingPage = () => {
         isOpen={isStakeModalOpen}
         onClose={closeStakeModal}
         onConfirm={handleStake}
-        title={t("stakeModalTitle", { defaultMessage: "Stake ETH" })}
+        title={t("stakeModalTitle", { defaultMessage: "Stake NZD" })}
         isLoading={loading}
       >
         <p className="text-gray-700 mb-4">
           {t("stakeInputLabel", {
-            defaultMessage: "Enter the amount of ETH you want to stake:",
+            defaultMessage: "Enter the amount of NZD you want to stake:",
           })}
           <input
             className="mt-4 w-full bg-gray-100 text-gray-800 py-2 px-4 rounded-md"
@@ -310,13 +310,13 @@ const StakingPage = () => {
         isOpen={isWithdrawModalOpen}
         onClose={closeWithdrawModal}
         onConfirm={() => handleWithdraw()}
-        title={t("withdrawModalTitle", { defaultMessage: "Withdraw ETH" })}
+        title={t("withdrawModalTitle", { defaultMessage: "Withdraw NZD" })}
         isLoading={loading}
       >
         <p className="text-gray-700 mb-4">
           {t("withdrawConfirmText", {
             defaultMessage:
-              "Confirm withdrawal of your staked ETH.\nNote: A withdraw fee will be applied.",
+              "Confirm withdrawal of your staked NZD.\nNote: A withdraw fee will be applied.",
           })}
           <br />
           {t("withdrawFeeMsg", {

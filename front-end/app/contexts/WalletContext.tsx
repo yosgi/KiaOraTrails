@@ -7,8 +7,8 @@ export const networkConfig: NetworkConfig = {
   chainId: process.env.NEXT_PUBLIC_CHAIN_ID || (chainEnv === "ganache" ? "0x539" : "0x1a4"),
   chainName: process.env.NEXT_PUBLIC_CHAIN_NAME || (chainEnv === "ganache" ? "Ganache" : "interop-alpha-0"),
   nativeCurrency: {
-    name: process.env.NEXT_PUBLIC_NATIVE_CURRENCY_NAME || "ETH",
-    symbol: process.env.NEXT_PUBLIC_NATIVE_CURRENCY_SYMBOL || "ETH",
+    name: process.env.NEXT_PUBLIC_NATIVE_CURRENCY_NAME || "NZD",
+    symbol: process.env.NEXT_PUBLIC_NATIVE_CURRENCY_SYMBOL || "NZD",
     decimals: Number(process.env.NEXT_PUBLIC_NATIVE_CURRENCY_DECIMALS) || 18,
   },
   rpcUrls: [process.env.NEXT_PUBLIC_RPC_URL || (chainEnv === "ganache" ? "http://127.0.0.1:7545" : "https://interop-alpha-0.optimism.io")],
