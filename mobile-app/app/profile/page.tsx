@@ -24,9 +24,7 @@ export default function ProfilePage() {
   const { ready, login, authenticated, user: privyUser, logout,linkWallet} = usePrivy();
   const [isLoading, setIsLoading] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  const wallet = privyUser?.wallet;
-  console.log("user",privyUser);
+  const {fundWallet} = useFundWallet();
 
   // 如果用户未登录，显示登录页面
   if (!authenticated) {
@@ -88,7 +86,6 @@ export default function ProfilePage() {
     address: privyUser?.wallet?.address,
   };
 
-  const {fundWallet} = useFundWallet();
   const fund = async ()=>{
    await fundWallet(privyUser?.wallet?.address!)
   }
