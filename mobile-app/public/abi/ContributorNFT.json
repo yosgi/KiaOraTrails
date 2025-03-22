@@ -16986,24 +16986,12 @@
         }
       },
       "links": {},
-      "address": "0x3700f48C5d973B64438d0e79e9EaE64B151096B5",
-      "transactionHash": "0xb040752a8311daac2990e5fab6ec5f3602d58be84223e4bd087304de9086c21d"
-    },
-    "84532": {
-      "events": {},
-      "links": {},
-      "address": "0xf232767a2E648FC6870c462c0325966945706E56",
-      "transactionHash": "0xc317f2eaacd507e5e3298188e88d454454163bd806a969f7a66b9f64dc0e9ab1"
-    },
-    "420120000": {
-      "events": {},
-      "links": {},
-      "address": "0x246a45C5935A7d950877C4Ad6ccED1E5da1c6290",
-      "transactionHash": "0xed71d196d9b6179f75c045c7d5c2c04e91ab5cfd93442f9b118d92107dad1509"
+      "address": "0x3a8F8a26e3298E95ea6cb71B6333ed2aFb3C6Cc2",
+      "transactionHash": "0x10c01c6f2c0e369a6a7a5258324e5ea2e0ce4db65d4fae5cc094196be336bdf5"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2025-03-22T18:53:58.984Z",
+  "updatedAt": "2025-03-22T21:30:42.690Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "NFT奖励，用于奖励捐赠者，同时可以参与后续的平台治理",

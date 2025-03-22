@@ -4442,7 +4442,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.16",
-  "updatedAt": "2025-03-22T11:34:51.889Z",
+  "updatedAt": "2025-03-22T06:30:24.941Z",
   "devdoc": {
     "details": "used to add new supported ERC20 or ERC721 tokens to the lending pool, will give access to the chainlink USD price feeds.",
     "kind": "dev",

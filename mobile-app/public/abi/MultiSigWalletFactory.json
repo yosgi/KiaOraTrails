@@ -13194,24 +13194,12 @@
         }
       },
       "links": {},
-      "address": "0x7beEAbe8c0af2c2deD911188cf12a014F692587C",
-      "transactionHash": "0x1a4e8f1aab31928013ba6e32d97b9b96b5bbee4f5a446b6fd0b76ca00532aa12"
-    },
-    "84532": {
-      "events": {},
-      "links": {},
-      "address": "0x8E0870604C6f0286aa658Fc753A3b0af10892eAC",
-      "transactionHash": "0x831364a10d7a489ff707ba1e2a05d6c557bfbcea12c4292c3b43a64e1e85874e"
-    },
-    "420120000": {
-      "events": {},
-      "links": {},
-      "address": "0xA34f9D4FdBaEAD044DE7f0B0B0a46BEB6c649E91",
-      "transactionHash": "0xe888d4dc075592e0093a30c28b038f5219a1e7febf026868620bcbad8d99c440"
+      "address": "0x2FB84119434166e3D3A514eA552975Cb710A7FEA",
+      "transactionHash": "0xa6f8fa8ce4decb7547ebb5e82842db1d10edd7fbdafd1b7334d3f18ad5483c40"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2025-03-22T18:53:58.989Z",
+  "updatedAt": "2025-03-22T21:30:42.697Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "创建与任务关联的多签钱包",
