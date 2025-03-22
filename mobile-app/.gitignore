@@ -2,7 +2,7 @@
 
 # dependencies
 /node_modules
-
+/public/cesium
 # next.js
 /.next/
 /out/

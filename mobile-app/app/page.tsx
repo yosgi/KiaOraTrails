@@ -8,6 +8,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import {Plus, List, X, Compass} from "lucide-react"
 import Link from "next/link"
 import { useMobile } from "@/hooks/use-mobile"
+import DigitalTwins from "../components/digitaltwin/components/CesiumViewer"
+import {usePrivy} from '@privy-io/react-auth';
 
 export default function Home() {
   const [isSheetOpen, setIsSheetOpen] = useState(false)
@@ -26,7 +28,11 @@ export default function Home() {
   return (
         <div className="relative h-[100dvh] w-full bg-background">
           {/* Map View */}
-          <MapView onLoad={() => setIsMapLoaded(true)}/>
+          <div  className="relative w-full h-full bg-muted" >
+            <DigitalTwins />
+          </div>
+          
+          {/* <MapView onLoad={() => setIsMapLoaded(true)}/> */}
           {/* Loading Indicator */}
           {!isMapLoaded && (
               <div className="absolute inset-0 flex items-center justify-center bg-background z-20">

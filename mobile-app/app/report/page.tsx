@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -10,27 +10,43 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { ArrowLeft, Camera, MapPin, ImageIcon } from "lucide-react"
+import { ArrowLeft, Camera, MapPin, ImageIcon, Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { MiniMap } from "@/components/mini-map"
 import { cn } from "@/lib/utils"
 import { AuthAPI } from "../utils/api"
+import { usePrivy } from '@privy-io/react-auth'
+import S3 from 'react-aws-s3';
 
 export default function ReportPage() {
   const router = useRouter()
   const { toast } = useToast()
+  const { authenticated } = usePrivy()
   const [issueType, setIssueType] = useState<string>("scenic")
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [step, setStep] = useState(1)
   const [photos, setPhotos] = useState<string[]>([])
+  const [uploadingPhotos, setUploadingPhotos] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    amount: "0.1",
+    amount: "10",
   })
+
+  // 检查用户是否已登录
+  useEffect(() => {
+    if (!authenticated) {
+      toast({
+        title: "Login required",
+        description: "Please login to report trail issues",
+        variant: "destructive",
+      })
+      router.push("/profile")
+    }
+  }, [authenticated, router, toast])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target
@@ -87,10 +103,63 @@ export default function ReportPage() {
     }
   }
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // 上传图片到 AWS S3
+  const uploadToS3 = async (file: File) : Promise<any> => {
+    try {
+
+      const config = {
+          bucketName: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
+          dirName: 'img', /* optional */
+          region: process.env.NEXT_PUBLIC_AWS_REGION,
+          accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID,
+          secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY,
+      }
+
+      const ReactS3Client = new S3(config);
+/*  Notice that if you don't provide a dirName, the file will be automatically uploaded to the root of your bucket */
+
+/* This is optional */
+      const newFileName = 'test-file';
+
+      ReactS3Client
+          .uploadFile(file, newFileName)
+          .then((data:any) =>{
+            const url = data?.Location
+            console.log(url)
+          } )
+          .catch(err => console.error(err))
+          } catch (error) {
+            console.error('Error uploading file:', error);
+            throw error;
+          }
+        };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      const newPhotos = Array.from(e.target.files).map((file) => URL.createObjectURL(file))
-      setPhotos((prev) => [...prev, ...newPhotos])
+      setUploadingPhotos(true);
+      try {
+        const uploadPromises = Array.from(e.target.files).map(async (file) => {
+          const s3Url = await uploadToS3(file);
+          return s3Url;
+        });
+        
+        const uploadedUrls = await Promise.all(uploadPromises);
+        setPhotos((prev) => [...prev, ...uploadedUrls]);
+        
+        toast({
+          title: "Photos uploaded",
+          description: `Successfully uploaded ${uploadedUrls.length} photos`,
+        });
+      } catch (error) {
+        console.error("Error uploading photos:", error);
+        toast({
+          title: "Upload failed",
+          description: "There was an error uploading your photos. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setUploadingPhotos(false);
+      }
     }
   }
 
@@ -261,18 +330,25 @@ export default function ReportPage() {
                 <button
                   onClick={triggerFileInput}
                   className="aspect-square rounded-md border-2 border-dashed flex flex-col items-center justify-center"
+                  disabled={uploadingPhotos}
                 >
-                  <Camera className="h-6 w-6 text-muted-foreground" />
-                  <span className="text-xs text-muted-foreground mt-1">Add</span>
+                  {uploadingPhotos ? (
+                    <Loader2 className="h-6 w-6 text-muted-foreground animate-spin" />
+                  ) : (
+                    <Camera className="h-6 w-6 text-muted-foreground" />
+                  )}
+                  <span className="text-xs text-muted-foreground mt-2">
+                    {uploadingPhotos ? "Uploading..." : "Add Photo"}
+                  </span>
                 </button>
               </div>
               <input
-                ref={fileInputRef}
                 type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
                 accept="image/*"
                 multiple
                 className="hidden"
-                onChange={handleFileChange}
               />
             </div>
           </div>
@@ -281,122 +357,109 @@ export default function ReportPage() {
         {step === 3 && issueType === "fundraising" && (
           <div className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="amount">Fundraising Goal (ETH)</Label>
+              <Label htmlFor="amount">Funding Amount (TRL)</Label>
               <Input
                 id="amount"
                 type="number"
-                step="0.01"
-                min="0.01"
+                min="1"
+                placeholder="Amount of TRL tokens needed"
                 value={formData.amount}
                 onChange={handleChange}
                 required
               />
               <p className="text-sm text-muted-foreground">
-                Set a reasonable goal for your project. The community will vote on your request.
+                Request tokens from the community treasury for trail improvements
               </p>
             </div>
 
-            <div className="space-y-2">
-              <Label>Project Timeline</Label>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="start-date" className="text-sm">
-                    Start Date
-                  </Label>
-                  <Input id="start-date" type="date" />
+            <Card className="p-4">
+              <h3 className="font-medium mb-2">Fundraising Summary</h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Title:</span>
+                  <span className="font-medium">{formData.title}</span>
                 </div>
-                <div>
-                  <Label htmlFor="end-date" className="text-sm">
-                    End Date
-                  </Label>
-                  <Input id="end-date" type="date" />
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Amount:</span>
+                  <span className="font-medium">{formData.amount} TRL</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Photos:</span>
+                  <span className="font-medium">{photos.length} uploaded</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Location:</span>
+                  <span className="font-medium">{location ? "Set" : "Not set"}</span>
                 </div>
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Project Details</Label>
-              <Card className="p-4 bg-muted/50">
-                <div className="space-y-1">
-                  <div className="flex justify-between">
-                    <span className="text-sm">Type:</span>
-                    <span className="text-sm font-medium">Fundraising</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Title:</span>
-                    <span className="text-sm font-medium">{formData.title}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Goal:</span>
-                    <span className="text-sm font-medium">{formData.amount} ETH</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Photos:</span>
-                    <span className="text-sm font-medium">{photos.length} added</span>
-                  </div>
-                </div>
-              </Card>
-            </div>
+            </Card>
           </div>
         )}
 
         {step === 3 && issueType !== "fundraising" && (
           <div className="space-y-6">
-            <div className="space-y-2">
-              <Label>Review Your Report</Label>
-              <Card className="p-4 bg-muted/50">
-                <div className="space-y-1">
-                  <div className="flex justify-between">
-                    <span className="text-sm">Type:</span>
-                    <span className="text-sm font-medium">
-                      {issueType === "scenic" ? "Scenic Spot" : "Trail Condition"}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Title:</span>
-                    <span className="text-sm font-medium">{formData.title}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Location:</span>
-                    <span className="text-sm font-medium">{location ? "Set" : "Not set"}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Photos:</span>
-                    <span className="text-sm font-medium">{photos.length} added</span>
-                  </div>
+            <Card className="p-4">
+              <h3 className="font-medium mb-2">Report Summary</h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Type:</span>
+                  <span className="font-medium">
+                    {issueType === "scenic" ? "Scenic Spot" : "Trail Condition"}
+                  </span>
                 </div>
-              </Card>
-            </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Title:</span>
+                  <span className="font-medium">{formData.title}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Photos:</span>
+                  <span className="font-medium">{photos.length} uploaded</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Location:</span>
+                  <span className="font-medium">{location ? "Set" : "Not set"}</span>
+                </div>
+              </div>
+            </Card>
 
-            <div className="space-y-2">
-              <Label>Preview</Label>
-              <div className="border rounded-md overflow-hidden">
-                <div className="p-3 border-b bg-muted/30">
-                  <h3 className="font-medium">{formData.title}</h3>
-                  <p className="text-xs text-muted-foreground">Just now • Your location</p>
+            <div className="bg-muted/30 p-4 rounded-md">
+              <div className="flex items-center">
+                <div className="bg-primary/10 p-2 rounded-full mr-3">
+                  <ImageIcon className="h-5 w-5 text-primary" />
                 </div>
-                {photos.length > 0 ? (
-                  <div className="aspect-video bg-muted">
-                    <img src={photos[0] || "/placeholder.svg"} alt="Preview" className="w-full h-full object-cover" />
-                  </div>
-                ) : (
-                  <div className="aspect-video bg-muted flex items-center justify-center">
-                    <ImageIcon className="h-8 w-8 text-muted-foreground" />
-                  </div>
-                )}
-                <div className="p-3">
-                  <p className="text-sm line-clamp-2">{formData.description}</p>
+                <div>
+                  <h3 className="font-medium text-sm">Earn TRL Tokens</h3>
+                  <p className="text-xs text-muted-foreground">
+                    You'll receive 5 TRL tokens for submitting this report
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         )}
-      </div>
 
-      <div className="p-4 border-t">
-        <Button onClick={nextStep} className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? "Submitting..." : step < 3 ? "Continue" : "Submit Report"}
-        </Button>
+        <div className="mt-8">
+          <Button
+            onClick={nextStep}
+            className="w-full"
+            disabled={
+              (step === 1 && (!formData.title || !formData.description)) ||
+              (step === 2 && !location) ||
+              isSubmitting
+            }
+          >
+            {isSubmitting ? (
+              <span className="flex items-center">
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Submitting...
+              </span>
+            ) : step === 3 ? (
+              "Submit Report"
+            ) : (
+              "Continue"
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   )
