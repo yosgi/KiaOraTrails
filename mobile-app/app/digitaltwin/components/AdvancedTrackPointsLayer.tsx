@@ -249,9 +249,9 @@ const TrackPointsLayer: React.FC<TrackPointsLayerProps> = ({
   const clearEntities = () => {
     if (!viewer) return;
     
-    entitiesRef.current.forEach((entity, id) => {
+    entitiesRef.current?.forEach((entity, id) => {
       try {
-        viewer.entities.remove(entity);
+        viewer?.entities.remove(entity);
       } catch (err) {
         Logger.error(`Error removing entity ${id}:`, err);
       }

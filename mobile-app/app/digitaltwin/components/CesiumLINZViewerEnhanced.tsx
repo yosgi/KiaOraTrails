@@ -561,7 +561,7 @@ const EnhancedLinzLayer: React.FC<EnhancedLinzLayerProps> = ({
         }
 
         // Fetch the layer data
-        const geoJson = await fetchWfsData(LAYER_INFO, bbox, 10000);
+        const geoJson = await fetchWfsData(LAYER_INFO, bbox, 1000);
 
         if (!isComponentMounted) return;
 
@@ -884,7 +884,7 @@ const EnhancedLinzLayer: React.FC<EnhancedLinzLayerProps> = ({
     <>
       {renderTrackDetails()}
       {renderLoadingIndicator()}
-      {renderAttribution()}
+      {/* {renderAttribution()} */}
     </>
   );
 };

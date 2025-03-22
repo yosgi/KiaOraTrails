@@ -1,10 +1,9 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Ion, Viewer, Cartesian3 } from 'cesium';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
 import CesiumLINZViewerEnhanced from './CesiumLINZViewerEnhanced';
-import PointLayer from "./TrackPointsLayer"
-import AdvancedPointLayer from "./AdvancedTrackPointsLayer"
+import AdvancedPointLayer from "./AdvancedTrackPointsLayer";
 Ion.defaultAccessToken = process.env.NEXT_PUBLIC_ION_API_KEY || '';
 
 const sampleTrackPoints = [
@@ -71,40 +70,81 @@ const sampleTrackPoints = [
   }
 ];
 
-const CesiumViewer: React.ComponentType = () => {
+// Helper function to check if a viewer is valid and ready to use
+const isViewerReady = (viewer: Viewer | null): boolean => {
+  return !!viewer && 
+         !!viewer.scene && 
+         !!viewer.camera && 
+         !!viewer.entities && 
+         !viewer.isDestroyed();
+};
+
+const CesiumViewer: React.FC = () => {
   const [viewer, setViewer] = useState<Viewer | null>(null);
+  const [viewerReady, setViewerReady] = useState<boolean>(false);
+  const viewerRef = useRef<Viewer | null>(null);
+  const mountedRef = useRef<boolean>(true);
 
   useEffect(() => {
     // Only render on client-side
     if (typeof window === 'undefined') return;
     
-    // Initialize Cesium viewer
-    const cesiumViewer = new Viewer('cesiumContainer', {
-      terrainProvider: undefined, // Can be set to any terrain provider
-      animation: false,
-      baseLayerPicker: false,
-      fullscreenButton: false,
-      geocoder: false,
-      homeButton: false,
-      infoBox: false,
-      sceneModePicker: false,
-      selectionIndicator: false,
-      timeline: false,
-      navigationHelpButton: false,
-    });
+    let cesiumViewer: Viewer | null = null;
+    
+    try {
+      // Initialize Cesium viewer
+      cesiumViewer = new Viewer('cesiumContainer', {
+        terrainProvider: undefined, // Can be set to any terrain provider
+        animation: false,
+        baseLayerPicker: false,
+        fullscreenButton: false,
+        geocoder: false,
+        homeButton: false,
+        infoBox: false,
+        sceneModePicker: false,
+        selectionIndicator: false,
+        timeline: false,
+        navigationHelpButton: false,
+      });
 
-    // Set default view position (China)
-    cesiumViewer.camera.setView({
-      destination: Cartesian3.fromDegrees(172.5, -41.0, 1500000) 
-    });
+      // Set default view position (New Zealand)
+      cesiumViewer.camera.setView({
+        destination: Cartesian3.fromDegrees(172.5, -41.0, 1500000) 
+      });
 
-    // Save viewer instance to state
-    setViewer(cesiumViewer);
+      // Keep reference in ref (for cleanup) and state (for rendering)
+      viewerRef.current = cesiumViewer;
+      
+      // Only update state if component is still mounted
+      if (mountedRef.current) {
+        setViewer(cesiumViewer);
+        
+        // Set viewer ready after a short delay to ensure initialization is complete
+        setTimeout(() => {
+          if (mountedRef.current && isViewerReady(cesiumViewer)) {
+            setViewerReady(true);
+          }
+        }, 100);
+      }
+    } catch (error) {
+      console.error("Error initializing Cesium viewer:", error);
+    }
 
     // Cleanup function
     return () => {
-      if (cesiumViewer && !cesiumViewer.isDestroyed()) {
-        cesiumViewer.destroy();
+      mountedRef.current = false;
+      
+      try {
+        if (cesiumViewer && !cesiumViewer.isDestroyed()) {
+          // First set state to null to prevent child components from accessing a destroyed viewer
+          setViewer(null);
+          setViewerReady(false);
+          
+          // Then destroy the viewer
+          cesiumViewer.destroy();
+        }
+      } catch (error) {
+        console.error("Error destroying Cesium viewer:", error);
       }
     };
   }, []);
@@ -112,11 +152,17 @@ const CesiumViewer: React.ComponentType = () => {
   return (
     <>
       <div id="cesiumContainer" style={{ width: '100%', height: '100vh' }}></div>
-      <CesiumLINZViewerEnhanced viewer={viewer} />
-        <AdvancedPointLayer
-             viewer={viewer}
-             trackPoints={sampleTrackPoints}
-        ></AdvancedPointLayer>
+      
+      {/* Only render child components when viewer is ready */}
+      {viewerReady && viewer && (
+        <>
+          <CesiumLINZViewerEnhanced viewer={viewer} />
+          <AdvancedPointLayer
+            viewer={viewer}
+            trackPoints={sampleTrackPoints}
+          />
+        </>
+      )}
     </>
   );
 };
