@@ -6,11 +6,17 @@ export class Review {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column({ nullable: true })
   user_id: string;
 
   @Column({ nullable: true })
+  user_name: string;
+
+  @Column({ nullable: true })
   comments: string;
+
+  @Column({ nullable: true })
+  created_at: Date;
 
   @ManyToOne(() => Post, (post) => post.reviews)
   post: Post;

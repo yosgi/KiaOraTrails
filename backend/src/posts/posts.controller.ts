@@ -11,6 +11,11 @@ export class PostsController {
     return this.postsService.getAllPosts();
   }
 
+  @Get(':postId')
+  getPost(@Param('postId') postId: number) {
+    return this.postsService.getPostById(postId);
+  }
+
   @Post('create')
   createPost(
     @Body('type') type: POST_TYPE,
@@ -29,35 +34,50 @@ export class PostsController {
       ...(user_id && { user_id }),
       ...(fund && { fund }),
       type,
+      created_at: new Date(),
     };
     console.log('post', post);
     return this.postsService.createPost(post);
   }
 
-  @Patch(':postId/vote')
-  votePost(@Param('postId') postId: number) {
-    return this.postsService.votePost(postId);
+  @Post(':postId/vote')
+  async votePost(
+    @Param('postId') postId: number,
+    @Body('isUpVote') isUpVote: boolean,
+  ) {
+    await this.postsService.votePost(postId, isUpVote);
+    return this.postsService.getPostById(postId);
   }
 
-  @Patch(':postId/assign/:assigneeId')
+  @Post(':postId/assign/:assigneeId')
   assignPost(
     @Param('postId') postId: number,
-    @Param('assigneeId') assigneeId: number,
+    @Param('assigneeId') assigneeId: string,
   ) {
-    return this.postsService.assignPost(postId, assigneeId);
+    return this.postsService.assignPost(postId, assigneeId.toString());
   }
 
-  @Patch(':postId/complete')
+  @Post(':postId/complete')
   completePost(@Param('postId') postId: number) {
     return this.postsService.completePost(postId);
   }
 
-  @Patch(':postId/review')
-  reviewPost(
+  @Post(':postId/review')
+  async reviewPost(
     @Param('postId') postId: number,
-    @Body('userId') userId: number,
+    @Body('user_id') user_id: number,
+    @Body('comments') comments: string,
+    @Body('user_name') user_name: string,
     @Body('score') score: number,
   ) {
-    return this.postsService.reviewPost(postId, userId, score);
+    const review = {
+      user_id,
+      comments,
+      user_name,
+      score,
+    } as any;
+    console.log('review', review);
+    await this.postsService.reviewPost(postId, review);
+    return this.postsService.getPostById(postId);
   }
 }

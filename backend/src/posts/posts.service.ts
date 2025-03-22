@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PostRepository } from '../repositories/post.repository';
 import { UserRepository } from '../repositories/user.repository';
 import { ReviewRepository } from '../repositories/review.repository';
-import { Post } from '../entities/post.entity';
+import { Post, POST_STATUS } from '../entities/post.entity';
 import { User } from '../entities/user.entity';
 import { Review } from '../entities/review.entity';
 
@@ -19,8 +19,13 @@ export class PostsService {
   ) {}
 
   async getAllPosts() {
-    return this.postRepository.find({
-      relations: ['author', 'donator', 'assignee', 'reviews'],
+    return this.postRepository.find();
+  }
+
+  async getPostById(id: number) {
+    return this.postRepository.findOne({
+      where: { id },
+      relations: ['reviews'],
     });
   }
 
@@ -29,34 +34,32 @@ export class PostsService {
     return this.postRepository.save(post);
   }
 
-  async votePost(postId: number) {
+  async votePost(postId: number, isUpVote: boolean) {
     const post = await this.postRepository.findOne({
       where: { id: postId },
     });
     if (!post) throw new NotFoundException('Post not found');
 
-    // post.votes += 1;
-    // if (post.votes >= 5) {
-    //   // Assign to a donator (could be random or specific logic)
-    //   post.donator = await this.userRepository.findOne({
-    //     where: { role: 'DONATOR' },
-    //   });
-    // }
+    if (isUpVote) {
+      post.up_votes += 1;
+      if (post.up_votes >= 5) {
+        post.status = POST_STATUS.VOTED;
+      }
+    } else {
+      post.down_votes += 1;
+    }
 
     return this.postRepository.save(post);
   }
 
-  async assignPost(postId: number, assigneeId: number) {
+  async assignPost(postId: number, assigneeId: string) {
     const post = await this.postRepository.findOne({
       where: { id: postId },
     });
-    const assignee = await this.userRepository.findOne({
-      where: { id: assigneeId },
-    });
-    if (!post || !assignee)
-      throw new NotFoundException('Post or Assignee not found');
+    if (!post) throw new NotFoundException('Post not found');
 
-    post.assignee_id = assignee.id.toString();
+    post.assignee_id = assigneeId.toString();
+    post.status = POST_STATUS.IN_CONSTRUCTION;
     return this.postRepository.save(post);
   }
 
@@ -66,39 +69,23 @@ export class PostsService {
     });
     if (!post) throw new NotFoundException('Post not found');
 
-    // post.isCompleted = true;
-    // post.completedAt = new Date();
-    // post.payment = 100; // Example payment amount
+    post.status = POST_STATUS.COMPLETED;
+    post.completed_at = new Date();
     return this.postRepository.save(post);
   }
 
-  async reviewPost(postId: number, userId: number, score: number) {
+  async reviewPost(postId: number, draft: Partial<Review>) {
     const post = await this.postRepository.findOne({
       where: { id: postId },
     });
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-    });
 
-    if (!post || !user) throw new NotFoundException('Post or User not found');
+    if (!post) throw new NotFoundException('Post not found');
 
     const review = this.reviewRepository.create({
-      user_id: user.id.toString(),
       post,
-      score,
+      ...draft,
+      created_at: new Date(),
     });
-    await this.reviewRepository.save(review);
-
-    // Check if the post has enough reviews
-    const reviews = await this.reviewRepository.find({ where: { post } });
-    if (reviews.length >= 5) {
-      const averageScore =
-        reviews.reduce((sum, r) => sum + r.score, 0) / reviews.length;
-      if (averageScore > 4) {
-        // post.bonus = 50; // Reward bonus
-      }
-    }
-
-    return this.postRepository.save(post);
+    return this.reviewRepository.save(review);
   }
 }
