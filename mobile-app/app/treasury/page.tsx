@@ -1,19 +1,38 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Landmark, Vote, CheckCircle2 } from "lucide-react"
-import { mockTreasuryData, mockProposalData } from "@/lib/mock-data"
+import { mockTreasuryData } from "@/lib/mock-data"
+import { AuthAPI } from "../utils/api"
+import { format } from "date-fns"
 
 export default function TreasuryPage() {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc")
+  const [proposals, setProposals] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const sortedProposals = [...mockProposalData].sort((a, b) => {
-    return sortDirection === "asc" ? a.votes - b.votes : b.votes - a.votes
+  useEffect(() => {
+    const fetchProposals = async () => {
+      try {
+        const response = await AuthAPI.get("/posts")
+        setProposals(response)
+      } catch (error) {
+        console.error("Failed to fetch proposals:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProposals()
+  }, [])
+
+  const sortedProposals = [...proposals].sort((a, b) => {
+    return sortDirection === "asc" ? a.up_votes - b.up_votes : b.up_votes - a.up_votes
   })
 
   const toggleSort = () => {
@@ -78,128 +97,93 @@ export default function TreasuryPage() {
             </Button>
           </div>
 
-          <Tabs defaultValue="active">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="active">Active</TabsTrigger>
-              <TabsTrigger value="passed">Passed</TabsTrigger>
-              <TabsTrigger value="rejected">Rejected</TabsTrigger>
-            </TabsList>
+          {loading ? (
+            <p>Loading proposals...</p>
+          ) : (
+            <Tabs defaultValue="voted">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="voted">Active</TabsTrigger>
+                <TabsTrigger value="donated">Passed</TabsTrigger>
+                <TabsTrigger value="rejected">Rejected</TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="active" className="pt-4 space-y-4">
-              {sortedProposals.map((proposal) => (
-                <Card key={proposal.id} className="overflow-hidden">
-                  <div className="p-4">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="font-medium">{proposal.title}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          {proposal.amount} ETH • {proposal.deadline}
-                        </p>
+              <TabsContent value="voted" className="pt-4 space-y-4">
+                {sortedProposals.filter(({status}) => status =="voted").map((proposal) => (
+                  <Card key={proposal.id} className="overflow-hidden">
+                    <div className="p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="font-medium">{proposal.title}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {proposal.fund ?? 0} ETH • Posted at {format(new Date(proposal.created_at), "MMM d, yyyy")}
+                          </p>
+                        </div>
+                        <Button size="sm" variant="outline">
+                          Donate
+                        </Button>
                       </div>
-                      <Button size="sm" variant="outline">
-                        Vote
-                      </Button>
-                    </div>
-                    <div className="mt-3">
-                      <div className="flex justify-between text-sm mb-1">
-                        <span>Support</span>
-                        <span>{proposal.votes}%</span>
+                      <div className="mt-3">
+                        <div className="flex justify-between text-sm mb-1">
+                          <span>Support</span>
+                          <span>{Number(proposal.up_votes)*100/5}%</span>
+                        </div>
+                        <Progress value={Number(proposal.up_votes)*20} />
                       </div>
-                      <Progress value={proposal.votes} />
                     </div>
-                  </div>
-                </Card>
-              ))}
-            </TabsContent>
+                  </Card>
+                ))}
+              </TabsContent>
 
-            <TabsContent value="passed" className="pt-4 space-y-4">
-              <Card className="overflow-hidden">
-                <div className="p-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-medium">Replace broken bridge at Riverside Trail</h3>
-                      <p className="text-sm text-muted-foreground">0.75 ETH • Mar 15, 2023</p>
+              <TabsContent value="donated" className="pt-4 space-y-4">
+              {sortedProposals.filter(({status}) => status =="donated").map((proposal) => (
+                  <Card key={proposal.id} className="overflow-hidden">
+                    <div className="p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="font-medium">{proposal.title}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {proposal.fund ?? 0} ETH • Posted at {format(new Date(proposal.created_at), "MMM d, yyyy")}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="mt-3">
+                        <div className="flex justify-between text-sm mb-1">
+                          <span>Support</span>
+                          <span>{Number(proposal.up_votes)*100/5}%</span>
+                        </div>
+                        <Progress value={Number(proposal.up_votes)*20} />
+                      </div>
                     </div>
-                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                      <CheckCircle2 className="mr-1 h-3 w-3" /> Completed
-                    </Badge>
-                  </div>
-                  <div className="mt-3">
-                    <div className="flex justify-between text-sm mb-1">
-                      <span>Support</span>
-                      <span>82%</span>
-                    </div>
-                    <Progress value={82} />
-                  </div>
-                </div>
-              </Card>
+                  </Card>
+                ))}
+              </TabsContent>
 
-              <Card className="overflow-hidden">
-                <div className="p-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-medium">Install new trail markers at Mountain Loop</h3>
-                      <p className="text-sm text-muted-foreground">0.35 ETH • Feb 28, 2023</p>
+              <TabsContent value="rejected" className="pt-4 space-y-4">
+                
+              {sortedProposals.filter(({status}) => status =="rejected").map((proposal) => (
+                  <Card key={proposal.id} className="overflow-hidden">
+                    <div className="p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="font-medium">{proposal.title}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {proposal.fund ?? 0} ETH • Posted at {format(new Date(proposal.created_at), "MMM d, yyyy")}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="mt-3">
+                        <div className="flex justify-between text-sm mb-1">
+                          <span>Support</span>
+                          <span>{Number(proposal.up_votes)*100/5}%</span>
+                        </div>
+                        <Progress value={Number(proposal.up_votes)*20} />
+                      </div>
                     </div>
-                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                      In Progress
-                    </Badge>
-                  </div>
-                  <div className="mt-3">
-                    <div className="flex justify-between text-sm mb-1">
-                      <span>Support</span>
-                      <span>76%</span>
-                    </div>
-                    <Progress value={76} />
-                  </div>
-                </div>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="rejected" className="pt-4 space-y-4">
-              <Card className="overflow-hidden">
-                <div className="p-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-medium">Build luxury rest area at Summit Point</h3>
-                      <p className="text-sm text-muted-foreground">2.5 ETH • Mar 10, 2023</p>
-                    </div>
-                    <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
-                      Rejected
-                    </Badge>
-                  </div>
-                  <div className="mt-3">
-                    <div className="flex justify-between text-sm mb-1">
-                      <span>Support</span>
-                      <span>32%</span>
-                    </div>
-                    <Progress value={32} />
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="overflow-hidden">
-                <div className="p-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-medium">Install solar-powered lighting</h3>
-                      <p className="text-sm text-muted-foreground">1.2 ETH • Jan 25, 2023</p>
-                    </div>
-                    <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
-                      Rejected
-                    </Badge>
-                  </div>
-                  <div className="mt-3">
-                    <div className="flex justify-between text-sm mb-1">
-                      <span>Support</span>
-                      <span>45%</span>
-                    </div>
-                    <Progress value={45} />
-                  </div>
-                </div>
-              </Card>
-            </TabsContent>
-          </Tabs>
+                  </Card>
+                ))}
+              </TabsContent>
+            </Tabs>
+          )}
         </div>
 
         <Card>

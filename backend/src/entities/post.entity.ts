@@ -14,7 +14,7 @@ export enum POST_STATUS {
   IN_CONSTRUCTION = 'in_construction',
   COMPLETED = 'completed',
   REVIEWED = 'reviewed',
-  CANCELLED = 'cancelled',
+  REJECTED = 'rejected',
 }
 
 @Entity()

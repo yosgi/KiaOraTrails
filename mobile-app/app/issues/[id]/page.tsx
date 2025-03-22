@@ -29,6 +29,7 @@ import { cn } from "@/lib/utils"
 import { AuthAPI } from "../../utils/api"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { DialogTitle } from "@radix-ui/react-dialog"
+import { format } from "date-fns"
 
 export default function IssuePage() {
   const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
@@ -222,7 +223,7 @@ export default function IssuePage() {
               </Avatar>
               <div>
                 <p className="font-medium">{issue.author.name}</p>
-                <p className="text-xs text-muted-foreground">Posted {issue.created_at}</p>
+                <p className="text-xs text-muted-foreground">Posted at {format(new Date(issue.created_at), "MMM d, yyyy")}</p>
               </div>
             </div>
             <div className="flex space-x-2">

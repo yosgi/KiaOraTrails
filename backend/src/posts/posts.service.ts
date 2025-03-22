@@ -47,6 +47,9 @@ export class PostsService {
       }
     } else {
       post.down_votes += 1;
+      if (post.down_votes >= 5) {
+        post.status = POST_STATUS.REJECTED;
+      }
     }
 
     return this.postRepository.save(post);
