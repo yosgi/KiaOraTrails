@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decentralized Disaster Relief Donation Platform</title>
+    <title>Kia Ora Trails - A Web3 Solution for Trail Maintenance</title>
     
     <!-- RevealJS CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.css">
@@ -30,22 +30,29 @@
             --accent-dark: #db2777;
             --dark-color: #0f172a;
             --darker-color: #020617;
-            --medium-dark: #1e293b;
+            --medium-dark: #091022;
+            --deep-blue: #05101f;
             --light-color: #f8fafc;
-            --text-color: #e2e8f0;
+            --text-color: #ffffff;
             --light-text: #ffffff;
             --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             --gradient-secondary: linear-gradient(135deg, var(--secondary-color), var(--secondary-dark));
             --gradient-accent: linear-gradient(135deg, var(--accent-color), var(--accent-dark));
-            --gradient-dark: linear-gradient(135deg, #0f172a, #020617);
+            --gradient-dark: linear-gradient(135deg, #091022, #05101f);
             --box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
             --neu-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3), -5px -5px 10px rgba(255, 255, 255, 0.05);
         }
         
+        /* Add deep blue background for all slides */
+        .deep-blue-bg {
+            background-color: #01091a !important;
+            color: #ffffff !important;
+        }
+        
         body {
             font-family: 'Inter', sans-serif;
-            color: var(--text-color);
-            background-color: var(--darker-color);
+            color: #ffffff;
+            background-color: #01091a;
             margin: 0;
             padding: 0;
             overflow: hidden;
@@ -53,7 +60,8 @@
         
         .reveal {
             font-family: 'Inter', sans-serif;
-            color: var(--text-color);
+            color: #ffffff;
+            background-color: #01091a;
         }
         
         .reveal h1, .reveal h2, .reveal h3 {
@@ -107,6 +115,7 @@
             line-height: 1.6;
             margin-bottom: 1em;
             font-size: 1.05em;
+            color: var(--light-text);
         }
         
         .reveal ul, .reveal ol {
@@ -123,7 +132,7 @@
         .reveal section {
             text-align: left;
             padding: 40px;
-            background: var(--dark-color);
+            background-color: #01091a !important;
             border-radius: 12px;
             max-width: 1100px;
             margin: 0 auto;
@@ -158,7 +167,7 @@
         /* Cover slide */
         .cover {
             text-align: center;
-            background: var(--darker-color);
+            background: #01091a !important;
             color: var(--light-text);
             position: relative;
             overflow: hidden;
@@ -204,7 +213,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('https://images.unsplash.com/photo-1639762681057-408e52192e55?q=80&w=2232&auto=format&fit=crop');
+            background-image: url('https://images.unsplash.com/photo-1465311354905-789ff5f7a457?q=80&w=2232&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             filter: brightness(0.2) saturate(1.2) blur(1px);
@@ -240,6 +249,7 @@
         }
         
         /* Cards and boxes */
+        
         .box {
             background-color: rgba(31, 41, 55, 0.6);
             backdrop-filter: blur(12px);
@@ -286,13 +296,13 @@
         }
         
         .card {
-            background-color: var(--medium-dark);
+            background-color: rgba(9, 16, 34, 0.7);
             border-radius: 12px;
             padding: 12px;
             box-shadow: var(--neu-shadow);
             height: 100%;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
             position: relative;
             overflow: hidden;
             z-index: 1;
@@ -329,10 +339,11 @@
             display: flex;
             align-items: flex-start;
             margin-bottom: 20px;
-            background: rgba(31, 41, 55, 0.3);
+            background: rgba(11, 26, 52, 0.6);
             border-radius: 8px;
             padding: 15px;
             transition: all 0.3s ease;
+            border: 1px solid rgba(59, 130, 246, 0.1);
         }
         
         .icon-box:hover {
@@ -399,7 +410,7 @@
         }
         
         .bg-gradient {
-            background: linear-gradient(135deg, #131c31, #0f172a);
+            background: linear-gradient(135deg, #091022, #05101f);
             color: var(--light-text);
             position: relative;
             overflow: hidden;
@@ -474,6 +485,9 @@
             align-items: flex-start;
             border-left: 4px solid var(--primary-color);
             transition: all 0.3s ease;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            min-height: 80px;
         }
         
         .demo-step:hover {
@@ -601,7 +615,7 @@
         /* Final slide */
         .final-slide {
             text-align: center;
-            background: var(--darker-color);
+            background: #01091a !important;
             color: var(--light-text);
             position: relative;
             display: flex;
@@ -618,7 +632,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('https://images.unsplash.com/photo-1642059883534-c92cdac905d0?q=80&w=2574&auto=format&fit=crop');
+            background-image: url('https://images.unsplash.com/photo-1465311354905-789ff5f7a457?q=80&w=2574&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             filter: brightness(0.2) saturate(1.2) blur(1px);
@@ -792,417 +806,138 @@
 <body>
     <div class="reveal">
         <div class="slides">
-            <!-- Slide 1: Enhanced Cover -->
-            <section class="cover" data-transition="zoom">
-                <h1 class="animate-fade-in-up">Decentralized Disaster Relief <br><span class="title-gradient">Donation Platform</span></h1>
-                <h2 class="animate-fade-in-up animate-delay-1">Blockchain × Digital Twin</h2>
-                <p class="mb-2 animate-fade-in-up animate-delay-2">Making every donation traceable, visible, and faster to reach those in need</p>
-                <div class="box glass text-light animate-fade-in-up animate-delay-3 floating" style="display: inline-block; margin-top: 30px; text-align: center;">
-                    <span><i class="fas fa-link text-primary blockchain-icon"></i> Blockchain Transparency</span> &nbsp;&nbsp;
-                    <span><i class="fas fa-bolt text-accent"></i> Rapid Response</span> &nbsp;&nbsp;
-                    <span><i class="fas fa-eye text-secondary"></i> Full Visibility</span>
-                </div>
-            </section>
+           <!-- Slide 1: Enhanced Cover -->
+<section class="cover" data-transition="zoom" style="text-align: center; padding-top: 100px;">
+    <h1 class="animate-fade-in-up" style="font-size: 4em; color: #ffffff; text-shadow: 0px 2px 4px rgba(0,0,0,0.5); margin-top: 60px;">
+        Kia Ora Trails <br><span class="title-gradient" style="font-size: 1.1em;">Web3 Trail Maintenance</span>
+    </h1>
+    <h2 class="animate-fade-in-up animate-delay-1" style="font-size: 2.2em; color: #ffffff; margin-top: 20px;">
+        A Community-Driven Solution for New Zealand
+    </h2>
+</section>
 
-            <!-- Slide 2: Pain Points & Opportunities -->
-            <section data-transition="slide">
-                <h2>Pain Points & Opportunities</h2>
+<!-- Slide 2: The Story + The Problem -->
+<section class="deep-blue-bg" data-transition="zoom" style="padding: 30px 40px;">
+    <div style="display: grid; grid-template-columns: 45% 55%; gap: 25px; align-items: start;">
+        <!-- Left Column - The Story -->
+        <div>
+            <h1 style="color: #ffffff; font-size: 2.8em; margin-bottom: 10px; text-shadow: 0px 2px 4px rgba(0,0,0,0.5);">The Story</h1>
+            <p style="color: #ffffff; font-size: 1.4em; margin-top: 0; margin-bottom: 20px; line-height: 1.5;">Damaged trail bridge on popular hiking route</p>
+            
+            <div style="background: rgba(11, 26, 52, 0.7); border-radius: 12px; padding: 20px; border: 1px solid rgba(59, 130, 246, 0.3); margin-top: 30px;">
+                <p style="color: #ffffff; font-size: 1.2em; margin: 0;">
+                    <i class="fas fa-quote-left" style="color: #60a5fa; opacity: 0.7; margin-right: 10px;"></i>
+                    Imagine you're hiking and discover a damaged bridge that could injure someone tomorrow. You take a photo, but then what? Who do you tell? Will it get fixed?
+                    <i class="fas fa-quote-right" style="color: #60a5fa; opacity: 0.7; margin-left: 10px;"></i>
+                </p>
+            </div>
+        </div>
+        
+        <!-- Right Column - The Problem -->
+        <div>
+            <h2 style="color: #ffffff; font-size: 2.4em; margin-bottom: 20px; text-shadow: 0px 2px 4px rgba(0,0,0,0.5);">The Problem</h2>
+            
+            <div style="background: rgba(9, 24, 49, 0.8); border-radius: 12px; padding: 15px; border: 1px solid rgba(236, 72, 153, 0.5); margin-bottom: 15px;">
+                <h3 style="color: #ff85c0; font-size: 1.3em; margin-top: 0; margin-bottom: 10px; border-bottom: 2px solid rgba(236, 72, 153, 0.5); padding-bottom: 5px;"><i class="fas fa-exclamation-circle" style="margin-right: 10px;"></i>Transparency Issues</h3>
                 
-                <div class="grid">
-                    <div class="card fragment fade-in-then-semi-out">
-                        <h3><i class="fas fa-exclamation-circle text-accent"></i> Traditional Donation Challenges</h3>
-                        <div class="icon-box fragment fade-up">
-                            <div class="icon"><i class="fas fa-question-circle"></i></div>
-                            <div>Lack of transparency in fund allocation</div>
-                        </div>
-                        <div class="icon-box fragment fade-up" >
-                            <div class="icon"><i class="fas fa-hourglass-half"></i></div>
-                            <div>Slow disbursement of relief funds</div>
-                        </div>
-                        <div class="icon-box fragment fade-up">
-                            <div class="icon"><i class="fas fa-ban"></i></div>
-                            <div>Vulnerable to corruption and inefficiency</div>
-                        </div>
-                    </div>
-                    
-                    <div class="card fragment fade-in-then-semi-out" >
-                        <h3><i class="fas fa-lightbulb text-secondary"></i> Blockchain & Digital Twin Solutions</h3>
-                        <div class="icon-box fragment fade-up" >
-                            <div class="icon"><i class="fas fa-book-open"></i></div>
-                            <div>Transparent ledger + immutable records</div>
-                        </div>
-                        <div class="icon-box fragment fade-up" >
-                            <div class="icon"><i class="fas fa-file-contract"></i></div>
-                            <div>Automated contracts for efficient approval and disbursement</div>
-                        </div>
-                        <div class="icon-box fragment fade-up" >
-                            <div class="icon"><i class="fas fa-map-marked-alt"></i></div>
-                            <div>Visualization of disaster situations and fund flows</div>
-                        </div>
-                    </div>
+                <div style="display: flex; align-items: flex-start; margin-bottom: 10px; background: #0a1630; border-radius: 8px; padding: 10px; border: 1px solid rgba(59, 130, 246, 0.4);">
+                    <div style="color: #60a5fa; font-size: 1.2em; margin-right: 10px; min-width: 20px; text-align: center;"><i class="fas fa-search-dollar"></i></div>
+                    <div style="color: #ffffff; font-size: 0.9em;">Charitable trusts only report total funds without details</div>
                 </div>
-            </section>
+                
+                <div style="display: flex; align-items: flex-start; background: #0a1630; border-radius: 8px; padding: 10px; border: 1px solid rgba(59, 130, 246, 0.4);">
+                    <div style="color: #60a5fa; font-size: 1.2em; margin-right: 10px; min-width: 20px; text-align: center;"><i class="fas fa-unlink"></i></div>
+                    <div style="color: #ffffff; font-size: 0.9em;">Hikers spot problems but maintenance teams remain unaware</div>
+                </div>
+            </div>
+            
+            <div style="background: rgba(9, 24, 49, 0.8); border-radius: 12px; padding: 15px; border: 1px solid rgba(16, 185, 129, 0.5);">
+                <h3 style="color: #4ade80; font-size: 1.3em; margin-top: 0; margin-bottom: 10px; border-bottom: 2px solid rgba(16, 185, 129, 0.5); padding-bottom: 5px;"><i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>Safety & Efficiency Issues</h3>
+                
+                <div style="display: flex; align-items: flex-start; margin-bottom: 10px; background: #0a1630; border-radius: 8px; padding: 10px; border: 1px solid rgba(59, 130, 246, 0.4);">
+                    <div style="color: #60a5fa; font-size: 1.2em; margin-right: 10px; min-width: 20px; text-align: center;"><i class="fas fa-sort-amount-down-alt"></i></div>
+                    <div style="color: #ffffff; font-size: 0.9em;">Critical issues aren't prioritized effectively</div>
+                </div>
+                
+                <div style="display: flex; align-items: flex-start; background: #0a1630; border-radius: 8px; padding: 10px; border: 1px solid rgba(59, 130, 246, 0.4);">
+                    <div style="color: #60a5fa; font-size: 1.2em; margin-right: 10px; min-width: 20px; text-align: center;"><i class="fas fa-hiking"></i></div>
+                    <div style="color: #ffffff; font-size: 0.9em;">Delayed maintenance creates hazards for hikers</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-            <!-- Slide 3: Project Overview with Enhanced Visuals -->
-            <section class="bg-gradient" data-transition="convex">
-                <h2 class="text-light">Project Overview</h2>
-                
-                <div class="box glass mb-2 fragment fade-in">
-                    <p class="text-light"><i class="fas fa-quote-left text-primary" style="opacity: 0.5; margin-right: 10px;"></i><strong>"We've built a decentralized disaster relief MVP in record time, using smart contracts and visualization to make donations transparent and quickly distributable to affected areas."</strong><i class="fas fa-quote-right text-primary" style="opacity: 0.5; margin-left: 10px;"></i></p>
+<!-- Slide 3: Solution and Benefits (Combined) -->
+<section class="deep-blue-bg" data-transition="convex">
+    <div style="display: grid; grid-template-columns: 50% 50%; gap: 25px;">
+        <!-- Left Column - Our Solution -->
+        <div>
+            <h2 style="color: #ffffff; margin-bottom: 25px; text-shadow: 0px 2px 4px rgba(0,0,0,0.5);">Our Solution</h2>
+            
+            <div style="background: rgba(9, 24, 49, 0.7); border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid rgba(59, 130, 246, 0.2);">
+                <p style="color: #ffffff; margin: 0; font-size: 0.9em;"><i class="fas fa-quote-left text-primary" style="opacity: 0.5; margin-right: 10px;"></i><strong>Web3 solution in a web2 package. Blockchain powers transparency behind a familiar interface.</strong></p>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; align-items: flex-start; background: rgba(11, 26, 52, 0.6); border-radius: 8px; padding: 10px; border: 1px solid rgba(59, 130, 246, 0.15);">
+                    <div style="color: #3b82f6; font-size: 1.3em; margin-right: 10px; min-width: 20px; text-align: center;"><i class="fas fa-users"></i></div>
+                    <div style="color: #ffffff; font-size: 0.9em;"><strong style="color: #3b82f6;">Community Reporting:</strong> Hikers identify and verify repairs</div>
                 </div>
                 
-                <h3 class="text-light fragment fade-in">Key Features</h3>
+                <div style="display: flex; align-items: flex-start; background: rgba(11, 26, 52, 0.6); border-radius: 8px; padding: 10px; border: 1px solid rgba(59, 130, 246, 0.15);">
+                    <div style="color: #3b82f6; font-size: 1.3em; margin-right: 10px; min-width: 20px; text-align: center;"><i class="fas fa-vote-yea"></i></div>
+                    <div style="color: #ffffff; font-size: 0.9em;"><strong style="color: #3b82f6;">Transparent Voting:</strong> Blockchain-secured priority setting</div>
+                </div>
                 
-                <div class="icon-box glass fragment fade-up">
-                    <div class="icon"><i class="fas fa-donate"></i></div>
-                    <div><strong class="text-primary">Donation Gateway:</strong> On-chain donation collection with transparent transaction history</div>
+                <div style="display: flex; align-items: flex-start; background: rgba(11, 26, 52, 0.6); border-radius: 8px; padding: 10px; border: 1px solid rgba(59, 130, 246, 0.15);">
+                    <div style="color: #3b82f6; font-size: 1.3em; margin-right: 10px; min-width: 20px; text-align: center;"><i class="fas fa-file-contract"></i></div>
+                    <div style="color: #ffffff; font-size: 0.9em;"><strong style="color: #3b82f6;">Smart Contracts:</strong> Every dollar tracked from donation to use</div>
                 </div>
-                <div class="icon-box glass fragment fade-up">
-                    <div class="icon"><i class="fas fa-vote-yea"></i></div>
-                    <div><strong class="text-primary">Decentralized Governance:</strong> Community or node review for fund allocation decisions</div>
+                
+                <div style="display: flex; align-items: flex-start; background: rgba(11, 26, 52, 0.6); border-radius: 8px; padding: 10px; border: 1px solid rgba(59, 130, 246, 0.15);">
+                    <div style="color: #3b82f6; font-size: 1.3em; margin-right: 10px; min-width: 20px; text-align: center;"><i class="fas fa-cube"></i></div>
+                    <div style="color: #ffffff; font-size: 0.9em;"><strong style="color: #3b82f6;">Digital Twin:</strong> 3D terrain mapping of trail issues</div>
                 </div>
-                <div class="icon-box glass fragment fade-up">
-                    <div class="icon"><i class="fas fa-coins"></i></div>
-                    <div><strong class="text-primary">Smart Contract Auto-Disbursement:</strong> Immediate fund release after approval triggers</div>
-                </div>
-                <div class="icon-box glass fragment fade-up">
-                    <div class="icon"><i class="fas fa-project-diagram"></i></div>
-                    <div><strong class="text-primary">Digital Twin Visualization:</strong> Real-time 3D visualization of fund flows and impact</div>
-                </div>
-            </section>
+            </div>
+        </div>
+        
 
-            <!-- Slide 4: Core Advantages & Innovation -->
-            <section data-auto-animate data-transition="fade">
-                <h2>Core Advantages & Innovation</h2>
-                
-                <div class="grid">
-                    <div class="card" data-auto-animate>
-                        <h3><i class="fas fa-link blockchain-icon"></i> Blockchain Transparency</h3>
-                        <ul class="custom-bullet">
-                            <li class="fragment fade-up">Every transaction recorded on an immutable public ledger</li>
-                            <li class="fragment fade-up">Real-time verification via block explorer</li>
-                            <li class="fragment fade-up">Effectively prevents corruption or misappropriation</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="card" data-auto-animate>
-                        <h3><i class="fas fa-bolt"></i> Efficient Relief</h3>
-                        <ul class="custom-bullet">
-                            <li class="fragment fade-up">Smart contracts execute automatically when conditions are met</li>
-                            <li class="fragment fade-up">Multi-signature security with streamlined approval process</li>
-                            <li class="fragment fade-up">Reduces disbursement time from weeks to minutes</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="card" data-auto-animate>
-                        <h3><i class="fas fa-cube"></i> Digital Twin Visualization</h3>
-                        <ul class="custom-bullet">
-                            <li class="fragment fade-up">Interactive 3D mapping of disaster zones and needs</li>
-                            <li class="fragment fade-up">Visual tracking of fund flows from donors to recipients</li>
-                            <li class="fragment fade-up">Enhanced donor engagement through visual feedback</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="card" data-auto-animate>
-                        <h3><i class="fas fa-expand-alt"></i> Scalability & Future</h3>
-                        <ul class="custom-bullet">
-                            <li class="fragment fade-up">DeFi yield integration for long-term sustainability</li>
-                            <li class="fragment fade-up">Privacy-preserving identity verification for recipients</li>
-                            <li class="fragment fade-up">Cross-chain compatibility for global donations</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
 
-            <!-- Slide 5: Technical Architecture with Enhanced Visualization -->
-            <section data-transition="convex">
-                <h2 class="text-center">Technical Architecture</h2>
+        <!-- Right Column - Benefits -->
+        <div>
+            <h2 style="color: #ffffff; margin-bottom: 25px; text-shadow: 0px 2px 4px rgba(0,0,0,0.5);">Win-Win Benefits</h2>
+            
+            <div style="background: rgba(9, 16, 34, 0.7); border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: var(--neu-shadow); border: 1px solid rgba(59, 130, 246, 0.2);">
+                <h3 style="color: #60a5fa; font-size: 1.2em; margin-top: 0; margin-bottom: 10px; border-bottom: 2px solid rgba(59, 130, 246, 0.3); padding-bottom: 5px;"><i class="fas fa-users"></i> For Communities</h3>
                 
-                <div class="architecture glass" style="text-align: center;">
-                    <!-- Using SVG with enhanced styling and animations -->
-                    <svg width="100%" height="420" viewBox="0 0 800 420" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Gradients and Filters -->
-                        <defs>
-                            <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#3b82f6" stop-opacity="1"/>
-                                <stop offset="100%" stop-color="#2563eb" stop-opacity="1"/>
-                            </linearGradient>
-                            <linearGradient id="secondaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#10b981" stop-opacity="1"/>
-                                <stop offset="100%" stop-color="#059669" stop-opacity="1"/>
-                            </linearGradient>
-                            <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#f43f5e" stop-opacity="1"/>
-                                <stop offset="100%" stop-color="#e11d48" stop-opacity="1"/>
-                            </linearGradient>
-                            <filter id="shadowFilter" x="-20%" y="-20%" width="140%" height="140%">
-                                <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/>
-                            </filter>
-                            <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
-                            </marker>
-                        </defs>
-                        
-                        <!-- Frontend Components (with class for animation in JavaScript) -->
-                        <g class="arch-component" data-component="frontend" data-delay="0">
-                            <rect x="50" y="50" width="160" height="60" rx="10" fill="url(#primaryGradient)" filter="url(#shadowFilter)"/>
-                            <text x="130" y="85" font-family="Poppins, sans-serif" font-size="16" fill="white" text-anchor="middle" font-weight="500">User Interface</text>
-                        </g>
-                        
-                        <g class="arch-component" data-component="frontend" data-delay="0.2">
-                            <rect x="50" y="230" width="160" height="60" rx="10" fill="url(#primaryGradient)" filter="url(#shadowFilter)"/>
-                            <text x="130" y="265" font-family="Poppins, sans-serif" font-size="16" fill="white" text-anchor="middle" font-weight="500">Digital Twin 3D Map</text>
-                        </g>
-                        
-                        <!-- Blockchain Components -->
-                        <g class="arch-component" data-component="blockchain" data-delay="0.4">
-                            <rect x="320" y="50" width="160" height="60" rx="10" fill="url(#secondaryGradient)" filter="url(#shadowFilter)"/>
-                            <text x="400" y="85" font-family="Poppins, sans-serif" font-size="16" fill="white" text-anchor="middle" font-weight="500">Smart Contracts</text>
-                        </g>
-                        
-                        <g class="arch-component" data-component="blockchain" data-delay="0.6">
-                            <rect x="320" y="140" width="160" height="60" rx="10" fill="url(#secondaryGradient)" filter="url(#shadowFilter)"/>
-                            <text x="400" y="175" font-family="Poppins, sans-serif" font-size="16" fill="white" text-anchor="middle" font-weight="500">Fund Pool</text>
-                        </g>
-                        
-                        <g class="arch-component" data-component="blockchain" data-delay="0.8">
-                            <rect x="320" y="230" width="160" height="60" rx="10" fill="url(#secondaryGradient)" filter="url(#shadowFilter)"/>
-                            <text x="400" y="265" font-family="Poppins, sans-serif" font-size="16" fill="white" text-anchor="middle" font-weight="500">Voting/Approval Logic</text>
-                        </g>
-                        
-                        <g class="arch-component" data-component="blockchain" data-delay="1">
-                            <rect x="320" y="320" width="160" height="60" rx="10" fill="url(#secondaryGradient)" filter="url(#shadowFilter)"/>
-                            <text x="400" y="355" font-family="Poppins, sans-serif" font-size="16" fill="white" text-anchor="middle" font-weight="500">Auto-Disbursement</text>
-                        </g>
-                        
-                        <!-- Backend Components -->
-                        <g class="arch-component" data-component="backend" data-delay="1.2">
-                            <rect x="590" y="50" width="160" height="60" rx="10" fill="url(#accentGradient)" filter="url(#shadowFilter)"/>
-                            <text x="670" y="85" font-family="Poppins, sans-serif" font-size="16" fill="white" text-anchor="middle" font-weight="500">Indexer/Event Listener</text>
-                        </g>
-                        
-                        <g class="arch-component" data-component="backend" data-delay="1.4">
-                            <rect x="590" y="140" width="160" height="60" rx="10" fill="url(#accentGradient)" filter="url(#shadowFilter)"/>
-                            <text x="670" y="175" font-family="Poppins, sans-serif" font-size="16" fill="white" text-anchor="middle" font-weight="500">Database</text>
-                        </g>
-                        
-                        <g class="arch-component" data-component="backend" data-delay="1.6">
-                            <rect x="590" y="230" width="160" height="60" rx="10" fill="url(#accentGradient)" filter="url(#shadowFilter)"/>
-                            <text x="670" y="265" font-family="Poppins, sans-serif" font-size="16" fill="white" text-anchor="middle" font-weight="500">RESTful API</text>
-                        </g>
-                        
-                        <!-- Connection Lines (Will be animated via JS) -->
-                        <g class="connections">
-                            <!-- UI to SC -->
-                            <path class="connection-path" d="M210 80 L320 80" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="200" stroke-dashoffset="200"/>
-                            
-                            <!-- SC to IE -->
-                            <path class="connection-path" d="M480 80 L590 80" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="200" stroke-dashoffset="200"/>
-                            
-                            <!-- IE to DB -->
-                            <path class="connection-path" d="M670 110 L670 140" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="130" stroke-dashoffset="130"/>
-                            
-                            <!-- DB to API -->
-                            <path class="connection-path" d="M670 200 L670 230" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="130" stroke-dashoffset="130"/>
-                            
-                            <!-- API to DT -->
-                            <path class="connection-path" d="M590 260 L210 260" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="380" stroke-dashoffset="380"/>
-                            
-                            <!-- API to UI -->
-                            <path class="connection-path" d="M650 230 L200 80" stroke="#94a3b8" stroke-width="3" fill="none" stroke-dasharray="4 4" marker-end="url(#arrow)" stroke-dasharray="500" stroke-dashoffset="500"/>
-                            
-                            <!-- SC to AD -->
-                            <path class="connection-path" d="M400 110 L400 320" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="210" stroke-dashoffset="210"/>
-                            
-                            <!-- VA to AD -->
-                            <path class="connection-path" d="M400 290 L400 320" stroke="#94a3b8" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="130" stroke-dashoffset="130"/>
-                        </g>
-                    </svg>
-                    
-                    <div style="display: flex; justify-content: center; margin-top: 30px;">
-                        <div style="display: flex; align-items: center; margin-right: 30px;">
-                            <div style="width: 20px; height: 20px; background: var(--gradient-primary); border-radius: 4px; margin-right: 10px;"></div>
-                            <span>Frontend</span>
-                        </div>
-                        <div style="display: flex; align-items: center; margin-right: 30px;">
-                            <div style="width: 20px; height: 20px; background: var(--gradient-secondary); border-radius: 4px; margin-right: 10px;"></div>
-                            <span>Blockchain</span>
-                        </div>
-                        <div style="display: flex; align-items: center;">
-                            <div style="width: 20px; height: 20px; background: var(--gradient-accent); border-radius: 4px; margin-right: 10px;"></div>
-                            <span>Backend</span>
-                        </div>
-                    </div>
+                <div style="display: flex; align-items: flex-start; margin-bottom: 8px; background: rgba(11, 26, 52, 0.6); border-radius: 8px; padding: 8px; border: 1px solid rgba(59, 130, 246, 0.1);">
+                    <div style="color: #3b82f6; font-size: 1.1em; margin-right: 10px; min-width: 15px;"><i class="fas fa-bullhorn"></i></div>
+                    <div style="color: #ffffff; font-size: 0.85em;">Real voice in maintenance priorities</div>
                 </div>
                 
-                <div class="text-center mt-2 fragment fade-in">
-                    <p><i class="fas fa-info-circle text-primary"></i> Architecture optimized for <span class="highlight-text">transparency</span>, <span class="highlight-text">speed</span>, and <span class="highlight-text">security</span></p>
+                <div style="display: flex; align-items: flex-start; background: rgba(11, 26, 52, 0.6); border-radius: 8px; padding: 8px; border: 1px solid rgba(59, 130, 246, 0.1);">
+                    <div style="color: #3b82f6; font-size: 1.1em; margin-right: 10px; min-width: 15px;"><i class="fas fa-shield-alt"></i></div>
+                    <div style="color: #ffffff; font-size: 0.85em;">Safer, better-maintained trails</div>
                 </div>
-            </section>
-
-            <!-- Slide 6: MVP Demo -->
-            <section data-transition="slide">
-                <h2>MVP Demo & Functionalities</h2>
+            </div>
+            
+            <div style="background: rgba(9, 16, 34, 0.7); border-radius: 12px; padding: 15px; box-shadow: var(--neu-shadow); border: 1px solid rgba(59, 130, 246, 0.2);">
+                <h3 style="color: #60a5fa; font-size: 1.2em; margin-top: 0; margin-bottom: 10px; border-bottom: 2px solid rgba(59, 130, 246, 0.3); padding-bottom: 5px;"><i class="fas fa-building"></i> For Councils</h3>
                 
-                <div class="demo-step fragment fade-in-then-semi-out">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3 class="mb-0 text-primary">Donation Interface</h3>
-                        <p>Connect wallet → Select disaster area → Set donation amount → One-click transaction</p>
-                    </div>
+                <div style="display: flex; align-items: flex-start; margin-bottom: 8px; background: rgba(11, 26, 52, 0.6); border-radius: 8px; padding: 8px; border: 1px solid rgba(59, 130, 246, 0.1);">
+                    <div style="color: #3b82f6; font-size: 1.1em; margin-right: 10px; min-width: 15px;"><i class="fas fa-chart-line"></i></div>
+                    <div style="color: #ffffff; font-size: 0.85em;">Reduced inspection costs</div>
                 </div>
                 
-                <div class="demo-step fragment fade-in-then-semi-out">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h3 class="mb-0 text-primary">Governance Portal</h3>
-                        <p>Authorized stakeholders vote on fund allocation proposals through decentralized governance</p>
-                    </div>
+                <div style="display: flex; align-items: flex-start; background: rgba(11, 26, 52, 0.6); border-radius: 8px; padding: 8px; border: 1px solid rgba(59, 130, 246, 0.1);">
+                    <div style="color: #3b82f6; font-size: 1.1em; margin-right: 10px; min-width: 15px;"><i class="fas fa-database"></i></div>
+                    <div style="color: #ffffff; font-size: 0.85em;">Better data for maintenance planning</div>
                 </div>
-                
-                <div class="demo-step fragment fade-in-then-semi-out">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h3 class="mb-0 text-primary">Smart Contract Execution</h3>
-                        <p>Upon threshold approval, smart contracts automatically disburse funds to pre-verified recipients</p>
-                    </div>
-                </div>
-                
-                <div class="demo-step fragment fade-in-then-semi-out">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <h3 class="mb-0 text-primary">Real-time Visualization</h3>
-                        <p>Interactive 3D map displays disaster areas, donation flows, and impact metrics in real-time</p>
-                    </div>
-                </div>
-                
-                <!-- <div class="box glass mt-3 fragment fade-in">
-                    <h3 class="mb-1">Technical Specifications</h3>
-                    <ul class="custom-bullet">
-                        <li>Smart contracts deployed on <span class="highlight-text">Goerli testnet</span> with multi-signature security</li>
-                        <li>Event indexer monitoring blockchain transactions with < 2 second latency</li>
-                        <li>Digital twin powered by <span class="highlight-text">Three.js</span> with WebGL optimization for mobile</li>
-                    </ul>
-                </div> -->
-            </section>
-
-            <!-- Slide 7: Current Achievements -->
-            <section class="bg-gradient" data-transition="zoom">
-                <h2 class="text-light">Current Achievements</h2>
-                
-                <div class="box glass">
-                    <div class="icon-box" style="align-items: center;">
-                        <div class="icon blockchain-icon"><i class="fas fa-check-circle"></i></div>
-                        <div>
-                            <strong class="text-primary">Smart Contract System:</strong> Multi-project support, voting mechanisms, and automated disbursement triggers
-                        </div>
-                    </div>
-                    
-                    <div class="icon-box" style="align-items: center;">
-                        <div class="icon blockchain-icon"><i class="fas fa-check-circle"></i></div>
-                        <div>
-                            <strong class="text-primary">Digital Twin Prototype:</strong> Interactive 3D visualization with real-time data integration
-                        </div>
-                    </div>
-                    
-                    <div class="icon-box" style="align-items: center;">
-                        <div class="icon blockchain-icon"><i class="fas fa-check-circle"></i></div>
-                        <div>
-                            <strong class="text-primary">Backend Infrastructure:</strong> Event listeners, database schema, and API endpoints fully operational
-                        </div>
-                    </div>
-                    
-                    <div class="icon-box" style="align-items: center;">
-                        <div class="icon blockchain-icon"><i class="fas fa-check-circle"></i></div>
-                        <div>
-                            <strong class="text-primary">DeFi Integration:</strong> Preliminary implementation of yield generation for long-term fund sustainability
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="box glass mt-3 text-center">
-                    <div class="floating">
-                        <p class="mb-1"><strong>GitHub Repository & Smart Contract:</strong></p>
-                        <a href="https://github.com/example/disaster-relief-platform" target="_blank" style="color: var(--primary-light); text-decoration: none; display: inline-block; transition: all 0.3s ease;" class="mb-1">
-                            <i class="fab fa-github" style="margin-right: 8px;"></i>github.com/example/disaster-relief-platform
-                        </a>
-                        <p>Contract Address: <code style="background: rgba(59, 130, 246, 0.2); padding: 4px 8px; border-radius: 6px; font-family: 'Space Grotesk', monospace;">0x7890...abcd</code> (Goerli)</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Slide 8: Future Plans -->
-            <section data-transition="convex">
-                <h2>Future Roadmap</h2>
-                
-                <div class="grid">
-                    <div class="card fragment fade-up">
-                        <h3><i class="fas fa-shield-alt"></i> Enhanced Security & Trust</h3>
-                        <div class="future-item">
-                            <div class="future-icon"><i class="fas fa-user-shield"></i></div>
-                            <div>Granular permission systems and on-ground verification networks</div>
-                        </div>
-                        <div class="future-item">
-                            <div class="future-icon"><i class="fas fa-mask"></i></div>
-                            <div>Zero-knowledge proofs for privacy-preserving identity verification</div>
-                        </div>
-                    </div>
-                    
-                    <div class="card fragment fade-up">
-                        <h3><i class="fas fa-chart-line"></i> Sustainable Financing</h3>
-                        <div class="future-item">
-                            <div class="future-icon"><i class="fas fa-percentage"></i></div>
-                            <div>Integration with low-risk DeFi protocols for yield generation</div>
-                        </div>
-                        <div class="future-item">
-                            <div class="future-icon"><i class="fas fa-hand-holding-usd"></i></div>
-                            <div>Automated financial planning for long-term disaster recovery</div>
-                        </div>
-                    </div>
-                    
-                    <div class="card fragment fade-up">
-                        <h3><i class="fas fa-database"></i> Advanced Data Integration</h3>
-                        <div class="future-item">
-                            <div class="future-icon"><i class="fas fa-network-wired"></i></div>
-                            <div>API connections with government and NGO data sources</div>
-                        </div>
-                        <div class="future-item">
-                            <div class="future-icon"><i class="fas fa-bell"></i></div>
-                            <div>Predictive analytics for disaster early warning systems</div>
-                        </div>
-                    </div>
-                    
-                    <div class="card fragment fade-up">
-                        <h3><i class="fas fa-globe-americas"></i> Global DAO Governance</h3>
-                        <div class="future-item">
-                            <div class="future-icon"><i class="fas fa-users"></i></div>
-                            <div>Community-driven governance with token-based voting</div>
-                        </div>
-                        <div class="future-item">
-                            <div class="future-icon"><i class="fas fa-handshake"></i></div>
-                            <div>Cross-border collaboration framework for international relief</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Slide 9: Enhanced Final Slide -->
-            <section class="final-slide" data-transition="zoom">
-                <h1 class="animate-fade-in-up">Thank You!</h1>
-                
-                <div class="box glass text-center mb-2 animate-fade-in-up animate-delay-1" style="max-width: 700px;">
-                    <p><i class="fas fa-quote-left text-primary" style="opacity: 0.7; margin-right: 10px;"></i><strong>"We're revolutionizing disaster relief by ensuring every donation is traceable on-chain and every impact is visible through digital twins - bringing transparency and speed to humanitarian aid."</strong><i class="fas fa-quote-right text-primary" style="opacity: 0.7; margin-left: 10px;"></i></p>
-                </div>
-                
-                <div class="contact-links animate-fade-in-up animate-delay-2">
-                    <a href="#" target="_blank" class="floating"><i class="fas fa-globe"></i></a>
-                    <a href="#" target="_blank" class="floating" style="animation-delay: 0.5s;"><i class="fab fa-github"></i></a>
-                    <a href="#" target="_blank" class="floating" style="animation-delay: 1s;"><i class="fab fa-linkedin"></i></a>
-                    <a href="#" target="_blank" class="floating" style="animation-delay: 1.5s;"><i class="fas fa-envelope"></i></a>
-                </div>
-                
-                <h2 class="mt-3 animate-fade-in-up animate-delay-3">Q&A</h2>
-            </section>
+            </div>
+        </div>
+    </div>
+</section>
         </div>
     </div>
 
@@ -1223,8 +958,8 @@
             controlsLayout: 'bottom-right',
             controlsBackArrows: 'faded',
             touch: true,
-            fragments: true,
-            fragmentInURL: true,
+            fragments: false,
+            fragmentInURL: false,
             help: true,
             transition: 'slide', // none/fade/slide/convex/concave/zoom
             backgroundTransition: 'fade',
@@ -1244,56 +979,23 @@
             display: 'block',
             hideInactiveCursor: true,
             hideCursorTime: 3000,
-            plugins: [ RevealZoom, RevealNotes, RevealHighlight, RevealMarkdown ]
-        });
-        
-        // Custom animations for architecture diagram
-        Reveal.addEventListener('slidechanged', function(event) {
-            // Check if the current slide contains the architecture diagram
-            if (event.currentSlide.querySelector('.architecture')) {
-                // Reset animations
-                document.querySelectorAll('.arch-component').forEach(function(component) {
-                    component.style.opacity = '0';
-                    component.style.transform = 'translateY(20px)';
+            plugins: [ RevealZoom, RevealNotes, RevealHighlight, RevealMarkdown ],
+            // Apply deep blue background to all slides
+            dependencies: [],
+            // Add any callback functions you need
+            ready: function() {
+                // Apply deep blue background to all slides
+                document.querySelectorAll('.reveal .slides section').forEach(function(slide) {
+                    slide.classList.add('deep-blue-bg');
                 });
-                
-                document.querySelectorAll('.connection-path').forEach(function(path) {
-                    path.style.strokeDashoffset = path.getTotalLength() || '200';
-                });
-                
-                // Animate components with delay
-                document.querySelectorAll('.arch-component').forEach(function(component) {
-                    const delay = component.getAttribute('data-delay') || '0';
-                    setTimeout(function() {
-                        component.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
-                        component.style.opacity = '1';
-                        component.style.transform = 'translateY(0)';
-                    }, delay * 1000);
-                });
-                
-                // Animate connections after components
-                setTimeout(function() {
-                    document.querySelectorAll('.connection-path').forEach(function(path, index) {
-                        setTimeout(function() {
-                            path.style.transition = 'stroke-dashoffset 1s ease-in-out';
-                            path.style.strokeDashoffset = '0';
-                        }, index * 200);
-                    });
-                }, 2000);
             }
         });
         
         // Add floating animation to certain elements
         document.addEventListener('DOMContentLoaded', function() {
-            // Add subtle hover effects to cards
-            document.querySelectorAll('.card').forEach(function(card) {
-                card.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-10px) scale(1.02)';
-                });
-                
-                card.addEventListener('mouseleave', function() {
-                    this.style.transform = '';
-                });
+            // Apply deep blue background to all slides
+            document.querySelectorAll('.reveal .slides section').forEach(function(slide) {
+                slide.classList.add('deep-blue-bg');
             });
         });
     </script>
