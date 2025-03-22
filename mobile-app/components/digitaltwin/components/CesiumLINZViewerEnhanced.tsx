@@ -470,7 +470,7 @@ const EnhancedLinzLayer: React.FC<EnhancedLinzLayerProps> = ({
     if (!viewer) return;
 
     const checkViewportChange = () => {
-      if (!viewer) return;
+      if (!viewer ) return;
       // Get current camera position and height
       const cameraPosition = viewer.camera.position;
       const ellipsoid = viewer.scene.globe.ellipsoid;

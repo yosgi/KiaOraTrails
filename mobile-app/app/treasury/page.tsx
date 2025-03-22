@@ -32,7 +32,11 @@ export default function TreasuryPage() {
   }, [])
 
   const sortedProposals = [...proposals].sort((a, b) => {
-    return sortDirection === "asc" ? a.up_votes - b.up_votes : b.up_votes - a.up_votes
+    try {
+      return sortDirection === "asc" ? a.up_votes - b.up_votes : b.up_votes - a.up_votes
+    } catch (error) {
+      return []
+    }
   })
 
   const toggleSort = () => {

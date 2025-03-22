@@ -4,8 +4,7 @@ import React, { useState, useEffect, createContext, useContext } from "react";
 import { ethers, Contract } from "ethers";
 import TRAIL_MAINTENANCE_ABI from "../public/abi/TrailMaintenance.json"
 import contracts from "../public/contracts/development-contracts.json"
-import { usePrivy } from '@privy-io/react-auth';
-
+import { usePrivy, PrivyProvider } from '@privy-io/react-auth';
 // Task status enum to match the contract
 enum TaskStatus {
   Created,
@@ -65,6 +64,11 @@ interface TrailMaintenanceContextType {
   timelock: string;
   loading: boolean;
   error: string | null;
+  
+  // Privy related
+  walletAddress: string | undefined;
+  isWalletConnected: boolean;
+  connectWallet: () => Promise<void>;
 }
 
 // Create the TrailMaintenance Context
@@ -80,41 +84,92 @@ interface TrailMaintenanceProviderProps {
 // Function to initialize a contract instance
 const getEthereumContract = async (
   contractAddress: string,
-  contractABI: any
+  contractABI: any,
+  privyProvider?: any
 ): Promise<Contract> => {
-  if (!window.ethereum) {
+  let provider;
+  let signer;
+  
+  if (privyProvider) {
+    provider = new ethers.BrowserProvider(privyProvider);
+    signer = await provider.getSigner();
+  } else if (window.ethereum) {
+    provider = new ethers.BrowserProvider(window.ethereum);
+    signer = await provider.getSigner();
+  } else {
     throw new Error("Ethereum provider not found");
   }
-  const provider = new ethers.BrowserProvider(window.ethereum);
-  const signer = await provider.getSigner();
+  
   return new ethers.Contract(contractAddress, contractABI, signer);
 };
 
 // The TrailMaintenanceProvider component
 export const TrailMaintenanceProvider: React.FC<TrailMaintenanceProviderProps> = ({ children }) => {
-//   const { currentAccount } = useContext(WalletContext); // Wallet context for current connected account
-const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
-  const currentAccount = privyUser?.wallet?.address;
+  const { ready, login, authenticated, user, logout } = usePrivy();
+  
+  const [walletAddress, setWalletAddress] = useState<string | undefined>(undefined);
+  const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false);
   const [donationRewardRate, setDonationRewardRate] = useState<string>("1"); // Default 1%
   const [assigneeRewardAmount, setAssigneeRewardAmount] = useState<string>("100"); // Default 100 tokens
   const [timelock, setTimelock] = useState<string>("172800"); // Default 2 days in seconds
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [privyProvider, setPrivyProvider] = useState<any>(null);
+
+  // Connect wallet using Privy
+  const connectWallet = async (): Promise<void> => {
+    try {
+      if (!authenticated) {
+        await login();
+      }
+    } catch (error) {
+      console.error("Failed to connect wallet:", error);
+      setError("Failed to connect wallet");
+    }
+  };
+
+  // Update wallet state when Privy authentication changes
+  useEffect(() => {
+    const updateWalletState = async () => {
+      if (authenticated && user) {
+        const address = user.wallet?.address;
+        setWalletAddress(address);
+        setIsWalletConnected(!!address);
+        
+        // Get Ethereum provider from Privy
+        if (user.wallet) {
+          try {
+            // Privy wallet embedsWalletProvider within user.wallet object
+            const provider = user.wallet.provider;
+            setPrivyProvider(provider);
+          } catch (err) {
+            console.error("Failed to get Ethereum provider:", err);
+          }
+        }
+      } else {
+        setWalletAddress(undefined);
+        setIsWalletConnected(false);
+        setPrivyProvider(null);
+      }
+    };
+    
+    updateWalletState();
+  }, [authenticated, user]);
 
   // Utility function to fetch TrailMaintenance Contract instance
   const getTrailMaintenanceContract = async (): Promise<Contract> => {
     const contractAddress = contracts.TRAIL_MAINTENANCE_ADDRESS;
-    return getEthereumContract(contractAddress, TRAIL_MAINTENANCE_ABI.abi);
+    return getEthereumContract(contractAddress, TRAIL_MAINTENANCE_ABI.abi, privyProvider);
   };
 
   // Fetch contract configuration values
   const fetchContractConfig = async () => {
+    if (!isWalletConnected) return;
+    
     try {
       const contract = await getTrailMaintenanceContract();
-      
       const rewardRate = await contract.donationRewardRate();
       setDonationRewardRate(rewardRate.toString());
-      
       const rewardAmount = await contract.assigneeRewardAmount();
       setAssigneeRewardAmount(ethers.formatUnits(rewardAmount, 18));
       
@@ -132,6 +187,11 @@ const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
    * @param targetAmount Target fundraising amount (in ETH)
    */
   const createTask = async (description: string, targetAmount: string): Promise<boolean> => {
+    if (!isWalletConnected) {
+      setError("Wallet not connected");
+      return false;
+    }
+    
     setError(null);
     try {
       setLoading(true);
@@ -158,6 +218,11 @@ const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
    * @param taskId Task ID to assign
    */
   const assignTask = async (taskId: number): Promise<boolean> => {
+    if (!isWalletConnected) {
+      setError("Wallet not connected");
+      return false;
+    }
+    
     setError(null);
     try {
       setLoading(true);
@@ -182,6 +247,11 @@ const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
    * @param amount Amount to donate (in ETH)
    */
   const donate = async (taskId: number, amount: string): Promise<boolean> => {
+    if (!isWalletConnected) {
+      setError("Wallet not connected");
+      return false;
+    }
+    
     setError(null);
     try {
       setLoading(true);
@@ -209,6 +279,11 @@ const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
    * @param multiSigAddress Multisig wallet address
    */
   const setMultiSigWallet = async (taskId: number, multiSigAddress: string): Promise<boolean> => {
+    if (!isWalletConnected) {
+      setError("Wallet not connected");
+      return false;
+    }
+    
     setError(null);
     try {
       setLoading(true);
@@ -232,6 +307,11 @@ const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
    * @param taskId Task ID to request completion for
    */
   const requestCompletion = async (taskId: number): Promise<boolean> => {
+    if (!isWalletConnected) {
+      setError("Wallet not connected");
+      return false;
+    }
+    
     setError(null);
     try {
       setLoading(true);
@@ -255,6 +335,11 @@ const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
    * @param taskId Task ID to approve
    */
   const approveCompletion = async (taskId: number): Promise<boolean> => {
+    if (!isWalletConnected) {
+      setError("Wallet not connected");
+      return false;
+    }
+    
     setError(null);
     try {
       setLoading(true);
@@ -278,6 +363,11 @@ const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
    * @param taskId Task ID to cancel
    */
   const cancelTask = async (taskId: number): Promise<boolean> => {
+    if (!isWalletConnected) {
+      setError("Wallet not connected");
+      return false;
+    }
+    
     setError(null);
     try {
       setLoading(true);
@@ -301,6 +391,11 @@ const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
    * @param taskId Task ID to fetch
    */
   const getTaskDetails = async (taskId: number): Promise<Task | null> => {
+    if (!isWalletConnected) {
+      setError("Wallet not connected");
+      return null;
+    }
+    
     setError(null);
     try {
       const contract = await getTrailMaintenanceContract();
@@ -334,6 +429,11 @@ const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
    * @param taskId Task ID to get donations for
    */
   const getDonations = async (taskId: number): Promise<Donation[]> => {
+    if (!isWalletConnected) {
+      setError("Wallet not connected");
+      return [];
+    }
+    
     setError(null);
     try {
       const contract = await getTrailMaintenanceContract();
@@ -360,6 +460,11 @@ const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
    * @param taskId Task ID to get donors for
    */
   const getDonors = async (taskId: number): Promise<string[]> => {
+    if (!isWalletConnected) {
+      setError("Wallet not connected");
+      return [];
+    }
+    
     setError(null);
     try {
       const contract = await getTrailMaintenanceContract();
@@ -377,13 +482,16 @@ const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
    * Get tasks for current user
    */
   const getUserTasks = async (): Promise<number[]> => {
+    if (!isWalletConnected || !walletAddress) {
+      setError("Wallet not connected");
+      return [];
+    }
+    
     setError(null);
     try {
-      if (!currentAccount) return [];
-      
       const contract = await getTrailMaintenanceContract();
       
-      const tasks = await contract.getUserTasks(currentAccount);
+      const tasks = await contract.getUserTasks(walletAddress);
       return tasks.map((id: ethers.BigNumberish) => Number(id));
     } catch (error) {
       console.error("Failed to fetch user tasks:", error);
@@ -396,6 +504,11 @@ const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
    * Get total number of tasks
    */
   const getTaskCount = async (): Promise<number> => {
+    if (!isWalletConnected) {
+      setError("Wallet not connected");
+      return 0;
+    }
+    
     setError(null);
     try {
       const contract = await getTrailMaintenanceContract();
@@ -415,6 +528,11 @@ const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
    * @param userAddress User address to check approval for
    */
   const hasApproved = async (taskId: number, userAddress: string): Promise<boolean> => {
+    if (!isWalletConnected) {
+      setError("Wallet not connected");
+      return false;
+    }
+    
     setError(null);
     try {
       const contract = await getTrailMaintenanceContract();
@@ -433,6 +551,11 @@ const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
    * @param taskId Task ID to check
    */
   const getApprovalCount = async (taskId: number): Promise<number> => {
+    if (!isWalletConnected) {
+      setError("Wallet not connected");
+      return 0;
+    }
+    
     setError(null);
     try {
       const contract = await getTrailMaintenanceContract();
@@ -446,12 +569,12 @@ const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
     }
   };
 
-  // Fetch configuration when account changes
+  // Fetch configuration when wallet connection changes
   useEffect(() => {
-    if (currentAccount) {
+    if (isWalletConnected) {
       fetchContractConfig();
     }
-  }, [currentAccount]);
+  }, [isWalletConnected]);
 
   return (
     <TrailMaintenanceContext.Provider
@@ -483,7 +606,12 @@ const { ready, login, authenticated, user: privyUser, logout } = usePrivy();
         assigneeRewardAmount,
         timelock,
         loading,
-        error
+        error,
+        
+        // Privy related
+        walletAddress,
+        isWalletConnected,
+        connectWallet
       }}
     >
       {children}

@@ -79,7 +79,7 @@ const CesiumViewer: React.ComponentType = () => {
     // Only render on client-side
     if (typeof window === 'undefined') return;
     
-    // Initialize Cesium viewer
+    let isMounted = true;
     const cesiumViewer = new Viewer('cesiumContainer', {
       // terrainProvider: Cesium.createWorldTerrain(), // Can be set to any terrain provider
       animation: false,
@@ -93,25 +93,31 @@ const CesiumViewer: React.ComponentType = () => {
       timeline: false,
       navigationHelpButton: false,
     });
-
+    
+  
     Cesium.createWorldTerrainAsync()
-  .then(terrain => {
-    cesiumViewer.terrainProvider = terrain;
-  })
-  .catch(error => {
-    console.error('Failed to load terrain:', error);
-  });
-
-    // Set default view position (China)
+      .then(terrain => {
+        if (isMounted && cesiumViewer && !cesiumViewer.isDestroyed()) {
+          cesiumViewer.terrainProvider = terrain;
+        }
+      })
+      .catch(error => {
+        if (isMounted) {
+          console.error('Failed to load terrain:', error);
+        }
+      });
+  
+    // Set default view position
     cesiumViewer.camera.setView({
-      destination: Cartesian3.fromDegrees(172.5, -41.0, 1500000) 
+      destination: Cartesian3.fromDegrees(172.5, -41.0, 1500000)
     });
-
+  
     // Save viewer instance to state
     setViewer(cesiumViewer);
-
+  
     // Cleanup function
     return () => {
+      isMounted = false;
       if (cesiumViewer && !cesiumViewer.isDestroyed()) {
         cesiumViewer.destroy();
       }
