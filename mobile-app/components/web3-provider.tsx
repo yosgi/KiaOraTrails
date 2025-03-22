@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { createContext, useContext, useState, useEffect } from "react"
+import {PrivyProvider} from "@privy-io/react-auth";
 
 interface Web3ContextType {
   isConnected: boolean
@@ -58,9 +59,25 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   }, [])
 
   return (
-    <Web3Context.Provider value={{ isConnected, address, balance, connect, disconnect }}>
-      {children}
-    </Web3Context.Provider>
+      <PrivyProvider
+          appId={process.env.NEXT_PUBLIC_PRIVY_APPID as string}
+          clientId={process.env.NEXT_PUBLIC_PRIVY_CLIENTID}
+          config={{
+            // Customize Privy's appearance in your app
+            appearance: {
+              theme: 'light',
+              accentColor: '#676FFF',
+              logo: 'https://your-logo-url'
+            },
+            embeddedWallets: {
+              createOnLogin: 'users-without-wallets'
+            }
+          }}
+      >
+        <Web3Context.Provider value={{ isConnected, address, balance, connect, disconnect }}>
+          {children}
+        </Web3Context.Provider>
+      </PrivyProvider>
   )
 }
 
