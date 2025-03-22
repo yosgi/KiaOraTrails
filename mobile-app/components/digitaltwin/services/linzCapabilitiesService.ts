@@ -393,6 +393,9 @@ export const fetchWFSFeatures = async (
         
         if (!response.ok) {
           const errorText = await response.text();
+          if (response.status === 404) {
+            Logger.error(`404 Error: Full response body: ${errorText}`);
+          }
           throw new Error(`Failed to fetch WFS features: ${response.status} - ${errorText.substring(0, 100)}`);
         }
         
