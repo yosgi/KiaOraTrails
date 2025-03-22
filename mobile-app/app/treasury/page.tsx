@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -31,13 +32,14 @@ export default function TreasuryPage() {
     fetchProposals()
   }, [])
 
-  const sortedProposals = [...proposals].sort((a, b) => {
+
+  const sortedProposals =proposals && proposals?.length > 0 ? [...proposals].sort((a, b) => {
     try {
       return sortDirection === "asc" ? a.up_votes - b.up_votes : b.up_votes - a.up_votes
     } catch (error) {
       return []
     }
-  })
+  }) : []
 
   const toggleSort = () => {
     setSortDirection(sortDirection === "asc" ? "desc" : "asc")
@@ -96,9 +98,6 @@ export default function TreasuryPage() {
             <h2 className="text-base font-medium flex items-center">
               <Vote className="mr-2 h-4 w-4" /> Proposals
             </h2>
-            <Button variant="outline" size="sm">
-              Create New
-            </Button>
           </div>
 
           {loading ? (
@@ -113,18 +112,22 @@ export default function TreasuryPage() {
 
               <TabsContent value="voted" className="pt-4 space-y-4">
                 {sortedProposals.filter(({status}) => status =="voted").map((proposal) => (
-                  <Card key={proposal.id} className="overflow-hidden">
+                  <Card key={proposal.id+'voted'} className="overflow-hidden">
                     <div className="p-4">
                       <div className="flex justify-between items-start">
                         <div>
-                          <h3 className="font-medium">{proposal.title}</h3>
+                          <Link href={`/issues/${proposal.id}`} className="block hover:bg-accent">
+                            <h3 className="font-medium">{proposal.title}</h3>
+                          </Link>
                           <p className="text-sm text-muted-foreground">
                             {proposal.fund ?? 0} NZD • Posted at {format(new Date(proposal.created_at), "MMM d, yyyy")}
                           </p>
                         </div>
-                        <Button size="sm" variant="outline">
-                          Donate
-                        </Button>
+                        {proposal.type === "fundraising" && (
+                          <Button size="sm" variant="outline">
+                            Donate
+                          </Button>
+                        )}
                       </div>
                       <div className="mt-3">
                         <div className="flex justify-between text-sm mb-1">
@@ -140,11 +143,13 @@ export default function TreasuryPage() {
 
               <TabsContent value="donated" className="pt-4 space-y-4">
               {sortedProposals.filter(({status}) => status =="donated").map((proposal) => (
-                  <Card key={proposal.id} className="overflow-hidden">
+                  <Card key={proposal.id+'donated'} className="overflow-hidden">
                     <div className="p-4">
                       <div className="flex justify-between items-start">
                         <div>
-                          <h3 className="font-medium">{proposal.title}</h3>
+                          <Link href={`/issues/${proposal.id}`} className="block hover:bg-accent">
+                            <h3 className="font-medium">{proposal.title}</h3>
+                          </Link>
                           <p className="text-sm text-muted-foreground">
                             {proposal.fund ?? 0} NZD • Posted at {format(new Date(proposal.created_at), "MMM d, yyyy")}
                           </p>
@@ -165,11 +170,13 @@ export default function TreasuryPage() {
               <TabsContent value="rejected" className="pt-4 space-y-4">
                 
               {sortedProposals.filter(({status}) => status =="rejected").map((proposal) => (
-                  <Card key={proposal.id} className="overflow-hidden">
+                  <Card key={proposal.id+'rejected'} className="overflow-hidden">
                     <div className="p-4">
                       <div className="flex justify-between items-start">
                         <div>
-                          <h3 className="font-medium">{proposal.title}</h3>
+                          <Link href={`/issues/${proposal.id}`} className="block hover:bg-accent">
+                            <h3 className="font-medium">{proposal.title}</h3>
+                          </Link>
                           <p className="text-sm text-muted-foreground">
                             {proposal.fund ?? 0} NZD • Posted at {format(new Date(proposal.created_at), "MMM d, yyyy")}
                           </p>

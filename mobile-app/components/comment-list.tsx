@@ -64,7 +64,7 @@ export function CommentList({ comments }: CommentListProps) {
 
   return (
     <div className="space-y-4">
-      {comments.map((comment) => {
+      {comments && comments?.length && comments.map((comment) => {
         const votes = commentVotes[comment.id] || { liked: false, disliked: false }
 
         return (
