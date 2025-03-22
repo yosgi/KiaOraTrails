@@ -111,7 +111,10 @@ export default function ReportPage() {
 
       ReactS3Client
           .uploadFile(file, newFileName)
-          .then(data => console.log(data))
+          .then((data:any) =>{
+            const url = data?.Location
+            console.log(url)
+          } )
           .catch(err => console.error(err))
           } catch (error) {
             console.error('Error uploading file:', error);
