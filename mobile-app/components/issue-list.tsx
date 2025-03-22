@@ -152,7 +152,7 @@ function IssueItem({ issue, onSelect }: { issue: any; onSelect?: () => void }) {
             </div>
           </div>
           <Badge variant="outline" className="text-xs">
-            <ThumbsUp className="h-3 w-3 mr-1" /> {issue.upvotes}
+            <ThumbsUp className="h-3 w-3 mr-1" /> {issue.up_votes}
           </Badge>
         </div>
         <div className="flex justify-between items-center">
